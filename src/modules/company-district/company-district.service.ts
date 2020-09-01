@@ -16,6 +16,7 @@ import {
   AdminCompanyDistrictUpdateDto,
   CompanyDistrictUpdateDto,
   AdminCompanyDistrictUpdateRefusalDto,
+  AdminCompanyDistrictLatLonDto,
 } from './dto';
 import { CompanyDistrictUpdateHistory } from '../company-district-update-history/company-district-update-history.entity';
 import {
@@ -251,7 +252,7 @@ export class CompanyDistrictService extends BaseService {
         let newCompanyDistrict = new CompanyDistrict(companyDistrictCreateDto);
         newCompanyDistrict = await entityManager.save(newCompanyDistrict);
         // create new update history
-        let companyDistrictUpdateHistory = this.__company_update_history(
+        let companyDistrictUpdateHistory = this.__company_district_update_history(
           newCompanyDistrict,
         );
         if (
@@ -284,6 +285,22 @@ export class CompanyDistrictService extends BaseService {
     return companyDistrict;
   }
 
+  async updateLatLon(
+    companyDistrictNo: number,
+    adminCompanyDistrictLatLonDto: AdminCompanyDistrictLatLonDto,
+  ): Promise<CompanyDistrict> {
+    let district = await this.companyDistrictRepo.findOne(companyDistrictNo);
+    district.lat = adminCompanyDistrictLatLonDto.lat;
+    district.lon = adminCompanyDistrictLatLonDto.lon;
+    // update vicinity
+    this.companyDistrictAnalysisSenderService.setVicinityAnalysis(
+      companyDistrictNo,
+      adminCompanyDistrictLatLonDto.lat,
+      adminCompanyDistrictLatLonDto.lon,
+    );
+    return await this.companyDistrictRepo.save(district);
+  }
+
   /**
    * update for company district by admin
    * id is provided through id parameter
@@ -304,7 +321,7 @@ export class CompanyDistrictService extends BaseService {
         companyDistrict = await entityManager.save(companyDistrict);
 
         // create new update history
-        let companyDistrictUpdateHistory = this.__company_update_history(
+        let companyDistrictUpdateHistory = this.__company_district_update_history(
           companyDistrict,
         );
         companyDistrictUpdateHistory = await entityManager.save(
@@ -378,7 +395,7 @@ export class CompanyDistrictService extends BaseService {
         console.log(checkCompanyDistrict.companyDistrictStatus);
         checkCompanyDistrict = await entityManager.save(checkCompanyDistrict);
         // create new update history
-        let newCompanyDistrictUpdateHistory = this.__company_update_history(
+        let newCompanyDistrictUpdateHistory = this.__company_district_update_history(
           checkCompanyDistrict,
         );
         newCompanyDistrictUpdateHistory = await entityManager.save(
@@ -480,7 +497,7 @@ export class CompanyDistrictService extends BaseService {
         companyDistrict = companyDistrict.set(companyDistrictUpdateDto);
         // create new company district update
         // delete id just in case
-        let companyDistrictUpdateHistory = this.__company_update_history(
+        let companyDistrictUpdateHistory = this.__company_district_update_history(
           companyDistrict,
         );
         companyDistrictUpdateHistory = await entityManager.save(
@@ -527,16 +544,32 @@ export class CompanyDistrictService extends BaseService {
     );
   }
 
-  async test() {
-    const address = '서울시';
-    return this.__get_lat_long(address);
+  async createUpdateHistory() {
+    const districts = await this.entityManager.transaction(
+      async entityManager => {
+        const districts = await this.companyDistrictRepo.find();
+        await Promise.all(
+          districts.map(async district => {
+            const histories = await this.companyDistrictUpdateHistoryRepo.find({
+              where: { companyDistrictNo: district.no },
+            });
+            if (histories && histories.length > 0) {
+              return;
+            } else {
+              let history = this.__company_district_update_history(district);
+              history = await entityManager.save(history);
+            }
+          }),
+        );
+      },
+    );
   }
 
   /**
    * create company district update instance
    * @param companyDistrictUpdate
    */
-  private __company_update_history(companyDistrictUpdate) {
+  private __company_district_update_history(companyDistrictUpdate) {
     const newCompanyUpdateHistory = new CompanyDistrictUpdateHistory(
       companyDistrictUpdate,
     );

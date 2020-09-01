@@ -17,6 +17,7 @@ import {
   AdminCompanyDistrictCreateDto,
   AdminCompanyDistrictUpdateDto,
   AdminCompanyDistrictUpdateRefusalDto,
+  AdminCompanyDistrictLatLonDto,
 } from './dto';
 import { PaginatedRequest, PaginatedResponse, UserInfo } from 'src/common';
 import { CompanyDistrict } from './company-district.entity';
@@ -126,8 +127,27 @@ export class AdminCompanyDistrictController extends BaseController {
     );
   }
 
-  @Get('/admin/company-district/test')
-  async test() {
-    return await this.companyDistrictService.test();
+  /**
+   * update lat lon
+   * @param companyDistrictNo
+   * @param latLonDto
+   */
+  @Patch('/admin/company-district/:id([0-9]+)/lat-lon')
+  async updateLatLon(
+    @Param('id', ParseIntPipe) companyDistrictNo: number,
+    @Body() latLonDto: AdminCompanyDistrictLatLonDto,
+  ): Promise<CompanyDistrict> {
+    return await this.companyDistrictService.updateLatLon(
+      companyDistrictNo,
+      latLonDto,
+    );
+  }
+
+  /**
+   * create history
+   */
+  @Get('/admin/company-district/create-history')
+  async createHistories() {
+    return await this.companyDistrictService.createUpdateHistory();
   }
 }

@@ -33,7 +33,7 @@ declare const module: any;
 
 async function bootstrap() {
   // await generate.generate;
-  if (env === 'development') {
+  if (env === ENVIRONMENT.DEVELOPMENT) {
     console.log('Running in development mode. 개발 모드로 진행중');
   }
   app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -94,8 +94,10 @@ async function bootstrap() {
   await app.listen(4200);
 
   const url = await app.getUrl();
-  Logger.log(`${url}`, 'NestApplication');
-  Logger.log(`${url}/swagger`, 'NestApplication');
+  if (process.env.NODE_ENV === ENVIRONMENT.DEVELOPMENT) {
+    Logger.log(`${url}`, 'NestApplication');
+    Logger.log(`${url}/swagger`, 'NestApplication');
+  }
 
   // HMR: Hot Reload (Webpack)
   if (module.hot) {
