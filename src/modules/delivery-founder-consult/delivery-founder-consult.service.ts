@@ -469,6 +469,7 @@ export class DeliveryFounderConsultService extends BaseService {
         ])
         .CustomLeftJoinAndSelect(['companyUser'])
         .innerJoinAndSelect('deliverySpaces.companyDistrict', 'companyDistrict')
+        .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
         .leftJoinAndSelect('deliverySpaces.amenities', 'amenities')
         .leftJoinAndSelect(
           'deliverySpaces.deliverySpaceOptions',
