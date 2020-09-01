@@ -138,6 +138,7 @@ export class AdminCompanyDistrictController extends BaseController {
     @Body() latLonDto: AdminCompanyDistrictLatLonDto,
   ): Promise<CompanyDistrict> {
     return await this.companyDistrictService.updateLatLon(
+      companyDistrictNo,
       latLonDto,
     );
   }
