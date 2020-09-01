@@ -50,16 +50,7 @@ async function bootstrap() {
   // Cors
   // see https://github.com/expressjs/cors#configuration-options
   app.enableCors({
-    origin:
-      process.env.NODE_ENV === ENVIRONMENT.PRODUCTION
-        ? [
-            'https://platform-admin.nanudakitchen.com',
-            'https://platform.nanudakitchen.com',
-            'https://nanudakitchen.com/',
-            'https://nanuda-platform-admin.onrender.com',
-            'https://nanuda-platform-company-admin.onrender.com',
-          ]
-        : '*',
+    origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 204,
