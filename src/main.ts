@@ -52,7 +52,11 @@ async function bootstrap() {
   app.enableCors({
     origin:
       process.env.NODE_ENV === ENVIRONMENT.PRODUCTION
-        ? /\.nanudakitchen\.com$/
+        ? [
+            'https://platform-api.nanudakitchen.com',
+            'https://platform.nanudakitchen.com',
+            'https://nanudakitchen.com/',
+          ]
         : '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
