@@ -120,6 +120,14 @@ export class AdminCompanyController extends BaseController {
   }
 
   /**
+   * create histories
+   */
+  @Get('/admin/company/create-history')
+  async createHistory() {
+    return await this.companyService.createHistories();
+  }
+
+  /**
    * delete company
    * @param companyNo
    */

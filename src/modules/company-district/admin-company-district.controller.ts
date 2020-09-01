@@ -142,4 +142,12 @@ export class AdminCompanyDistrictController extends BaseController {
       latLonDto,
     );
   }
+
+  /**
+   * create history
+   */
+  @Get('/admin/company-district/create-history')
+  async createHistories() {
+    return await this.companyDistrictService.createUpdateHistory();
+  }
 }
