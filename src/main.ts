@@ -42,9 +42,9 @@ async function bootstrap() {
   app.use(urlencoded({ extended: true }));
   app.use(json({ limit: '50mb' }));
   app.disable('x-powered-by');
-  app.setViewEngine('hbs');
+  // app.setViewEngine('hbs');
   app.use(compression());
-  app.use(cookieParser());
+  // app.use(cookieParser());
   app.use(helmet()); // https://helmetjs.github.io/
   app.use(requestIp.mw());
   // Cors

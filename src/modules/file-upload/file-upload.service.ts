@@ -155,11 +155,9 @@ export class FileUploadService {
 
   // 버킷 CORS 변경 함수
   async putBucketCORS() {
+    console.log(bucketInfoEnvironments.production.bucketName);
     const params = {
-      Bucket:
-        process.env.NODE_ENV === ENVIRONMENT.PRODUCTION
-          ? bucketInfoEnvironments.production.bucketName
-          : bucketInfoEnvironments.staging.bucketName,
+      Bucket: bucketInfoEnvironments.production.bucketName,
       CORSConfiguration: {
         CORSRules: [
           {
