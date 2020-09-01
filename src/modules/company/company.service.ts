@@ -504,6 +504,27 @@ export class CompanyService extends BaseService {
     return company;
   }
 
+  async createHistories() {
+    const company = await this.entityManager.transaction(
+      async entityManager => {
+        const companies = await this.companyRepo.find();
+        await Promise.all(
+          companies.map(async company => {
+            const histories = await this.companyUpdateHistoryRepo.find({
+              where: { companyNo: company.no },
+            });
+            if (histories && histories.length > 0) {
+              return;
+            } else {
+              let history = this.__company_update_history(company.no, company);
+              history = await entityManager.save(history);
+            }
+          }),
+        );
+      },
+    );
+  }
+
   /**
    * search for company - keyword
    * @param adminSearchParamDto

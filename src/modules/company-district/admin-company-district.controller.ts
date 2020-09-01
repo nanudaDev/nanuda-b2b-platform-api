@@ -143,8 +143,11 @@ export class AdminCompanyDistrictController extends BaseController {
     );
   }
 
-  @Get('/admin/company-district/test')
-  async test() {
-    return await this.companyDistrictService.test();
+  /**
+   * create history
+   */
+  @Get('/admin/company-district/create-history')
+  async createHistories() {
+    return await this.companyDistrictService.createUpdateHistory();
   }
 }
