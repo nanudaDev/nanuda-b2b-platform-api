@@ -11,6 +11,11 @@ import { SmsAuthService } from './sms-auth.service';
 export class AdminSmsController {
   constructor(private readonly smsService: SmsAuthService) {}
 
+  /**
+   * send message to admin
+   * @param adminSendMessageDto
+   * @param req
+   */
   @Post('/admin/send-message')
   async sendMessage(
     @Body() adminSendMessageDto: AdminSendMessageDto,
