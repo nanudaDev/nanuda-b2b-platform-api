@@ -50,8 +50,10 @@ async function bootstrap() {
   // Cors
   // see https://github.com/expressjs/cors#configuration-options
   app.enableCors({
-    origin: '*',
-    // origin: /\.nanudakitchen\.com$/,
+    origin:
+      process.env.NODE_ENV === ENVIRONMENT.PRODUCTION
+        ? /\.nanudakitchen\.com$/
+        : '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 204,
