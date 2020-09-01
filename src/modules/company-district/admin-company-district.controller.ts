@@ -142,9 +142,4 @@ export class AdminCompanyDistrictController extends BaseController {
       latLonDto,
     );
   }
-
-  @Get('/admin/company-district/test')
-  async test() {
-    return await this.companyDistrictService.test();
-  }
 }
