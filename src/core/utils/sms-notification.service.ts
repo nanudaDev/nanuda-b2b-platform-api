@@ -25,7 +25,8 @@ export class SmsNotificationService extends BaseService {
   async sendLoginPrompt(req: Request, code: number): Promise<any> {
     const payload = await this.__login_prompt_message(req.body.phone, code);
     req.body = payload.body;
-    await aligoapi.send(req, payload.auth);
+    const sms = await aligoapi.send(req, payload.auth);
+    console.log(sms);
     return;
   }
 
