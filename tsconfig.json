@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "module": "commonjs",
+    "noImplicitReturns": true,
+    "declaration": false,
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": false,
+    "target": "es2017",
+    "lib": ["es2018", "esnext.asynciterable"],
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "allowJs": false,
+    "locale": "ko",
+    "pretty": true,
+    "typeRoots": ["./types", "./node_modules/@types"]
+  },
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
+  },
+  "exclude": ["node_modules", "dist", "documentation"]
+}

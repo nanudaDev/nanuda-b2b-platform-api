@@ -1,0 +1,133 @@
+import {
+  Controller,
+  UseGuards,
+  Get,
+  Param,
+  ParseIntPipe,
+  Query,
+  Post,
+  Body,
+  Patch,
+} from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { AuthRolesGuard, CONST_ADMIN_USER, BaseController } from 'src/core';
+import { CompanyDistrictService } from './company-district.service';
+import {
+  AdminCompanyDistrictListDto,
+  AdminCompanyDistrictCreateDto,
+  AdminCompanyDistrictUpdateDto,
+  AdminCompanyDistrictUpdateRefusalDto,
+} from './dto';
+import { PaginatedRequest, PaginatedResponse, UserInfo } from 'src/common';
+import { CompanyDistrict } from './company-district.entity';
+import { Admin } from '..';
+
+@Controller()
+@ApiTags('ADMIN COMPANY DISTRICT')
+@ApiBearerAuth()
+@UseGuards(new AuthRolesGuard(...CONST_ADMIN_USER))
+export class AdminCompanyDistrictController extends BaseController {
+  constructor(private readonly companyDistrictService: CompanyDistrictService) {
+    super();
+  }
+
+  /**
+   * get all company districts
+   * @param companyNo
+   * @param adminCompanyDistrictListDto
+   * @param pagination
+   */
+  @Get('/admin/company-district')
+  async findAll(
+    @Query() adminCompanyDistrictListDto: AdminCompanyDistrictListDto,
+    @Query() pagination?: PaginatedRequest,
+  ): Promise<PaginatedResponse<CompanyDistrict>> {
+    return await this.companyDistrictService.findCompanyDistrictForAdmin(
+      adminCompanyDistrictListDto,
+      pagination,
+    );
+  }
+
+  /**
+   * find one for admin
+   * @param companyDistrictNo
+   */
+  @Get('/admin/company-district/:id([0-9]+)')
+  async findOne(
+    @Param('id', ParseIntPipe) companyDistrictNo: number,
+  ): Promise<CompanyDistrict> {
+    return await this.companyDistrictService.findOneForAdmin(companyDistrictNo);
+  }
+
+  /**
+   * create for admin
+   * @param adminCompanyDistrictCreateDto
+   */
+  @Post('/admin/company-district')
+  async create(
+    @Body() adminCompanyDistrictCreateDto: AdminCompanyDistrictCreateDto,
+    @UserInfo() admin: Admin,
+  ): Promise<CompanyDistrict> {
+    return await this.companyDistrictService.create(
+      adminCompanyDistrictCreateDto,
+      admin.no,
+    );
+  }
+
+  @Patch('/admin/company-district/:id([0-9]+)')
+  async update(
+    @Param('id', ParseIntPipe) companyDistrictNo: number,
+    @Body() adminCompanyDistrictUpdateDto: AdminCompanyDistrictUpdateDto,
+    @UserInfo() admin: Admin,
+  ): Promise<CompanyDistrict> {
+    return await this.companyDistrictService.updateForAdmin(
+      companyDistrictNo,
+      adminCompanyDistrictUpdateDto,
+      admin.no,
+    );
+  }
+
+  /**
+   * approve district
+   * @param companyDistrictNo
+   */
+  @Patch('/admin/company-district/:id([0-9]+)/approve-update')
+  async approve(
+    @Param('id') companyDistrictNo: number,
+  ): Promise<CompanyDistrict> {
+    return await this.companyDistrictService.approveUpdate(companyDistrictNo);
+  }
+
+  /**
+   * refuse update
+   * @param companyDistrictNo
+   * @param adminCompanyDistrictUpdateRefusalDto
+   */
+  @Patch('/admin/company-district/:id([0-9]+)/refuse-update')
+  async refuse(
+    @Param('id', ParseIntPipe) companyDistrictNo: number,
+    @Body()
+    adminCompanyDistrictUpdateRefusalDto: AdminCompanyDistrictUpdateRefusalDto,
+  ): Promise<CompanyDistrict> {
+    return await this.companyDistrictService.refuseUpdate(
+      companyDistrictNo,
+      adminCompanyDistrictUpdateRefusalDto,
+    );
+  }
+
+  /**
+   * update analysis
+   * @param companyDistrictNo
+   */
+  @Patch('/admin/company-district/:id([0-9]+)/analysis')
+  async updateAnalysis(@Param('id', ParseIntPipe) companyDistrictNo: number) {
+    return await this.companyDistrictService.createVicinityInfo(
+      companyDistrictNo,
+    );
+  }
+
+  @Get('/admin/company-district/test')
+  async test() {
+    return await this.companyDistrictService.test();
+  }
+}

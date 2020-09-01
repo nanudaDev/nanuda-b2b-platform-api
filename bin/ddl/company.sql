@@ -1,0 +1,10 @@
+-- company pricing table
+CREATE TABLE `B2B_COMPANY_PRICING_TABLE` (
+  `NO` int unsigned NOT NULL AUTO_INCREMENT,
+  `OPEN_FEE` varchar(45) NOT NULL,
+  `START_UP_FEE` varchar(45) NOT NULL,
+  `PARENT_NO` int DEFAULT NULL,
+  `createdAt` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`NO`),
+  UNIQUE KEY `NO_UNIQUE` (`NO`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
