@@ -16,6 +16,7 @@ import {
   AdminCompanyDistrictUpdateDto,
   CompanyDistrictUpdateDto,
   AdminCompanyDistrictUpdateRefusalDto,
+  AdminCompanyDistrictLatLonDto,
 } from './dto';
 import { CompanyDistrictUpdateHistory } from '../company-district-update-history/company-district-update-history.entity';
 import {
@@ -282,6 +283,22 @@ export class CompanyDistrictService extends BaseService {
       },
     );
     return companyDistrict;
+  }
+
+  async updateLatLon(
+    companyDistrictNo: number,
+    adminCompanyDistrictLatLonDto: AdminCompanyDistrictLatLonDto,
+  ): Promise<CompanyDistrict> {
+    let district = await this.companyDistrictRepo.findOne(companyDistrictNo);
+    district.lat = adminCompanyDistrictLatLonDto.lat;
+    district.lon = adminCompanyDistrictLatLonDto.lon;
+    // update vicinity
+    this.companyDistrictAnalysisSenderService.setVicinityAnalysis(
+      companyDistrictNo,
+      adminCompanyDistrictLatLonDto.lat,
+      adminCompanyDistrictLatLonDto.lon,
+    );
+    return await this.companyDistrictRepo.save(district);
   }
 
   /**
