@@ -35,7 +35,7 @@ require('dotenv').config();
 const env = process.env;
 @Module({
   imports: [
-    CacheModule.registerAsync({ useClass: CacheConfigService }),
+    // CacheModule.registerAsync({ useClass: CacheConfigService }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
     }),
@@ -83,7 +83,7 @@ const env = process.env;
   providers: [
     AppService,
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
-    { provide: APP_INTERCEPTOR, useClass: HttpCacheInterceptor },
+    // { provide: APP_INTERCEPTOR, useClass: HttpCacheInterceptor },
   ],
 })
 export class AppModule {}

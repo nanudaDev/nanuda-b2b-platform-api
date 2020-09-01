@@ -42,19 +42,20 @@ async function bootstrap() {
   app.use(urlencoded({ extended: true }));
   app.use(json({ limit: '50mb' }));
   app.disable('x-powered-by');
-  app.setViewEngine('hbs');
+  // app.setViewEngine('hbs');
   app.use(compression());
-  app.use(cookieParser());
+  // app.use(cookieParser());
   app.use(helmet()); // https://helmetjs.github.io/
   app.use(requestIp.mw());
   // Cors
   // see https://github.com/expressjs/cors#configuration-options
-  app.enableCors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-  });
+  // app.enableCors({
+  //   origin: '*',
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  //   preflightContinue: false,
+  //   optionsSuccessStatus: 204,
+  // });
+  app.enableCors();
   // https://docs.nestjs.com/techniques/security
   // app.use(csurf({ cookie: true }));
   app.use(
