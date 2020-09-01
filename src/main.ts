@@ -56,6 +56,8 @@ async function bootstrap() {
             'https://platform-admin.nanudakitchen.com',
             'https://platform.nanudakitchen.com',
             'https://nanudakitchen.com/',
+            'https://nanuda-platform-admin.onrender.com',
+            'https://nanuda-platform-company-admin.onrender.com',
           ]
         : '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
