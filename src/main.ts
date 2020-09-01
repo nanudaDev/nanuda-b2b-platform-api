@@ -53,7 +53,7 @@ async function bootstrap() {
     origin:
       process.env.NODE_ENV === ENVIRONMENT.PRODUCTION
         ? [
-            'https://platform-api.nanudakitchen.com',
+            'https://platform-admin.nanudakitchen.com',
             'https://platform.nanudakitchen.com',
             'https://nanudakitchen.com/',
           ]
