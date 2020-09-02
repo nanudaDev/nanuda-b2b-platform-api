@@ -59,7 +59,7 @@ export class SmsAuthService extends BaseService {
     smsAuth.phone = companyUserSmsAuthRegisterDto.phone;
     smsAuth.authCode = newAuthCode;
     smsAuth.userType = UserType.COMPANY_USER;
-    if (process.env.NODE_ENV === ENVIRONMENT.DEVELOPMENT) {
+    if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
       console.log(smsAuth.authCode);
     }
     smsAuth = await this.smsAuthRepo.save(smsAuth);
@@ -103,7 +103,6 @@ export class SmsAuthService extends BaseService {
     adminSendMessageDto: AdminSendMessageDto,
     req?: Request,
   ) {
-    console.log(adminSendMessageDto);
     return await this.smsNotificationService.sendAdminMessage(
       adminSendMessageDto,
       req,

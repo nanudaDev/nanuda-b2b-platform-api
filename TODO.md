@@ -2,7 +2,7 @@
 2. Slack notification
    - WHEN USER SWITCHES FOUNDER CONSULT STATUS [x]
    - WHEN COMPANY USER UPDATES STATUS [x]
-   - WHEN COMPANY STATUS IS UPDATED
+   - WHEN COMPANY STATUS IS UPDATED [x]
 3. Aligo API [x]
 4. REMEMBER ME FOR LOGIN [x]
 5. PHONE SET TO MANDATORY ON RELEASE (for company update history)
@@ -11,8 +11,8 @@
    - cache interceptor [x]
 8. update check
 9. delete user [x]
-10. email unique column
-11. NANUDA PLATFORM BATCH
+10. email unique column [x]
+11. NANUDA PLATFORM BATCH [x]
 
     - company user withdraw policy
       - 휴면 계정
@@ -27,8 +27,8 @@
 15. FOUNDER CONSULT SPACE GRAPH LIMIT PARAMETER
     - by date [x]
 16. Founder consult space graph search paramter extensions [x]
-17. Divide tasks between batch server and main server []
-18. delivery space table
+17. Divide tasks between batch server and main server [x]
+18. delivery space table [x]
     - link to delivery space option table
     - 상권분석
       - but to where?
@@ -38,4 +38,4 @@
 20. delivery founder consult [x]
 21. compant district update check [x]
 22. image resizer
-23. s3 bucket url for production
+23. s3 bucket url for production [x]
