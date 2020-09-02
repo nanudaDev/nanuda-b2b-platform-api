@@ -3,7 +3,6 @@ import { CompanyUserUpdateHistory } from 'src/modules/company-user-update-histor
 import { CompanyDistrictUpdateHistory } from 'src/modules/company-district-update-history/company-district-update-history.entity';
 
 export const NewDataDuplicateKeyRemover = (removableObject: any) => {
-  console.log(removableObject);
   for (const [key, value] of Object.entries(removableObject)) {
     if (removableObject[key] === null) {
       delete removableObject[key];

@@ -392,7 +392,6 @@ export class CompanyDistrictService extends BaseService {
           companyDistrictUpdateHistory,
         );
         checkCompanyDistrict.companyDistrictStatus = APPROVAL_STATUS.APPROVAL;
-        console.log(checkCompanyDistrict.companyDistrictStatus);
         checkCompanyDistrict = await entityManager.save(checkCompanyDistrict);
         // create new update history
         let newCompanyDistrictUpdateHistory = this.__company_district_update_history(
@@ -413,7 +412,6 @@ export class CompanyDistrictService extends BaseService {
   ): Promise<CompanyDistrict> {
     const companyDistrict = await this.entityManager.transaction(
       async entityManager => {
-        console.log(adminCompanyDistrictRefusalDto);
         if (
           adminCompanyDistrictRefusalDto.refusalReasons &&
           Object.keys(adminCompanyDistrictRefusalDto.refusalReasons).length <
@@ -424,7 +422,6 @@ export class CompanyDistrictService extends BaseService {
             message: '거절 사유를 작성하셔야합니다.',
           });
         }
-        console.log(adminCompanyDistrictRefusalDto);
         const checkCompanyDistrict = await this.companyDistrictRepo.findOne(
           companyDistrictNo,
         );
@@ -475,7 +472,6 @@ export class CompanyDistrictService extends BaseService {
     companyDistrictNo: number,
     companyDistrictUpdateDto: CompanyDistrictUpdateDto,
   ): Promise<CompanyDistrict> {
-    console.log(companyNo);
     const companyDistrict = await this.entityManager.transaction(
       async entityManager => {
         const check = await this.companyDistrictRepo.findOne({

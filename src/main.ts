@@ -37,7 +37,7 @@ async function bootstrap() {
     console.log('Running in development mode. 개발 모드로 진행중');
   }
   app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    // logger: true
+    logger: process.env.NODE_ENV === ENVIRONMENT.PRODUCTION ? false : true,
   });
   app.use(urlencoded({ extended: true }));
   app.use(json({ limit: '50mb' }));

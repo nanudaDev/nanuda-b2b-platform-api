@@ -162,22 +162,30 @@ export class DeliveryFounderConsultService extends BaseService {
   ): Promise<DeliveryFounderConsult> {
     const consult = await this.deliveryFounderConsultRepo
       .createQueryBuilder('deliveryConsult')
-      .CustomInnerJoinAndSelect([
+      // .CustomInnerJoinAndSelect([
+      //   'deliverySpaces',
+      //   'codeManagement',
+      //   'availableTime',
+      //   'companyDecisionStatusCode',
+      // ])
+      .CustomLeftJoinAndSelect([
+        'nanudaUser',
+        'admin',
+        'companyUser',
         'deliverySpaces',
         'codeManagement',
         'availableTime',
         'companyDecisionStatusCode',
       ])
-      .CustomLeftJoinAndSelect(['nanudaUser', 'admin', 'companyUser'])
       .leftJoinAndSelect('deliverySpaces.companyDistrict', 'companyDistrict')
       .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
-      .innerJoinAndSelect('companyDistrict.company', 'company')
+      .leftJoinAndSelect('companyDistrict.company', 'company')
       .leftJoinAndSelect('deliverySpaces.amenities', 'amenities')
       .leftJoinAndSelect(
         'deliverySpaces.deliverySpaceOptions',
         'deliverySpaceOptions',
       )
-      .innerJoinAndSelect('company.codeManagement', 'companyStatus')
+      .leftJoinAndSelect('company.codeManagement', 'companyStatus')
       .leftJoinAndSelect('nanudaUser.genderInfo', 'genderInfo')
       .where('deliveryConsult.no = :no', { no: deliveryFounderConsultNo })
       .getOne();

@@ -17,7 +17,6 @@ export class CompanyDistrictAnalysisSenderService extends BaseService {
   }
 
   async setVicinityAnalysis(districtNo: number, lat: string, lon: string) {
-    console.log(districtNo);
     const param = { lat: parseFloat(lat), lon: parseFloat(lon) };
     const start = new Date().getTime();
     console.log(`Started: ${start}`);

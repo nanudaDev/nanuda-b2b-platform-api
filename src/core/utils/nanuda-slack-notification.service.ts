@@ -20,7 +20,6 @@ export class NanudaSlackNotificationService extends BaseService {
   webhookuri = process.env.PLATFORM_NOTIFICATION_SLACK_URL;
 
   async founderConsultStatusChange(founderConsult: DeliveryFounderConsult) {
-    console.log(founderConsult);
     const message = {
       text: `방문자 신청 상태 값 변경 안내`,
       username: SLACK_NOTIFICATION_PROPERTY.founderConsultUsername,
@@ -123,7 +122,6 @@ export class NanudaSlackNotificationService extends BaseService {
    * @param inquiry
    */
   async systemInquiry(inquiry: Inquiry) {
-    console.log(inquiry);
     const message = {
       text: '나누다 플랫폼 시스템 문의가 생성되었습니다',
       username: SLACK_NOTIFICATION_PROPERTY.inquirySystem,
@@ -238,7 +236,6 @@ export class NanudaSlackNotificationService extends BaseService {
    * @param deliverySpace
    */
   async deliverySpaceAddNotification(deliverySpace: DeliverySpace) {
-    console.log(deliverySpace);
     const message = {
       text: '공간 타입이 추가되었습니다',
       attachments: [

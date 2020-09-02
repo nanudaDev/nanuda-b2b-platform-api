@@ -182,7 +182,6 @@ export class FounderConsultService extends BaseService {
     founderConsultListDto: FounderConsultListDto,
     pagination: PaginatedRequest,
   ): Promise<PaginatedResponse<FounderConsult>> {
-    console.log(companyNo);
     const qb = this.founderConsultRepo
       .createQueryBuilder('founderConsult')
       .CustomInnerJoinAndSelect(['space', 'codeManagement', 'availableTime'])
@@ -429,7 +428,6 @@ export class FounderConsultService extends BaseService {
     let founderConsult = await this.founderConsultRepo.findOne(
       founderConsultNo,
     );
-    console.log(founderConsult);
     if (founderConsult.viewCount === YN.NO) {
       throw new BadRequestException({
         message: '미열람 처리가 된 신청서입니다.',

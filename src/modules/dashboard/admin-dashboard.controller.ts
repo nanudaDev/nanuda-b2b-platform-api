@@ -34,7 +34,6 @@ export class AdminDashboardController extends BaseController {
    */
   @Get('/admin/dashboard/founder-consult/city')
   async founderConsultGraphByCity() {
-    console.log(123123);
     return await this.dashboardService.founderConsultGraphPerCity();
   }
 
