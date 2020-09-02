@@ -134,6 +134,8 @@ declare module 'typeorm/query-builder/SelectQueryBuilder' {
       this: SelectQueryBuilder<Entity>,
       START_DATE: Date | string,
       END_DATE: Date | string,
+      excludedRequestDto?: any,
+      excludedRequestDto2?: any,
     ): SelectQueryBuilder<Entity>;
     /*
      * Between months for founder graph

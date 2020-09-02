@@ -93,6 +93,18 @@ export class DeliveryFounderConsultService extends BaseService {
         adminDeliveryFounderConsultListDto.exclude('companyDistrictNameEng'),
       )
       .AndWhereLike(
+        'company',
+        'nameKr',
+        adminDeliveryFounderConsultListDto.companyNameKr,
+        adminDeliveryFounderConsultListDto.exclude('companyNameKr'),
+      )
+      .AndWhereLike(
+        'company',
+        'nameEng',
+        adminDeliveryFounderConsultListDto.companyNameEng,
+        adminDeliveryFounderConsultListDto.exclude('companyNameEng'),
+      )
+      .AndWhereLike(
         'nanudaUser',
         'phone',
         adminDeliveryFounderConsultListDto.phone,
@@ -140,12 +152,12 @@ export class DeliveryFounderConsultService extends BaseService {
         adminDeliveryFounderConsultListDto.gender,
         adminDeliveryFounderConsultListDto.exclude('gender'),
       )
-      .AndWhereBetweenOpenedAt(
-        adminDeliveryFounderConsultListDto.startDate,
-        adminDeliveryFounderConsultListDto.endDate,
-        adminDeliveryFounderConsultListDto.exclude('startDate'),
-        adminDeliveryFounderConsultListDto.exclude('endDate'),
-      )
+      // .AndWhereBetweenOpenedAt(
+      //   adminDeliveryFounderConsultListDto.startDate,
+      //   adminDeliveryFounderConsultListDto.endDate,
+      //   adminDeliveryFounderConsultListDto.exclude('startDate'),
+      //   adminDeliveryFounderConsultListDto.exclude('endDate'),
+      // )
       .WhereAndOrder(adminDeliveryFounderConsultListDto)
       .Paginate(pagination);
     if (adminDeliveryFounderConsultListDto.startDate) {
@@ -200,6 +212,18 @@ export class DeliveryFounderConsultService extends BaseService {
         adminDeliveryFounderConsultListDto.exclude('companyDistrictNameEng'),
       )
       .AndWhereLike(
+        'company',
+        'nameKr',
+        adminDeliveryFounderConsultListDto.companyNameKr,
+        adminDeliveryFounderConsultListDto.exclude('companyNameKr'),
+      )
+      .AndWhereLike(
+        'company',
+        'nameEng',
+        adminDeliveryFounderConsultListDto.companyNameEng,
+        adminDeliveryFounderConsultListDto.exclude('companyNameEng'),
+      )
+      .AndWhereLike(
         'nanudaUser',
         'phone',
         adminDeliveryFounderConsultListDto.phone,
@@ -247,15 +271,17 @@ export class DeliveryFounderConsultService extends BaseService {
         adminDeliveryFounderConsultListDto.gender,
         adminDeliveryFounderConsultListDto.exclude('gender'),
       )
-      .AndWhereBetweenOpenedAt(
+      // .AndWhereBetweenOpenedAt(
+      //   adminDeliveryFounderConsultListDto.startDate,
+      //   adminDeliveryFounderConsultListDto.endDate,
+      //   adminDeliveryFounderConsultListDto.exclude('startDate'),
+      //   adminDeliveryFounderConsultListDto.exclude('endDate'),
+      // )
+      .AndWhereBetweenStartAndEndDate(
         adminDeliveryFounderConsultListDto.startDate,
         adminDeliveryFounderConsultListDto.endDate,
         adminDeliveryFounderConsultListDto.exclude('startDate'),
         adminDeliveryFounderConsultListDto.exclude('endDate'),
-      )
-      .AndWhereBetweenStartAndEndDate(
-        adminDeliveryFounderConsultListDto.startDate,
-        adminDeliveryFounderConsultListDto.endDate,
       )
       .WhereAndOrder(adminDeliveryFounderConsultListDto);
 
