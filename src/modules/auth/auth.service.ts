@@ -74,7 +74,6 @@ export class AuthService extends BaseService {
     if (admin.adminYN !== YN.YES) {
       throw new NotFoundException();
     }
-    console.log(adminLoginDto);
     const token = await this.sign(loggedInAdmin, {}, adminLoginDto.rememberMe);
 
     return token;
@@ -95,7 +94,6 @@ export class AuthService extends BaseService {
       .CustomInnerJoinAndSelect(['company'])
       .where('companyUser.phone = :phone', { phone: companyUserLoginDto.phone })
       .getOne();
-    console.log(companyUser);
     companyUser.companyStatus = companyUser.company.companyStatus;
     if (!companyUser) {
       throw new NotFoundException();
@@ -112,7 +110,6 @@ export class AuthService extends BaseService {
       });
     }
     const token = await this.sign(companyUser);
-    console.log(token);
     // personally do not like how they are divided due to lack of error warnings
     // if (companyUser.companyUserStatus !== APPROVAL_STATUS.APPROVAL) {
     //   throw new BadRequestException({
@@ -162,7 +159,6 @@ export class AuthService extends BaseService {
       userStatus: user.companyUserStatus,
       companyStatus: user.companyStatus,
     };
-    console.log(userSignInInfo);
     return this.jwtService.sign({ ...userSignInInfo, ...extend }, options);
   }
 
@@ -198,7 +194,6 @@ export class AuthService extends BaseService {
         message: 'No token.',
       });
     }
-    console.log(token);
     const payload = await this.jwtService.decode(token.token);
     return payload;
   }

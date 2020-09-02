@@ -274,8 +274,6 @@ export class DeliveryFounderConsultContractService extends BaseService {
     contractNo: number,
     companyNo: number,
   ): Promise<DeliveryFounderConsultContract> {
-    console.log(contractNo);
-    console.log(companyNo);
     const contract = await this.entityManager.transaction(
       async entityManager => {
         const contract = await this.deliveryFounderConsultContractRepo

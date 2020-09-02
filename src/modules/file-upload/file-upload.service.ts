@@ -100,7 +100,6 @@ export class FileUploadService {
   async moveS3File(
     attachments: FileAttachmentDto[],
   ): Promise<FileAttachmentDto[]> {
-    console.log(attachments);
     try {
       const bucketUrl = this.uploadConfig.bucketEndpoint;
       if (!attachments || attachments.length === 0) return [];
