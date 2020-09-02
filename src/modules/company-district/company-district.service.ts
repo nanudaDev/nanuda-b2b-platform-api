@@ -94,6 +94,18 @@ export class CompanyDistrictService extends BaseService {
         adminCompanyDistrictListDto.nameEng,
         adminCompanyDistrictListDto.exclude('nameEng'),
       )
+      .AndWhereLike(
+        'company',
+        'nameKr',
+        adminCompanyDistrictListDto.companyNameKr,
+        adminCompanyDistrictListDto.exclude('nameKr'),
+      )
+      .AndWhereLike(
+        'company',
+        'nameEng',
+        adminCompanyDistrictListDto.companyNameEng,
+        adminCompanyDistrictListDto.exclude('companyNameEng'),
+      )
       .AndWhereEqual(
         'companyDistrict',
         'companyNo',
