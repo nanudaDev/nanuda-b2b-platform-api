@@ -258,6 +258,16 @@ SelectQueryBuilder.prototype.AndWhereBetweenStartAndEndDate = function<Entity>(
       },
     );
   }
+  if (!START_DATE && END_DATE) {
+    this.andWhere(`${this.alias}.createdAt < DATE(:END_DATE)`, {
+      END_DATE,
+    });
+  }
+  if (START_DATE && !END_DATE) {
+    this.andWhere(`${this.alias}.createdAt > DATE(:START_DATE)`, {
+      START_DATE,
+    });
+  }
   return this;
 };
 
