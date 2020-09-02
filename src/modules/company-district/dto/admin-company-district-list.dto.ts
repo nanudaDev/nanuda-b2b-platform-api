@@ -15,4 +15,13 @@ export class AdminCompanyDistrictListDto extends CompanyDistrictListDto {
   // @IsOptional()
   // @Expose()
   // no?: number;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  companyNameKr?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  companyNameEng?: string;
 }
