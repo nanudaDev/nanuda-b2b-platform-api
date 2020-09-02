@@ -260,6 +260,7 @@ export class AuthService extends BaseService {
       companyUserPasswordUpdateDto.password,
     );
     companyUser.password = newPassword;
+    companyUser.passwordChangedYn = YN.YES;
     companyUser = await this.companyUserRepo.save(companyUser);
     return companyUser;
   }
