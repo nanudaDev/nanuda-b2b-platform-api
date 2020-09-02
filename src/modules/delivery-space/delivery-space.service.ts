@@ -92,6 +92,32 @@ export class DeliverySpaceService extends BaseService {
   }
 
   /**
+   * find next
+   * @param deliverySpaceNo
+   */
+  async findNextForAdmin(deliverySpaceNo: number): Promise<number> {
+    const nextSpace = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .AndWhereNext(deliverySpaceNo)
+      .select(['deliverySpace.no'])
+      .getOne();
+    return nextSpace.no;
+  }
+
+  /**
+   * find previous
+   * @param deliverySpaceNo
+   */
+  async findPreviousForAdmin(deliverySpaceNo: number): Promise<number> {
+    const nextSpace = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .AndWherePrevious(deliverySpaceNo)
+      .select(['deliverySpace.no'])
+      .getOne();
+    return nextSpace.no;
+  }
+
+  /**
    * find for admin
    * @param adminDeiverySpaceListDto
    * @param pagination

@@ -91,4 +91,28 @@ export class AdminDeliverySpaceController extends BaseController {
       admin.no,
     );
   }
+
+  /**
+   * find next
+   * @param deliverySpaceNo
+   */
+  @Get('/admin/delivery-space/:id([0-9]+)/next')
+  async findNext(
+    @Param('id', ParseIntPipe) deliverySpaceNo: number,
+  ): Promise<number> {
+    return await this.deliverySpaceService.findNextForAdmin(deliverySpaceNo);
+  }
+
+  /**
+   * find next
+   * @param deliverySpaceNo
+   */
+  @Get('/admin/delivery-space/:id([0-9]+)/previous')
+  async findPrevious(
+    @Param('id', ParseIntPipe) deliverySpaceNo: number,
+  ): Promise<number> {
+    return await this.deliverySpaceService.findPreviousForAdmin(
+      deliverySpaceNo,
+    );
+  }
 }
