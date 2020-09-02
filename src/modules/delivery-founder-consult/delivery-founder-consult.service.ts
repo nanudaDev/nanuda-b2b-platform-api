@@ -148,9 +148,118 @@ export class DeliveryFounderConsultService extends BaseService {
       )
       .WhereAndOrder(adminDeliveryFounderConsultListDto)
       .Paginate(pagination);
-
+    if (adminDeliveryFounderConsultListDto.startDate) {
+      qb.AndWhereBetweenStartAndEndDate(
+        adminDeliveryFounderConsultListDto.startDate,
+        adminDeliveryFounderConsultListDto.endDate,
+      );
+    }
     const [items, totalCount] = await qb.getManyAndCount();
     return { items, totalCount };
+  }
+
+  /**
+   * get excel data
+   * @param adminDeliveryFounderConsultListDto
+   */
+  async excelExportJson(
+    adminDeliveryFounderConsultListDto: AdminDeliveryFounderConsultListDto,
+  ): Promise<DeliveryFounderConsult[]> {
+    if (
+      adminDeliveryFounderConsultListDto.phone &&
+      adminDeliveryFounderConsultListDto.phone.includes('-')
+    ) {
+      adminDeliveryFounderConsultListDto.phone = adminDeliveryFounderConsultListDto.phone.replace(
+        /-/g,
+        '',
+      );
+    }
+    const qb = this.deliveryFounderConsultRepo
+      .createQueryBuilder('deliveryConsult')
+      .CustomLeftJoinAndSelect([
+        'deliverySpaces',
+        'codeManagement',
+        'availableTime',
+        'nanudaUser',
+        'admin',
+      ])
+      .leftJoinAndSelect('deliverySpaces.companyDistrict', 'companyDistrict')
+      .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
+      .leftJoinAndSelect('companyDistrict.company', 'company')
+      .leftJoinAndSelect('nanudaUser.genderInfo', 'genderInfo')
+      .AndWhereLike(
+        'companyDistrict',
+        'nameKr',
+        adminDeliveryFounderConsultListDto.companyDistrictNameKr,
+        adminDeliveryFounderConsultListDto.exclude('companyDistrictNameKr'),
+      )
+      .AndWhereLike(
+        'companyDistrict',
+        'nameEng',
+        adminDeliveryFounderConsultListDto.companyDistrictNameEng,
+        adminDeliveryFounderConsultListDto.exclude('companyDistrictNameEng'),
+      )
+      .AndWhereLike(
+        'nanudaUser',
+        'phone',
+        adminDeliveryFounderConsultListDto.phone,
+        adminDeliveryFounderConsultListDto.exclude('phone'),
+      )
+      .AndWhereLike(
+        'nanudaUser',
+        'name',
+        adminDeliveryFounderConsultListDto.nanudaUserName,
+        adminDeliveryFounderConsultListDto.exclude('nanudaUserName'),
+      )
+      .AndWhereLike(
+        'companyDistrict',
+        'address',
+        adminDeliveryFounderConsultListDto.address,
+        adminDeliveryFounderConsultListDto.exclude('address'),
+      )
+      .AndWhereLike(
+        'admin',
+        'name',
+        adminDeliveryFounderConsultListDto.adminUserName,
+        adminDeliveryFounderConsultListDto.exclude('adminUserName'),
+      )
+      .AndWhereLike(
+        'deliveryConsult',
+        'hopeFoodCategory',
+        adminDeliveryFounderConsultListDto.hopeFoodCategory,
+        adminDeliveryFounderConsultListDto.exclude('hopeFoodCategory'),
+      )
+      .AndWhereEqual(
+        'company',
+        'no',
+        adminDeliveryFounderConsultListDto.companyNo,
+        adminDeliveryFounderConsultListDto.exclude('companyNo'),
+      )
+      .AndWhereEqual(
+        'deliverySpaces',
+        'no',
+        adminDeliveryFounderConsultListDto.deliverySpaceNo,
+        adminDeliveryFounderConsultListDto.exclude('deliverySpaceNo'),
+      )
+      .AndWhereEqual(
+        'nanudaUser',
+        'gender',
+        adminDeliveryFounderConsultListDto.gender,
+        adminDeliveryFounderConsultListDto.exclude('gender'),
+      )
+      .AndWhereBetweenOpenedAt(
+        adminDeliveryFounderConsultListDto.startDate,
+        adminDeliveryFounderConsultListDto.endDate,
+        adminDeliveryFounderConsultListDto.exclude('startDate'),
+        adminDeliveryFounderConsultListDto.exclude('endDate'),
+      )
+      .AndWhereBetweenStartAndEndDate(
+        adminDeliveryFounderConsultListDto.startDate,
+        adminDeliveryFounderConsultListDto.endDate,
+      )
+      .WhereAndOrder(adminDeliveryFounderConsultListDto);
+
+    return await qb.getMany();
   }
 
   /**

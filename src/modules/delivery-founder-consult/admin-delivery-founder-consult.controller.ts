@@ -104,4 +104,20 @@ export class AdminDeliveryFounderConsultController extends BaseController {
       adminDeliveryFounderConsultCreateDto,
     );
   }
+
+  // excel
+
+  /**
+   * excel
+   * @param adminDeliveryFounderConsultListDto
+   */
+  @Get('/admin/delivery-founder-consult/excel')
+  async excel(
+    @Query()
+    adminDeliveryFounderConsultListDto: AdminDeliveryFounderConsultListDto,
+  ): Promise<DeliveryFounderConsult[]> {
+    return await this.deliveryFounderConsultService.excelExportJson(
+      adminDeliveryFounderConsultListDto,
+    );
+  }
 }
