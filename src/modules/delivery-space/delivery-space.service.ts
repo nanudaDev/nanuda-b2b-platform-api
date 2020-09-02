@@ -109,12 +109,12 @@ export class DeliverySpaceService extends BaseService {
    * @param deliverySpaceNo
    */
   async findPreviousForAdmin(deliverySpaceNo: number): Promise<number> {
-    const nextSpace = await this.deliverySpaceRepo
+    const previousSpaceNo = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .AndWherePrevious(deliverySpaceNo)
       .select(['deliverySpace.no'])
       .getOne();
-    return nextSpace.no;
+    return previousSpaceNo.no;
   }
 
   /**
