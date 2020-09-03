@@ -1,4 +1,13 @@
-import { Controller, Post, Body, UseGuards, Get, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Get,
+  Query,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { BaseController, AuthRolesGuard, CONST_COMPANY_USER } from '../../core';
 import { AuthService } from './auth.service';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
@@ -70,5 +79,17 @@ export class UserAuthController extends BaseController {
   @Get('/auth/company-user/find-by-phone')
   async findByPhoneUser(@Query() phone: CompanyUserPhoneDto) {
     return await this.authService.findByPhone(phone);
+  }
+
+  /**
+   * change password when logged in
+   * @param companyUserPasswordUpdateDto
+   * @param companyUser
+   */
+  @ApiBearerAuth()
+  @UseGuards(new AuthRolesGuard(...CONST_COMPANY_USER))
+  @Get('/auth/company-user/find-by-id/:id([0-9]+)')
+  async findByNo(@Param('id', ParseIntPipe) companyUserNo: number) {
+    return await this.authService.validateUserById(companyUserNo);
   }
 }
