@@ -37,6 +37,10 @@ export class AdminDashboardController extends BaseController {
     return await this.dashboardService.founderConsultGraphPerCity();
   }
 
+  /**
+   * founderConsultGraphByCities
+   * @param adminDashboardCitySelectionDto
+   */
   @Get('/admin/dashboard/founder-consult/by-cities')
   async founderConsultGraphByCities(
     @Query() adminDashboardCitySelectionDto: AdminDashboardCitySelectionDto,
@@ -46,8 +50,16 @@ export class AdminDashboardController extends BaseController {
     );
   }
 
+  /**
+   * getCities
+   */
   @Get('/admin/dashboard/get-cities')
   async getCities() {
     return await this.dashboardService.getCities();
+  }
+
+  @Get('/admin/payment-list-graph')
+  async paymentListGraph() {
+    return await this.dashboardService.paymentListGraph();
   }
 }

@@ -4,6 +4,7 @@ export * from './base-mapper.entity';
 export * from './base.controller';
 export * from './base.dto';
 export * from './base-user.entity';
+export * from './base-kitchen.entity';
 export * from '../shared';
 export * from './guards';
 export * from './interceptors';
