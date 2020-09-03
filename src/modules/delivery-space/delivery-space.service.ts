@@ -95,7 +95,7 @@ export class DeliverySpaceService extends BaseService {
    * find next
    * @param deliverySpaceNo
    */
-  async findNextForAdminByDistrict(deliverySpaceNo: number): Promise<number> {
+  async findNextForAdminByDistrict(deliverySpaceNo: number): Promise<any> {
     const checkSpace = await this.deliverySpaceRepo.findOne(deliverySpaceNo);
     if (!checkSpace) {
       throw new NotFoundException();
@@ -108,6 +108,9 @@ export class DeliverySpaceService extends BaseService {
       .AndWhereNext(deliverySpaceNo)
       .select(['deliverySpace.no'])
       .getOne();
+    if (!nextSpace) {
+      return null;
+    }
     return nextSpace.no;
   }
 
@@ -115,7 +118,7 @@ export class DeliverySpaceService extends BaseService {
    * find next by district
    * @param deliverySpaceNo
    */
-  async findNextForAdmin(deliverySpaceNo: number): Promise<number> {
+  async findNextForAdmin(deliverySpaceNo: number): Promise<any> {
     const checkSpace = await this.deliverySpaceRepo.findOne(deliverySpaceNo);
     if (!checkSpace) {
       throw new NotFoundException();
@@ -125,6 +128,9 @@ export class DeliverySpaceService extends BaseService {
       .AndWhereNext(deliverySpaceNo)
       .select(['deliverySpace.no'])
       .getOne();
+    if (!nextSpace) {
+      return null;
+    }
     return nextSpace.no;
   }
 
@@ -132,9 +138,7 @@ export class DeliverySpaceService extends BaseService {
    * find previous by district
    * @param deliverySpaceNo
    */
-  async findPreviousForAdminByDistrict(
-    deliverySpaceNo: number,
-  ): Promise<number> {
+  async findPreviousForAdminByDistrict(deliverySpaceNo: number): Promise<any> {
     const checkSpace = await this.deliverySpaceRepo.findOne(deliverySpaceNo);
     if (!checkSpace) {
       throw new NotFoundException();
@@ -147,6 +151,9 @@ export class DeliverySpaceService extends BaseService {
       .AndWherePrevious(deliverySpaceNo)
       .select(['deliverySpace.no'])
       .getOne();
+    if (!previousSpaceNo) {
+      return null;
+    }
     return previousSpaceNo.no;
   }
 
@@ -154,7 +161,7 @@ export class DeliverySpaceService extends BaseService {
    * find previous
    * @param deliverySpaceNo
    */
-  async findPreviousForAdmin(deliverySpaceNo: number): Promise<number> {
+  async findPreviousForAdmin(deliverySpaceNo: number): Promise<any> {
     const checkSpace = await this.deliverySpaceRepo.findOne(deliverySpaceNo);
     if (!checkSpace) {
       throw new NotFoundException();
@@ -164,6 +171,9 @@ export class DeliverySpaceService extends BaseService {
       .AndWherePrevious(deliverySpaceNo)
       .select(['deliverySpace.no'])
       .getOne();
+    if (!previousSpaceNo) {
+      return null;
+    }
     return previousSpaceNo.no;
   }
 
