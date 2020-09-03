@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import * as moment from 'moment';
 import { AdminDashboardCitySelectionDto } from './dto';
 import { DeliveryFounderConsult } from '../delivery-founder-consult/delivery-founder-consult.entity';
+import { PaymentList } from '../payment-list/payment-list.entity';
 
 export class Graph {
   labels: any;
@@ -27,6 +28,8 @@ export class DashboardService extends BaseService {
     private readonly deliveryFounderConsultRepo: Repository<
       DeliveryFounderConsult
     >,
+    @InjectRepository(PaymentList, 'kitchen')
+    private readonly paymentListRepo: Repository<PaymentList>,
   ) {
     super();
   }
@@ -347,6 +350,26 @@ export class DashboardService extends BaseService {
     });
     datasets.push(founderConsultModel);
     return chartData;
+  }
+
+  // payment list graph
+
+  /**
+   * payment list graph data
+   * @param numberOfDays
+   */
+  async paymentListGraph(numberOfDays?: number) {
+    const days = numberOfDays | 10;
+    const query = `SELECT (SELECT NANUDA_NAME FROM NANUDA_KITCHEN_MASTER WHERE NANUDA_NO = A.NANUDA_NO) AS NANUDA_NAME, DATE_FORMAT(PAYMENT_TIME,'%Y-%m-%d') AS DATE_VAL, SUM(TOTAL_AMOUNT) AS SALES FROM PAYMENT_LIST A WHERE CARD_CANCEL_FL = 'N' AND APPROVAL_NO != 'undefined' AND DATE_FORMAT(PAYMENT_TIME,'%Y-%m-%d') BETWEEN DATE_FORMAT(DATE_SUB(now(), INTERVAL ${days} DAY),'%Y-%m-%d') AND DATE_FORMAT(now(),'%Y-%m-%d') GROUP BY LEFT(DATE_VAL,10), A.NANUDA_NO ORDER BY A.NANUDA_NO, DATE_VAL`;
+    const chartData = new Graph();
+    // labels for months
+    const labels = [];
+    chartData.labels = labels;
+    // dataset array
+    const datasets = [];
+    chartData.datasets = datasets;
+    const graphData = await this.paymentListRepo.manager.query(query);
+    return graphData;
   }
 
   private removeDuplicate(array: any) {
