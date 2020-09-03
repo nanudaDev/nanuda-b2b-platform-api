@@ -6,7 +6,7 @@ import { DashboardService } from './dashboard.service';
 import { DashboardController } from './dashboard.controller';
 import { DeliveryFounderConsultModule } from '../delivery-founder-consult/delivery-founder-consult.module';
 import { DeliveryFounderConsult } from '../delivery-founder-consult/delivery-founder-consult.entity';
-import { PaymentList } from './payment-list.entity';
+import { PaymentList } from '../payment-list/payment-list.entity';
 
 @Module({
   imports: [

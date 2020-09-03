@@ -31,7 +31,7 @@ import {
   BrandModule,
 } from './modules';
 import { AdminModule } from './modules/admin/admin.module';
-import { PaymentList } from './modules/dashboard/payment-list.entity';
+import { PaymentList } from './modules/payment-list/payment-list.entity';
 require('dotenv').config();
 const env = process.env;
 @Module({
