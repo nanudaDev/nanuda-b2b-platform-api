@@ -8,6 +8,7 @@ import {
   Param,
   ParseIntPipe,
   Delete,
+  Patch,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthRolesGuard, CONST_ADMIN_USER, BaseController } from 'src/core';
@@ -15,7 +16,11 @@ import { NoticeBoardService } from './notice-board.service';
 import { NoticeBoard } from './notice-board.entity';
 import { UserInfo, PaginatedRequest, PaginatedResponse } from 'src/common';
 import { Admin } from '../admin';
-import { AdminNoticeBoardCreateDto, AdminNoticeBoardListDto } from './dto';
+import {
+  AdminNoticeBoardCreateDto,
+  AdminNoticeBoardListDto,
+  AdminNoticeBoardUpdateeDto,
+} from './dto';
 
 @Controller()
 @ApiBearerAuth()
@@ -60,6 +65,19 @@ export class AdminNoticeBoardController extends BaseController {
   @Get('/admin/notice-board/:id([0-9]+)')
   async findOne(@Param('id', ParseIntPipe) noticeBoardNo: number) {
     return await this.noticeBoardService.findOneForAdmin(noticeBoardNo);
+  }
+
+  @Patch('/admin/notice-board/:id([0-9]+)')
+  async update(
+    @UserInfo() admin: Admin,
+    @Param('id', ParseIntPipe) noticeBoardNo: number,
+    @Body() adminNoticeBoardUpdateDto: AdminNoticeBoardUpdateeDto,
+  ) {
+    return await this.noticeBoardService.update(
+      admin.no,
+      noticeBoardNo,
+      adminNoticeBoardUpdateDto,
+    );
   }
 
   /**
