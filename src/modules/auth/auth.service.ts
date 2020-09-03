@@ -141,6 +141,20 @@ export class AuthService extends BaseService {
     return { user, token };
   }
 
+  async findById(companyUserNo: number) {
+    const user = await this.companyUserRepo
+      .createQueryBuilder('companyUser')
+      .CustomInnerJoinAndSelect(['company'])
+      .where('companyUser.no = :no', { no: companyUserNo })
+      .getOne();
+    if (!user) {
+      throw new NotFoundException();
+    }
+    user.companyStatus = user.company.companyStatus;
+    const token = await this.sign(user, {}, true);
+    return { user, token };
+  }
+
   /**
    * sign to jwt payload
    * @param user
