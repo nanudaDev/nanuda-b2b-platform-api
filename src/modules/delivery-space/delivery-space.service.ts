@@ -419,7 +419,7 @@ export class DeliverySpaceService extends BaseService {
       ])
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('company.no = :no', { no: companyNo })
-      .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      // .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       .AndWhereLike(
         'companyDistrict',
         'nameKr',
