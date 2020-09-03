@@ -445,6 +445,18 @@ export class CompanyUserService extends BaseService {
         'codeManagement',
       ])
       .AndWhereLike(
+        'company',
+        'nameKr',
+        adminCompanyUserListDto.companyNameKr,
+        adminCompanyUserListDto.exclude('companyNameKr'),
+      )
+      .AndWhereLike(
+        'company',
+        'nameKr',
+        adminCompanyUserListDto.companyNameEng,
+        adminCompanyUserListDto.exclude('companyNameEng'),
+      )
+      .AndWhereLike(
         'companyUser',
         'name',
         adminCompanyUserListDto.name,

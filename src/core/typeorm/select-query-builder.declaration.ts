@@ -134,6 +134,8 @@ declare module 'typeorm/query-builder/SelectQueryBuilder' {
       this: SelectQueryBuilder<Entity>,
       START_DATE: Date | string,
       END_DATE: Date | string,
+      excludedRequestDto?: any,
+      excludedRequestDto2?: any,
     ): SelectQueryBuilder<Entity>;
     /*
      * Between months for founder graph
@@ -164,17 +166,17 @@ declare module 'typeorm/query-builder/SelectQueryBuilder' {
       START_DATE: Date | string,
       END_DATE: Date | string,
     ): SelectQueryBuilder<Entity>;
-    /**
-     * AndWhereLike 등 보다 뒤에 사용해야한다.
-     */
 
+    /**
+     * Where or Like
+     */
     AndWhereOrLike(
       this: SelectQueryBuilder<Entity>,
       property: string,
       value: string,
     ): SelectQueryBuilder<Entity>;
     /**
-     * where or like
+     * AndWhereLike 등 보다 뒤에 사용해야한다
      * @param this
      * @param excludedRequestDto
      */
@@ -182,12 +184,33 @@ declare module 'typeorm/query-builder/SelectQueryBuilder' {
       this: SelectQueryBuilder<Entity>,
       excludedRequestDto,
     ): SelectQueryBuilder<Entity>;
+
     /**
      * skip, take 를 이용한 페이징 처리
      */
     Paginate(
       this: SelectQueryBuilder<Entity>,
       pagination: PaginatedRequest,
+    ): SelectQueryBuilder<Entity>;
+
+    /**
+     * find next
+     * @param this
+     * @param no
+     */
+    AndWhereNext(
+      this: SelectQueryBuilder<Entity>,
+      no: number,
+    ): SelectQueryBuilder<Entity>;
+
+    /**
+     * find previous
+     * @param this
+     * @param no
+     */
+    AndWherePrevious(
+      this: SelectQueryBuilder<Entity>,
+      no: number,
     ): SelectQueryBuilder<Entity>;
   }
 }
@@ -237,6 +260,16 @@ SelectQueryBuilder.prototype.AndWhereBetweenStartAndEndDate = function<Entity>(
       },
     );
   }
+  if (!START_DATE && END_DATE) {
+    this.andWhere(`${this.alias}.createdAt < DATE(:END_DATE)`, {
+      END_DATE,
+    });
+  }
+  if (START_DATE && !END_DATE) {
+    this.andWhere(`${this.alias}.createdAt > DATE(:START_DATE)`, {
+      START_DATE,
+    });
+  }
   return this;
 };
 
@@ -273,13 +306,37 @@ SelectQueryBuilder.prototype.AndWhereOrLike = function<Entity>(
   return this;
 };
 
+/**
+ * find next
+ */
+SelectQueryBuilder.prototype.AndWhereNext = function<Entity>(
+  this: SelectQueryBuilder<Entity>,
+  no: number,
+): SelectQueryBuilder<Entity> {
+  this.andWhere(`${this.alias}.NO > :no ORDER BY NO LIMIT 1`, { no: no });
+  return this;
+};
+
+/**
+ * find previous
+ */
+SelectQueryBuilder.prototype.AndWherePrevious = function<Entity>(
+  this: SelectQueryBuilder<Entity>,
+  no: number,
+): SelectQueryBuilder<Entity> {
+  this.andWhere(`${this.alias}.NO < :no ORDER BY NO DESC LIMIT 1`, { no: no });
+  return this;
+};
+
+/**
+ * And where within months
+ */
 SelectQueryBuilder.prototype.AndWhereWithinMonth = function<Entity>(
   this: SelectQueryBuilder<Entity>,
   START_DATE?: Date | string,
   END_DATE?: Date | string,
 ): SelectQueryBuilder<Entity> {
   if (START_DATE) {
-    console.log(START_DATE);
     this.andWhere(`${START_DATE} <= createdAt >= ${END_DATE}`, {
       START_DATE,
       END_DATE,

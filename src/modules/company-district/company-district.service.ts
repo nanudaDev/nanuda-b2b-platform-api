@@ -27,6 +27,7 @@ import { CompanyDistrictAmenityMapper } from '../company-district-amenity-mapper
 import { CompanyDistrictAnalysisSenderService } from './company-district-analysis-sender.service';
 import * as daum from 'daum-map-api';
 import { FileUploadService } from '../file-upload/file-upload.service';
+import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 
 @Injectable()
 export class CompanyDistrictService extends BaseService {
@@ -93,6 +94,18 @@ export class CompanyDistrictService extends BaseService {
         'nameEng',
         adminCompanyDistrictListDto.nameEng,
         adminCompanyDistrictListDto.exclude('nameEng'),
+      )
+      .AndWhereLike(
+        'company',
+        'nameKr',
+        adminCompanyDistrictListDto.companyNameKr,
+        adminCompanyDistrictListDto.exclude('companyNameKr'),
+      )
+      .AndWhereLike(
+        'company',
+        'nameEng',
+        adminCompanyDistrictListDto.companyNameEng,
+        adminCompanyDistrictListDto.exclude('companyNameEng'),
       )
       .AndWhereEqual(
         'companyDistrict',
@@ -504,6 +517,31 @@ export class CompanyDistrictService extends BaseService {
       },
     );
     return companyDistrict;
+  }
+
+  async deleteDistrict(companyDistrictNo: number) {
+    const district = await this.entityManager.transaction(
+      async entityManager => {
+        // company district amenity mapper
+        await entityManager
+          .createQueryBuilder()
+          .delete()
+          .from(CompanyDistrictAmenityMapper)
+          .where('companyDistrictNo = :companyDistrictNo', {
+            companyDistrictNo: companyDistrictNo,
+          })
+          .execute();
+
+        await entityManager
+          .createQueryBuilder()
+          .delete()
+          .from(DeliverySpace)
+          .where('companyDistrictNo = :companyDistrictNo', {
+            companyDistrictNo: companyDistrictNo,
+          })
+          .execute();
+      },
+    );
   }
 
   private async __find_one_company_district_update_history(

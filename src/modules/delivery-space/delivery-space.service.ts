@@ -92,6 +92,32 @@ export class DeliverySpaceService extends BaseService {
   }
 
   /**
+   * find next
+   * @param deliverySpaceNo
+   */
+  async findNextForAdmin(deliverySpaceNo: number): Promise<number> {
+    const nextSpace = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .AndWhereNext(deliverySpaceNo)
+      .select(['deliverySpace.no'])
+      .getOne();
+    return nextSpace.no;
+  }
+
+  /**
+   * find previous
+   * @param deliverySpaceNo
+   */
+  async findPreviousForAdmin(deliverySpaceNo: number): Promise<number> {
+    const previousSpaceNo = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .AndWherePrevious(deliverySpaceNo)
+      .select(['deliverySpace.no'])
+      .getOne();
+    return previousSpaceNo.no;
+  }
+
+  /**
    * find for admin
    * @param adminDeiverySpaceListDto
    * @param pagination
@@ -393,7 +419,7 @@ export class DeliverySpaceService extends BaseService {
       ])
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('company.no = :no', { no: companyNo })
-      .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      // .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       .AndWhereLike(
         'companyDistrict',
         'nameKr',

@@ -10,4 +10,14 @@ export class AdminCompanyUserListDto extends CompanyUserListDto {
   @IsOptional()
   @Expose()
   delYn?: YN;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  companyNameKr?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  companyNameEng?: string;
 }
