@@ -1,4 +1,4 @@
-export * from './admin-company-distrcit-list.dto';
+export * from './admin-company-district-list.dto';
 export * from './company-district.list.dto';
 export * from './admin-company-district-create.dto';
 export * from './company-district-create.dto';

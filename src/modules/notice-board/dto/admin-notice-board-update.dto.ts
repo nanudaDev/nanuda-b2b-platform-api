@@ -11,6 +11,7 @@ import {
   IsEnum,
 } from 'class-validator';
 import { Expose } from 'class-transformer';
+import { YN, Default } from 'src/common';
 
 export class AdminNoticeBoardUpdateeDto
   extends BaseDto<AdminNoticeBoardUpdateeDto>
@@ -36,6 +37,13 @@ export class AdminNoticeBoardUpdateeDto
   @IsEnum(NOTICE_BOARD)
   @Expose()
   noticeBoardType?: NOTICE_BOARD;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @Expose()
+  @IsEnum(YN)
+  @Default(YN.YES)
+  tempSaveYn?: YN;
 
   @ApiPropertyOptional()
   @IsOptional()

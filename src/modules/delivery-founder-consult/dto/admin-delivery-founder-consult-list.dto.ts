@@ -66,6 +66,16 @@ export class AdminDeliveryFounderConsultListDto
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  companyNameKr?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  companyNameEng?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   companyDistrictNameKr?: string;
 
   @ApiPropertyOptional()

@@ -134,6 +134,8 @@ declare module 'typeorm/query-builder/SelectQueryBuilder' {
       this: SelectQueryBuilder<Entity>,
       START_DATE: Date | string,
       END_DATE: Date | string,
+      excludedRequestDto?: any,
+      excludedRequestDto2?: any,
     ): SelectQueryBuilder<Entity>;
     /*
      * Between months for founder graph
@@ -257,6 +259,16 @@ SelectQueryBuilder.prototype.AndWhereBetweenStartAndEndDate = function<Entity>(
         END_DATE,
       },
     );
+  }
+  if (!START_DATE && END_DATE) {
+    this.andWhere(`${this.alias}.createdAt < DATE(:END_DATE)`, {
+      END_DATE,
+    });
+  }
+  if (START_DATE && !END_DATE) {
+    this.andWhere(`${this.alias}.createdAt > DATE(:START_DATE)`, {
+      START_DATE,
+    });
   }
   return this;
 };
