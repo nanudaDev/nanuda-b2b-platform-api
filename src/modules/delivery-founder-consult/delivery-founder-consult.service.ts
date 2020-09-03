@@ -151,21 +151,23 @@ export class DeliveryFounderConsultService extends BaseService {
         'gender',
         adminDeliveryFounderConsultListDto.gender,
         adminDeliveryFounderConsultListDto.exclude('gender'),
-      )
-      // .AndWhereBetweenOpenedAt(
-      //   adminDeliveryFounderConsultListDto.startDate,
-      //   adminDeliveryFounderConsultListDto.endDate,
-      //   adminDeliveryFounderConsultListDto.exclude('startDate'),
-      //   adminDeliveryFounderConsultListDto.exclude('endDate'),
-      // )
-      .WhereAndOrder(adminDeliveryFounderConsultListDto)
-      .Paginate(pagination);
+      );
+    // .AndWhereBetweenOpenedAt(
+    //   adminDeliveryFounderConsultListDto.startDate,
+    //   adminDeliveryFounderConsultListDto.endDate,
+    //   adminDeliveryFounderConsultListDto.exclude('startDate'),
+    //   adminDeliveryFounderConsultListDto.exclude('endDate'),
+    // )
     if (adminDeliveryFounderConsultListDto.startDate) {
       qb.AndWhereBetweenStartAndEndDate(
         adminDeliveryFounderConsultListDto.startDate,
         adminDeliveryFounderConsultListDto.endDate,
       );
+    } else {
+      throw new BadRequestException({ message: 'Needs start date!' });
     }
+    qb.WhereAndOrder(adminDeliveryFounderConsultListDto);
+    qb.Paginate(pagination);
     const [items, totalCount] = await qb.getManyAndCount();
     return { items, totalCount };
   }
