@@ -9,7 +9,7 @@ import {
   AdminNoticeBoardListDto,
 } from './dto';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
-import { PaginatedRequest, PaginatedResponse } from 'src/common';
+import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
 import { FileUploadService } from '../file-upload/file-upload.service';
 
 export class NoticeBoardService extends BaseService {
@@ -43,6 +43,9 @@ export class NoticeBoardService extends BaseService {
     }
     let noticeBoard = new NoticeBoard(adminNoticeBoardCreateDto);
     noticeBoard.adminNo = adminNo;
+    if (adminNoticeBoardCreateDto.tempSaveYn === YN.YES) {
+      noticeBoard.tempSavedAt = new Date();
+    }
     noticeBoard = await this.noticeBoardRepo.save(noticeBoard);
     return noticeBoard;
   }
@@ -66,6 +69,9 @@ export class NoticeBoardService extends BaseService {
     }
     noticeBoard = noticeBoard.set(adminNoticeBoardUpdateDto);
     noticeBoard.adminNo = adminNo;
+    if (adminNoticeBoardUpdateDto.tempSaveYn === YN.YES) {
+      noticeBoard.tempSavedAt = new Date();
+    }
     noticeBoard = await this.noticeBoardRepo.save(noticeBoard);
     return noticeBoard;
   }
@@ -78,6 +84,7 @@ export class NoticeBoardService extends BaseService {
     const noticeBoard = await this.noticeBoardRepo
       .createQueryBuilder('noticeBoard')
       .where('noticeBoard.no = :no', { no: noticeBoardNo })
+      .andWhere('noticeBoard.tempSaveYn = :tempSaveYn', { tempSaveYn: YN.NO })
       .getOne();
     if (!noticeBoard) {
       throw new NotFoundException({
@@ -87,6 +94,10 @@ export class NoticeBoardService extends BaseService {
     return noticeBoard;
   }
 
+  /**
+   * find one for admin
+   * @param noticeBoardNo
+   */
   async findOneForAdmin(noticeBoardNo: number): Promise<NoticeBoard> {
     const noticeBoard = await this.noticeBoardRepo
       .createQueryBuilder('noticeBoard')
@@ -133,6 +144,9 @@ export class NoticeBoardService extends BaseService {
         noticeBoardListDto.adminName,
         noticeBoardListDto.exclude('adminName'),
       );
+    }
+    if (noticeBoardListDto instanceof NoticeBoardListDto) {
+      qb.where('noticeBoard.tempSaveYn = :tempSaveYn', { tempSaveYn: YN.NO });
     }
     qb.WhereAndOrder(noticeBoardListDto).Paginate(pagination);
 
