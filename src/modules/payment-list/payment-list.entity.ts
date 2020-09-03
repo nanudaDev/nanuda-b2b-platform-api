@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { BaseEntity, BaseKitchenEntity } from 'src/core';
 
 @Entity({ name: 'PAYMENT_LIST' })
-export class PaymentList {
+export class PaymentList extends BaseKitchenEntity<PaymentList> {
   @PrimaryGeneratedColumn({
     type: 'int',
     unsigned: true,

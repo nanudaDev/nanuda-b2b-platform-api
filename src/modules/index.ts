@@ -14,6 +14,7 @@ export * from './file-upload/file-upload.module';
 export * from './food-category/food-category.module';
 export * from './founder-consult/founder-consult.module';
 export * from './inquiry/inquiry.module';
+export * from './payment-list/payment-list.module';
 export * from './nanuda-user/nanuda-user.module';
 export * from './notice-board/notice-board.module';
 export * from './search/search.module';
