@@ -90,6 +90,6 @@ export class UserAuthController extends BaseController {
   @UseGuards(new AuthRolesGuard(...CONST_COMPANY_USER))
   @Get('/auth/company-user/find-by-id')
   async findByNo(@UserInfo() companyUser: CompanyUser) {
-    return await this.authService.validateUserById(companyUser.no);
+    return await this.authService.findById(companyUser.no);
   }
 }
