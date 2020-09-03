@@ -35,7 +35,7 @@ export class AdminDeliveryFounderConsultContractController extends BaseControlle
     @Query() adminContractDto: AdminDeliveryFounderConsultContractListDto,
     @Query() pagination?: PaginatedRequest,
   ): Promise<PaginatedResponse<DeliveryFounderConsultContract>> {
-    return await this.deliveryFounderConsultContractService.findForAdmin(
+    return await this.deliveryFounderConsultContractService.findAllForAdmin(
       adminContractDto,
       pagination,
     );

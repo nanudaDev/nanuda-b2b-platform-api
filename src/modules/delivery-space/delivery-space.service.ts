@@ -96,8 +96,15 @@ export class DeliverySpaceService extends BaseService {
    * @param deliverySpaceNo
    */
   async findNextForAdmin(deliverySpaceNo: number): Promise<number> {
+    const checkSpace = await this.deliverySpaceRepo.findOne(deliverySpaceNo);
+    if (!checkSpace) {
+      throw new NotFoundException();
+    }
     const nextSpace = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
+      .where('deliverySpace.companyDistrictNo = :companyDistrictNo', {
+        companyDistrictNo: checkSpace.companyDistrictNo,
+      })
       .AndWhereNext(deliverySpaceNo)
       .select(['deliverySpace.no'])
       .getOne();
@@ -109,8 +116,15 @@ export class DeliverySpaceService extends BaseService {
    * @param deliverySpaceNo
    */
   async findPreviousForAdmin(deliverySpaceNo: number): Promise<number> {
+    const checkSpace = await this.deliverySpaceRepo.findOne(deliverySpaceNo);
+    if (!checkSpace) {
+      throw new NotFoundException();
+    }
     const previousSpaceNo = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
+      .where('deliverySpace.companyDistrictNo = :companyDistrictNo', {
+        companyDistrictNo: checkSpace.companyDistrictNo,
+      })
       .AndWherePrevious(deliverySpaceNo)
       .select(['deliverySpace.no'])
       .getOne();

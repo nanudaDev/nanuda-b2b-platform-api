@@ -38,7 +38,7 @@ export class DeliveryFounderConsultContractController extends BaseController {
     @Query() contractDto: DeliveryFounderConsultContractListDto,
     @Query() pagination: PaginatedRequest,
   ): Promise<PaginatedResponse<DeliveryFounderConsultContract>> {
-    return await this.deliveryFounderConsultContracyService.findForCompanyUser(
+    return await this.deliveryFounderConsultContracyService.findAllForCompanyUser(
       contractDto,
       pagination,
       companyUser.companyNo,
