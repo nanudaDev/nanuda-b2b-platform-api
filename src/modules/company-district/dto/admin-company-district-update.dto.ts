@@ -11,4 +11,9 @@ export class AdminCompanyDistrictUpdateDto extends CompanyDistrictUpdateDto {
   @IsEnum(APPROVAL_STATUS)
   @Expose()
   companyDistrictStatus?: APPROVAL_STATUS;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  companyNo?: number;
 }

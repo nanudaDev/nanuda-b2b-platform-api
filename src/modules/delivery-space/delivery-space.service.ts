@@ -95,25 +95,85 @@ export class DeliverySpaceService extends BaseService {
    * find next
    * @param deliverySpaceNo
    */
-  async findNextForAdmin(deliverySpaceNo: number): Promise<number> {
+  async findNextForAdminByDistrict(deliverySpaceNo: number): Promise<any> {
+    const checkSpace = await this.deliverySpaceRepo.findOne(deliverySpaceNo);
+    if (!checkSpace) {
+      throw new NotFoundException();
+    }
+    const nextSpace = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .where('deliverySpace.companyDistrictNo = :companyDistrictNo', {
+        companyDistrictNo: checkSpace.companyDistrictNo,
+      })
+      .AndWhereNext(deliverySpaceNo)
+      .select(['deliverySpace.no'])
+      .getOne();
+    if (!nextSpace) {
+      return null;
+    }
+    return nextSpace.no;
+  }
+
+  /**
+   * find next by district
+   * @param deliverySpaceNo
+   */
+  async findNextForAdmin(deliverySpaceNo: number): Promise<any> {
+    const checkSpace = await this.deliverySpaceRepo.findOne(deliverySpaceNo);
+    if (!checkSpace) {
+      throw new NotFoundException();
+    }
     const nextSpace = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .AndWhereNext(deliverySpaceNo)
       .select(['deliverySpace.no'])
       .getOne();
+    if (!nextSpace) {
+      return null;
+    }
     return nextSpace.no;
+  }
+
+  /**
+   * find previous by district
+   * @param deliverySpaceNo
+   */
+  async findPreviousForAdminByDistrict(deliverySpaceNo: number): Promise<any> {
+    const checkSpace = await this.deliverySpaceRepo.findOne(deliverySpaceNo);
+    if (!checkSpace) {
+      throw new NotFoundException();
+    }
+    const previousSpaceNo = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .where('deliverySpace.companyDistrictNo = :companyDistrictNo', {
+        companyDistrictNo: checkSpace.companyDistrictNo,
+      })
+      .AndWherePrevious(deliverySpaceNo)
+      .select(['deliverySpace.no'])
+      .getOne();
+    if (!previousSpaceNo) {
+      return null;
+    }
+    return previousSpaceNo.no;
   }
 
   /**
    * find previous
    * @param deliverySpaceNo
    */
-  async findPreviousForAdmin(deliverySpaceNo: number): Promise<number> {
+  async findPreviousForAdmin(deliverySpaceNo: number): Promise<any> {
+    const checkSpace = await this.deliverySpaceRepo.findOne(deliverySpaceNo);
+    if (!checkSpace) {
+      throw new NotFoundException();
+    }
     const previousSpaceNo = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .AndWherePrevious(deliverySpaceNo)
       .select(['deliverySpace.no'])
       .getOne();
+    if (!previousSpaceNo) {
+      return null;
+    }
     return previousSpaceNo.no;
   }
 

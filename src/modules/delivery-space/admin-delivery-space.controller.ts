@@ -93,6 +93,32 @@ export class AdminDeliverySpaceController extends BaseController {
   }
 
   /**
+   * find next by district
+   * @param deliverySpaceNo
+   */
+  @Get('/admin/company-district/delivery-space/:id([0-9]+)/next')
+  async findNextByDistrict(
+    @Param('id', ParseIntPipe) deliverySpaceNo: number,
+  ): Promise<number> {
+    return await this.deliverySpaceService.findNextForAdminByDistrict(
+      deliverySpaceNo,
+    );
+  }
+
+  /**
+   * find next by district
+   * @param deliverySpaceNo
+   */
+  @Get('/admin/company-district/delivery-space/:id([0-9]+)/previous')
+  async findPreviousByDistrict(
+    @Param('id', ParseIntPipe) deliverySpaceNo: number,
+  ): Promise<number> {
+    return await this.deliverySpaceService.findPreviousForAdminByDistrict(
+      deliverySpaceNo,
+    );
+  }
+
+  /**
    * find next
    * @param deliverySpaceNo
    */

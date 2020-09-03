@@ -12,5 +12,10 @@ export class AdminDeliveryFounderConsultContractListDto extends DeliveryFounderC
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  companyName?: string;
+  companyNameKr?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  companyNameEng?: string;
 }

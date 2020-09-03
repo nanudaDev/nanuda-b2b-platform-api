@@ -158,14 +158,14 @@ export class DeliveryFounderConsultService extends BaseService {
     //   adminDeliveryFounderConsultListDto.exclude('startDate'),
     //   adminDeliveryFounderConsultListDto.exclude('endDate'),
     // )
-    if (adminDeliveryFounderConsultListDto.startDate) {
-      qb.AndWhereBetweenStartAndEndDate(
-        adminDeliveryFounderConsultListDto.startDate,
-        adminDeliveryFounderConsultListDto.endDate,
-      );
-    } else {
-      throw new BadRequestException({ message: 'Needs start date!' });
-    }
+    // if (adminDeliveryFounderConsultListDto.startDate) {
+    //   qb.AndWhereBetweenStartAndEndDate(
+    //     adminDeliveryFounderConsultListDto.startDate,
+    //     adminDeliveryFounderConsultListDto.endDate,
+    //   );
+    // } else {
+    //   throw new BadRequestException({ message: 'Needs start date!' });
+    // }
     qb.WhereAndOrder(adminDeliveryFounderConsultListDto);
     qb.Paginate(pagination);
     const [items, totalCount] = await qb.getManyAndCount();
