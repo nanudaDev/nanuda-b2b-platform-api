@@ -88,8 +88,8 @@ export class UserAuthController extends BaseController {
    */
   @ApiBearerAuth()
   @UseGuards(new AuthRolesGuard(...CONST_COMPANY_USER))
-  @Get('/auth/company-user/find-by-id/:id([0-9]+)')
-  async findByNo(@Param('id', ParseIntPipe) companyUserNo: number) {
-    return await this.authService.validateUserById(companyUserNo);
+  @Get('/auth/company-user/find-by-id')
+  async findByNo(@UserInfo() companyUser: CompanyUser) {
+    return await this.authService.validateUserById(companyUser.no);
   }
 }
