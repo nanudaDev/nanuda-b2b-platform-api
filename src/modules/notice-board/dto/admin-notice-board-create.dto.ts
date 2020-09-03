@@ -14,6 +14,7 @@ import {
 } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';
+import { YN, Default } from 'src/common';
 
 export class AdminNoticeBoardCreateDto
   extends BaseDto<AdminNoticeBoardCreateDto>
@@ -51,6 +52,13 @@ export class AdminNoticeBoardCreateDto
   @Expose()
   @IsOptional()
   ended: Date;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @Expose()
+  @IsEnum(YN)
+  @Default(YN.YES)
+  tempSaveYn?: YN;
 
   @ApiPropertyOptional({ type: [FileAttachmentDto] })
   @IsOptional()

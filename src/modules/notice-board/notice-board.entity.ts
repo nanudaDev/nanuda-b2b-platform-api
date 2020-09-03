@@ -10,6 +10,7 @@ import { BaseEntity, NOTICE_BOARD } from 'src/core';
 import { Admin } from '../admin';
 import { CodeManagement } from '../code-management/code-management.entity';
 import { FileAttachmentDto } from '../file-upload/dto';
+import { YN } from 'src/common';
 
 @Entity({ name: 'B2B_NOTICE_BOARD' })
 export class NoticeBoard extends BaseEntity<NoticeBoard> {
@@ -70,6 +71,19 @@ export class NoticeBoard extends BaseEntity<NoticeBoard> {
     type: 'datetime',
   })
   ended?: Date;
+
+  @Column({
+    type: 'char',
+    name: 'TEMP_SAVE_YN',
+    nullable: false,
+    default: YN.YES,
+  })
+  tempSaveYn?: YN;
+
+  @Column({
+    type: 'datetime',
+  })
+  tempSavedAt?: Date;
 
   @ManyToOne(type => Admin)
   @JoinColumn({ name: 'ADMIN_NO' })
