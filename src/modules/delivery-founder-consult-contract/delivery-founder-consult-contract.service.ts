@@ -29,7 +29,7 @@ export class DeliveryFounderConsultContractService extends BaseService {
    * @param adminContractDto
    * @param pagination
    */
-  async findForAdmin(
+  async findAllForAdmin(
     adminContractDto: AdminDeliveryFounderConsultContractListDto,
     pagination?: PaginatedRequest,
   ): Promise<PaginatedResponse<DeliveryFounderConsultContract>> {
@@ -62,8 +62,14 @@ export class DeliveryFounderConsultContractService extends BaseService {
       .AndWhereLike(
         'company',
         'nameKr',
-        adminContractDto.companyName,
-        adminContractDto.exclude('companyName'),
+        adminContractDto.companyNameKr,
+        adminContractDto.exclude('companyNameKr'),
+      )
+      .AndWhereLike(
+        'company',
+        'nameEng',
+        adminContractDto.companyNameEng,
+        adminContractDto.exclude('companyNameEng'),
       )
       .AndWhereEqual(
         'deliverySpace',
@@ -161,7 +167,7 @@ export class DeliveryFounderConsultContractService extends BaseService {
   }
 
   // company user
-  async findForCompanyUser(
+  async findAllForCompanyUser(
     contractDto: DeliveryFounderConsultContractListDto,
     pagination: PaginatedRequest,
     companyNo: number,
