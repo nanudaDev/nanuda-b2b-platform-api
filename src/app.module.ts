@@ -31,6 +31,7 @@ import {
   BrandModule,
 } from './modules';
 import { AdminModule } from './modules/admin/admin.module';
+import { PaymentList } from './modules/dashboard/payment-list.entity';
 require('dotenv').config();
 const env = process.env;
 @Module({
@@ -52,6 +53,25 @@ const env = process.env;
       bigNumberStrings: false,
       supportBigNumbers: false,
       entities: [],
+      synchronize: false,
+    }),
+    TypeOrmModule.forRoot({
+      name: 'kitchen',
+      type: 'mariadb' as 'mariadb',
+      host: env.REV_DB_HOST,
+      port: Number(env.REV_DB_PORT),
+      username: env.REV_DB_USERNAME,
+      password: env.REV_DB_PASSWORD,
+      database: env.REV_DB_NAME,
+      // won't need to keep alive
+      //   keepConnectionAlive: true,
+      bigNumberStrings: false,
+      supportBigNumbers: false,
+      entities: [PaymentList],
+      // migrations: [],
+      // cli: {},
+      // subscribers: [],
+      //   Do not turn to true!!!! 나누다 키친 데이터 다 날라가요 ~ ㅠㅠ
       synchronize: false,
     }),
     AuthModule,

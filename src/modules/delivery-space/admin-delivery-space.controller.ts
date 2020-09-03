@@ -122,7 +122,7 @@ export class AdminDeliverySpaceController extends BaseController {
    * find next
    * @param deliverySpaceNo
    */
-  @Get('/admin/company-district/delivery-space/:id([0-9]+)/next')
+  @Get('/admin/delivery-space/:id([0-9]+)/next')
   async findNext(
     @Param('id', ParseIntPipe) deliverySpaceNo: number,
   ): Promise<number> {
@@ -133,7 +133,7 @@ export class AdminDeliverySpaceController extends BaseController {
    * find next
    * @param deliverySpaceNo
    */
-  @Get('/admin/company-district/delivery-space/:id([0-9]+)/previous')
+  @Get('/admin/delivery-space/:id([0-9]+)/previous')
   async findPrevious(
     @Param('id', ParseIntPipe) deliverySpaceNo: number,
   ): Promise<number> {
