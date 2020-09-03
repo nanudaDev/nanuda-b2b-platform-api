@@ -95,7 +95,7 @@ export class DeliverySpaceService extends BaseService {
    * find next
    * @param deliverySpaceNo
    */
-  async findNextForAdmin(deliverySpaceNo: number): Promise<number> {
+  async findNextForAdminByDistrict(deliverySpaceNo: number): Promise<number> {
     const checkSpace = await this.deliverySpaceRepo.findOne(deliverySpaceNo);
     if (!checkSpace) {
       throw new NotFoundException();
@@ -112,6 +112,45 @@ export class DeliverySpaceService extends BaseService {
   }
 
   /**
+   * find next by district
+   * @param deliverySpaceNo
+   */
+  async findNextForAdmin(deliverySpaceNo: number): Promise<number> {
+    const checkSpace = await this.deliverySpaceRepo.findOne(deliverySpaceNo);
+    if (!checkSpace) {
+      throw new NotFoundException();
+    }
+    const nextSpace = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .AndWhereNext(deliverySpaceNo)
+      .select(['deliverySpace.no'])
+      .getOne();
+    return nextSpace.no;
+  }
+
+  /**
+   * find previous by district
+   * @param deliverySpaceNo
+   */
+  async findPreviousForAdminByDistrict(
+    deliverySpaceNo: number,
+  ): Promise<number> {
+    const checkSpace = await this.deliverySpaceRepo.findOne(deliverySpaceNo);
+    if (!checkSpace) {
+      throw new NotFoundException();
+    }
+    const previousSpaceNo = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .where('deliverySpace.companyDistrictNo = :companyDistrictNo', {
+        companyDistrictNo: checkSpace.companyDistrictNo,
+      })
+      .AndWherePrevious(deliverySpaceNo)
+      .select(['deliverySpace.no'])
+      .getOne();
+    return previousSpaceNo.no;
+  }
+
+  /**
    * find previous
    * @param deliverySpaceNo
    */
@@ -122,9 +161,6 @@ export class DeliverySpaceService extends BaseService {
     }
     const previousSpaceNo = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
-      .where('deliverySpace.companyDistrictNo = :companyDistrictNo', {
-        companyDistrictNo: checkSpace.companyDistrictNo,
-      })
       .AndWherePrevious(deliverySpaceNo)
       .select(['deliverySpace.no'])
       .getOne();
