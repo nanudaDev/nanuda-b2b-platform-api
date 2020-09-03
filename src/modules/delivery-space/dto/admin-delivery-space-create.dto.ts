@@ -5,13 +5,6 @@ import { IsEnum, IsOptional, IsNotEmpty, IsArray } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 
 export class AdminDeliverySpaceCreateDto extends DeliverySpaceCreateDto {
-  @ApiPropertyOptional({ enum: YN })
-  @IsEnum(YN)
-  @IsOptional()
-  @Default(YN.NO)
-  @Expose()
-  delYn?: YN;
-
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
