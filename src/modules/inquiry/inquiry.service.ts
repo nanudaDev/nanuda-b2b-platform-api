@@ -66,6 +66,14 @@ export class InquiryService extends BaseService {
       .Paginate(pagination);
 
     const [items, totalCount] = await inquiry.getManyAndCount();
+    await Promise.all(
+      items.map(async item => {
+        const count = await this.inquiryRepo.find({
+          where: { isInquiryReply: YN.YES, inquiryNo: item.no },
+        });
+        item.replyCount = count.length;
+      }),
+    );
     return { items, totalCount };
   }
 
