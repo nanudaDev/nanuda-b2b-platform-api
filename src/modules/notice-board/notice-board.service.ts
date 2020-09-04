@@ -144,6 +144,12 @@ export class NoticeBoardService extends BaseService {
         noticeBoardListDto.adminName,
         noticeBoardListDto.exclude('adminName'),
       );
+      qb.AndWhereEqual(
+        'noticeBoard',
+        'tempSaveYn',
+        noticeBoardListDto.tempSaveYn,
+        noticeBoardListDto.exclude('tempSaveYn'),
+      );
     }
     if (noticeBoardListDto instanceof NoticeBoardListDto) {
       qb.where('noticeBoard.tempSaveYn = :tempSaveYn', { tempSaveYn: YN.NO });

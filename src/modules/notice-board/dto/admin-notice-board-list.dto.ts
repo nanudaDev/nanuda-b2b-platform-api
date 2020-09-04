@@ -3,7 +3,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsEnum } from 'class-validator';
 import { Expose } from 'class-transformer';
 import { NOTICE_BOARD, BaseDto } from 'src/core';
-import { ORDER_BY_VALUE, Default } from 'src/common';
+import { ORDER_BY_VALUE, Default, YN } from 'src/common';
 
 export class AdminNoticeBoardListDto extends BaseDto<AdminNoticeBoardListDto> {
   @ApiPropertyOptional()
@@ -36,6 +36,12 @@ export class AdminNoticeBoardListDto extends BaseDto<AdminNoticeBoardListDto> {
   @IsEnum(NOTICE_BOARD)
   @Expose()
   noticeBoardType?: NOTICE_BOARD;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @IsEnum(YN)
+  @Expose()
+  tempSaveYn?: YN;
 
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsOptional()
