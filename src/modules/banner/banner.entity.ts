@@ -1,7 +1,14 @@
 import { BaseEntity, LINK_TYPE } from 'src/core';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { FileAttachmentDto } from '../file-upload/dto';
 import { YN } from 'src/common';
+import { Admin } from '../admin';
 
 @Entity({ name: 'BANNER' })
 export class Banner extends BaseEntity<Banner> {
@@ -78,4 +85,8 @@ export class Banner extends BaseEntity<Banner> {
     type: 'datetime',
   })
   ended?: Date;
+
+  @ManyToOne(type => Admin)
+  @JoinColumn({ name: 'ADMIN_NO' })
+  admin?: Admin;
 }

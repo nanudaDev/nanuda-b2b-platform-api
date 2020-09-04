@@ -1,36 +1,27 @@
-import { Banner } from '../banner.entity';
 import { BaseDto, LINK_TYPE } from 'src/core';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsOptional,
-  IsArray,
-  ValidateNested,
-  IsEnum,
-  IsDate,
-} from 'class-validator';
+import { Banner } from '../banner.entity';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsOptional, IsArray, ValidateNested, IsEnum } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
-import { YN, Default } from 'src/common';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';
+import { Default } from 'src/common';
 
-export class AdminBannerCreateDto extends BaseDto<AdminBannerCreateDto>
+export class AdminBannerUpdateDto extends BaseDto<AdminBannerUpdateDto>
   implements Partial<Banner> {
-  @ApiProperty()
-  @IsNotEmpty()
-  @Expose()
-  title: string;
-
-  @ApiPropertyOptional({ enum: YN })
+  @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  @Default(YN.NO)
-  @IsEnum(YN)
-  showYn?: YN;
+  title?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
   desc?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  adminNo?: number;
 
   @ApiPropertyOptional({ type: [FileAttachmentDto] })
   @IsOptional()
