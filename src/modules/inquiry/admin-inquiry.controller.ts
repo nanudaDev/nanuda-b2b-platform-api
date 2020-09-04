@@ -95,7 +95,7 @@ export class AdminInquiryController extends BaseController {
   async findOne(
     @Param('id', ParseIntPipe) inquiryNo: number,
   ): Promise<Inquiry> {
-    return await this.inquiryService.findOneInquiry(inquiryNo);
+    return await this.inquiryService.findOneInquiryForAdmin(inquiryNo);
   }
 
   /**
@@ -115,5 +115,14 @@ export class AdminInquiryController extends BaseController {
       adminInquiryReplyListDto,
       pagination,
     );
+  }
+
+  /**
+   * close inquiry
+   * @param inquiryNo
+   */
+  @Patch('/admin/inquiry/:id([0-9]+)/close')
+  async close(@Param('id', ParseIntPipe) inquiryNo: number): Promise<Inquiry> {
+    return await this.inquiryService.closeInquiry(inquiryNo);
   }
 }
