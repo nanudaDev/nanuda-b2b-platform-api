@@ -62,7 +62,7 @@ export class NoticeBoardService extends BaseService {
     adminNoticeBoardUpdateDto: AdminNoticeBoardUpdateeDto,
   ): Promise<NoticeBoard> {
     let noticeBoard = await this.noticeBoardRepo.findOne(noticeBoardNo);
-    if (noticeBoard) {
+    if (!noticeBoard) {
       throw new NotFoundException({
         message: '공지사항을 찾지 못했습니다.',
       });
