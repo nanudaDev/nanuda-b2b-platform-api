@@ -67,6 +67,20 @@ export class NoticeBoardService extends BaseService {
         message: '공지사항을 찾지 못했습니다.',
       });
     }
+    if (
+      adminNoticeBoardUpdateDto.attachments &&
+      adminNoticeBoardUpdateDto.attachments.length > 0
+    ) {
+      if (
+        adminNoticeBoardUpdateDto.newAttachments &&
+        adminNoticeBoardUpdateDto.newAttachments.length > 0
+      ) {
+        adminNoticeBoardUpdateDto.attachments = [
+          ...adminNoticeBoardUpdateDto.attachments,
+          ...adminNoticeBoardUpdateDto.newAttachments,
+        ];
+      }
+    }
     noticeBoard = noticeBoard.set(adminNoticeBoardUpdateDto);
     noticeBoard.adminNo = adminNo;
     if (adminNoticeBoardUpdateDto.tempSaveYn === YN.YES) {
