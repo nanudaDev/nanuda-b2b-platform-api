@@ -8,6 +8,7 @@ import {
   Post,
   Body,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthRolesGuard, CONST_ADMIN_USER, BaseController } from 'src/core';
@@ -75,6 +76,12 @@ export class AdminCompanyDistrictController extends BaseController {
     );
   }
 
+  /**
+   * update
+   * @param companyDistrictNo
+   * @param adminCompanyDistrictUpdateDto
+   * @param admin
+   */
   @Patch('/admin/company-district/:id([0-9]+)')
   async update(
     @Param('id', ParseIntPipe) companyDistrictNo: number,
@@ -149,5 +156,14 @@ export class AdminCompanyDistrictController extends BaseController {
   @Get('/admin/company-district/create-history')
   async createHistories() {
     return await this.companyDistrictService.createUpdateHistory();
+  }
+
+  /**
+   * company district delete
+   * @param companyDistrictNo
+   */
+  @Delete('/admin/company-district/:id([0-9]+)')
+  async deleteDistrict(@Param('id', ParseIntPipe) companyDistrictNo: number) {
+    return await this.companyDistrictService.deleteDistrict(companyDistrictNo);
   }
 }
