@@ -9,9 +9,12 @@ import {
   IsDate,
   IsDateString,
   IsEnum,
+  IsArray,
+  ValidateNested,
 } from 'class-validator';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { YN, Default } from 'src/common';
+import { FileAttachmentDto } from 'src/modules/file-upload/dto';
 
 export class AdminNoticeBoardUpdateeDto
   extends BaseDto<AdminNoticeBoardUpdateeDto>
@@ -44,6 +47,22 @@ export class AdminNoticeBoardUpdateeDto
   @IsEnum(YN)
   @Default(YN.YES)
   tempSaveYn?: YN;
+
+  @ApiPropertyOptional({ type: [FileAttachmentDto] })
+  @IsOptional()
+  @Expose()
+  @Type(() => FileAttachmentDto)
+  @IsArray()
+  @ValidateNested()
+  attachments?: FileAttachmentDto[];
+
+  @ApiPropertyOptional({ type: [FileAttachmentDto] })
+  @IsOptional()
+  @Expose()
+  @Type(() => FileAttachmentDto)
+  @IsArray()
+  @ValidateNested()
+  newAttachments?: FileAttachmentDto[];
 
   @ApiPropertyOptional()
   @IsOptional()
