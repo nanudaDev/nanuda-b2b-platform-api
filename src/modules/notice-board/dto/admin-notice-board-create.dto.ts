@@ -67,4 +67,12 @@ export class AdminNoticeBoardCreateDto
   @IsArray()
   @ValidateNested()
   attachments?: FileAttachmentDto[];
+
+  @ApiPropertyOptional({ type: [FileAttachmentDto] })
+  @IsOptional()
+  @Expose()
+  @Type(() => FileAttachmentDto)
+  @IsArray()
+  @ValidateNested()
+  newAttachments?: FileAttachmentDto[];
 }

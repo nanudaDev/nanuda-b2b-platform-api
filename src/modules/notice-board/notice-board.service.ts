@@ -62,10 +62,24 @@ export class NoticeBoardService extends BaseService {
     adminNoticeBoardUpdateDto: AdminNoticeBoardUpdateeDto,
   ): Promise<NoticeBoard> {
     let noticeBoard = await this.noticeBoardRepo.findOne(noticeBoardNo);
-    if (noticeBoard) {
+    if (!noticeBoard) {
       throw new NotFoundException({
         message: '공지사항을 찾지 못했습니다.',
       });
+    }
+    if (
+      adminNoticeBoardUpdateDto.attachments &&
+      adminNoticeBoardUpdateDto.attachments.length > 0
+    ) {
+      if (
+        adminNoticeBoardUpdateDto.newAttachments &&
+        adminNoticeBoardUpdateDto.newAttachments.length > 0
+      ) {
+        adminNoticeBoardUpdateDto.attachments = [
+          ...adminNoticeBoardUpdateDto.attachments,
+          ...adminNoticeBoardUpdateDto.newAttachments,
+        ];
+      }
     }
     noticeBoard = noticeBoard.set(adminNoticeBoardUpdateDto);
     noticeBoard.adminNo = adminNo;
@@ -143,6 +157,12 @@ export class NoticeBoardService extends BaseService {
         'name',
         noticeBoardListDto.adminName,
         noticeBoardListDto.exclude('adminName'),
+      );
+      qb.AndWhereEqual(
+        'noticeBoard',
+        'tempSaveYn',
+        noticeBoardListDto.tempSaveYn,
+        noticeBoardListDto.exclude('tempSaveYn'),
       );
     }
     if (noticeBoardListDto instanceof NoticeBoardListDto) {

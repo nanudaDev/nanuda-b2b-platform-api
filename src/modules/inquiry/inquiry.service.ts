@@ -66,6 +66,14 @@ export class InquiryService extends BaseService {
       .Paginate(pagination);
 
     const [items, totalCount] = await inquiry.getManyAndCount();
+    await Promise.all(
+      items.map(async item => {
+        const count = await this.inquiryRepo.find({
+          where: { isInquiryReply: YN.YES, inquiryNo: item.no },
+        });
+        item.replyCount = count.length;
+      }),
+    );
     return { items, totalCount };
   }
 
@@ -73,7 +81,7 @@ export class InquiryService extends BaseService {
    * find inquiry main thread
    * @param inquiryNo
    */
-  async findOneInquiry(inquiryNo: number): Promise<Inquiry> {
+  async findOneInquiryForAdmin(inquiryNo: number): Promise<Inquiry> {
     const inquiry = await this.inquiryRepo
       .createQueryBuilder('inquiry')
       .CustomInnerJoinAndSelect(['codeManagement'])
@@ -84,6 +92,17 @@ export class InquiryService extends BaseService {
     if (!inquiry) {
       throw new NotFoundException();
     }
+    return inquiry;
+  }
+
+  /**
+   * close inquiry
+   * @param inquiryNo
+   */
+  async closeInquiry(inquiryNo: number): Promise<Inquiry> {
+    let inquiry = await this.findOneInquiryForAdmin(inquiryNo);
+    inquiry.isClosed = YN.YES;
+    inquiry = await this.inquiryRepo.save(inquiry);
     return inquiry;
   }
 

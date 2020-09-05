@@ -519,6 +519,10 @@ export class CompanyDistrictService extends BaseService {
     return companyDistrict;
   }
 
+  /**
+   * delete district
+   * @param companyDistrictNo
+   */
   async deleteDistrict(companyDistrictNo: number) {
     const district = await this.entityManager.transaction(
       async entityManager => {
@@ -532,6 +536,7 @@ export class CompanyDistrictService extends BaseService {
           })
           .execute();
 
+        // delete delivery space
         await entityManager
           .createQueryBuilder()
           .delete()
@@ -539,6 +544,16 @@ export class CompanyDistrictService extends BaseService {
           .where('companyDistrictNo = :companyDistrictNo', {
             companyDistrictNo: companyDistrictNo,
           })
+          .execute();
+
+        // TODO: FAVORITES
+
+        // delete district
+        await entityManager
+          .createQueryBuilder()
+          .delete()
+          .from(CompanyDistrict)
+          .where('no = :no', { no: companyDistrictNo })
           .execute();
       },
     );
