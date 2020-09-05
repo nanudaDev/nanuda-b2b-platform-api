@@ -58,7 +58,10 @@ export class AdminDashboardController extends BaseController {
     return await this.dashboardService.getCities();
   }
 
-  @Get('/admin/payment-list-graph')
+  /**
+   * payment graph for dashboard
+   */
+  @Get('/admin/dashboard/payment-list')
   async paymentListGraph() {
     return await this.dashboardService.paymentListGraph();
   }
