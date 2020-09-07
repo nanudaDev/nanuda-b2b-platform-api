@@ -51,8 +51,14 @@ export class NanudaDeliverySpaceService extends BaseService {
   async findAllForNanudaUser(
     deliverySpaceListDto: DeliverySpaceListDto,
     pagination: PaginatedRequest,
-    nanudaUserNo?: number,
   ): Promise<PaginatedResponse<DeliverySpace>> {
+    // passing nanuda user token from old server
+    let nanudaUserNo = null;
+    if (deliverySpaceListDto.nanudaUserNo) {
+      nanudaUserNo = deliverySpaceListDto.nanudaUserNo;
+      nanudaUserNo = nanudaUserNo.nanudaUserNo;
+      delete deliverySpaceListDto.nanudaUserNo;
+    }
     const qb = this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
@@ -86,18 +92,32 @@ export class NanudaDeliverySpaceService extends BaseService {
         deliverySpaceListDto.monthlyRentFee,
         deliverySpaceListDto.exclude('monthlyRentFee'),
       )
+      .AndWhereLike(
+        'companyDistrict',
+        'nameKr',
+        deliverySpaceListDto.companyDistrictName,
+        deliverySpaceListDto.exclude('companyDistrictName'),
+      )
+      .AndWhereEqual(
+        'companyDistrict',
+        'no',
+        deliverySpaceListDto.companyDistrictNo,
+        deliverySpaceListDto.exclude('companyDistrictNo'),
+      )
       .WhereAndOrder(deliverySpaceListDto)
       .Paginate(pagination);
 
     const [items, totalCount] = await qb.getManyAndCount();
+    // add favorite mark
     await Promise.all(
       items.map(item => {
         item.likedCount = item.favoritedUsers.length;
         delete item.favoritedUsers;
       }),
     );
+
     // 사용자 로그인 시 본인 라이크 볼 수 있게
-    if (nanudaUserNo && nanudaUserNo > 0) {
+    if (nanudaUserNo) {
       await Promise.all(
         items.map(async item => {
           const liked = await this.faveMapperRepo.findOne({
@@ -110,6 +130,7 @@ export class NanudaDeliverySpaceService extends BaseService {
         }),
       );
     }
+
     return { items, totalCount };
   }
 
