@@ -1,4 +1,12 @@
-import { Entity, Column, OneToMany, JoinColumn, OneToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  OneToMany,
+  JoinColumn,
+  OneToOne,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { BaseUser } from '../../core/base-user.entity';
 import { YN } from 'src/common';
 import { UserType } from '../auth';
@@ -8,6 +16,7 @@ import { CodeManagement } from '../code-management/code-management.entity';
 import { Space } from '../space/space.entity';
 import { DeliveryFounderConsultContract } from '../delivery-founder-consult-contract/delivery-founder-consult-contract.entity';
 import { ProductConsult } from '../product-consult/product-consult.entity';
+import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 @Entity({ name: 'NANUDA_USER' })
 export class NanudaUser extends BaseUser {
   @Column({
@@ -87,4 +96,19 @@ export class NanudaUser extends BaseUser {
     productConsults => productConsults.nanudaUser,
   )
   productConsults?: ProductConsult[];
+
+  @ManyToMany(
+    type => DeliverySpace,
+    deliverySpace => deliverySpace.nanudaUsers,
+  )
+  @JoinTable({
+    name: 'B2B_FAVORITE_SPACE_MAPPER',
+    joinColumn: {
+      name: 'NANUDA_USER_NO',
+    },
+    inverseJoinColumn: {
+      name: 'REFERENCE_NO',
+    },
+  })
+  favoriteDeliverySpaces?: DeliverySpace[];
 }

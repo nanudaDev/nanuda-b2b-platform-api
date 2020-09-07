@@ -24,7 +24,7 @@
 
 13. 열람을 역으로 변경 [x]
 14. 메모 [x]
-15. FOUNDER CONSULT SPACE GRAPH LIMIT PARAMETER
+15. FOUNDER CONSULT SPACE GRAPH LIMIT PARAMETER [x]
     - by date [x]
 16. Founder consult space graph search paramter extensions [x]
 17. Divide tasks between batch server and main server [x]
@@ -39,3 +39,5 @@
 21. compant district update check [x]
 22. image resizer
 23. s3 bucket url for production [x]
+24. Favorite space mapper refactoring
+    - 서버 완전 옮길 때 리팩토링 작업 필수
