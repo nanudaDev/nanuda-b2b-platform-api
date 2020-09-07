@@ -55,7 +55,10 @@ export class SmsAuthService extends BaseService {
       });
     }
     let smsAuth = new SmsAuth();
-    const newAuthCode = Math.floor(100000 + Math.random() * 900000);
+    let newAuthCode = Math.floor(100000 + Math.random() * 900000);
+    if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
+      newAuthCode = 123456;
+    }
     smsAuth.phone = companyUserSmsAuthRegisterDto.phone;
     smsAuth.authCode = newAuthCode;
     smsAuth.userType = UserType.COMPANY_USER;
