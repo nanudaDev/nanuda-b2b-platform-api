@@ -9,10 +9,11 @@ import {
 } from 'typeorm';
 import { BaseEntity } from 'src/core';
 import { PRODUCT_CONSULT, SPACE_TYPE } from 'src/shared';
-import { YN } from 'src/common';
+import { YN, AVAILABLE_TIME } from 'src/common';
 import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 import { Admin } from '../admin';
 import { CodeManagement } from '../code-management/code-management.entity';
+import { AddressInfo } from '../address-info/address-info.entity';
 
 @Entity({ name: 'PRODUCT_CONSULT' })
 export class ProductConsult extends BaseEntity<ProductConsult> {
@@ -65,7 +66,7 @@ export class ProductConsult extends BaseEntity<ProductConsult> {
     nullable: true,
     name: 'HOPE_TIME',
   })
-  hopeTime?: string;
+  hopeTime?: AVAILABLE_TIME;
 
   @Column('char', {
     length: 1,
@@ -101,4 +102,8 @@ export class ProductConsult extends BaseEntity<ProductConsult> {
   @ManyToOne(type => CodeManagement)
   @JoinColumn({ name: 'STATUS', referencedColumnName: 'key' })
   codeManagement?: CodeManagement;
+
+  @OneToOne(type => AddressInfo)
+  @JoinColumn({ name: 'ADDRESS_CODE', referencedColumnName: 'addressCode' })
+  addressInfo?: AddressInfo;
 }

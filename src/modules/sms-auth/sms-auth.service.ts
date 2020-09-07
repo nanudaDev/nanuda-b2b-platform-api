@@ -55,15 +55,21 @@ export class SmsAuthService extends BaseService {
       });
     }
     let smsAuth = new SmsAuth();
-    const newAuthCode = Math.floor(100000 + Math.random() * 900000);
+    let newAuthCode = Math.floor(100000 + Math.random() * 900000);
+    if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
+      // for test case only
+      newAuthCode = 123456;
+    }
     smsAuth.phone = companyUserSmsAuthRegisterDto.phone;
     smsAuth.authCode = newAuthCode;
     smsAuth.userType = UserType.COMPANY_USER;
     if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
       console.log(smsAuth.authCode);
     }
-    smsAuth = await this.smsAuthRepo.save(smsAuth);
-    await this.smsNotificationService.sendLoginPrompt(req, newAuthCode);
+    await this.smsAuthRepo.save(smsAuth);
+    if (process.env.NODE_ENV === ENVIRONMENT.PRODUCTION) {
+      await this.smsNotificationService.sendLoginPrompt(req, newAuthCode);
+    }
     return true;
   }
 

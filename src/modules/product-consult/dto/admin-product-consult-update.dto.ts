@@ -3,16 +3,9 @@ import { ProductConsult } from '../product-consult.entity';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsEnum } from 'class-validator';
 import { Expose } from 'class-transformer';
-import { ORDER_BY_VALUE, Default, AVAILABLE_TIME } from 'src/common';
+import { AVAILABLE_TIME } from 'src/common';
 
-export class AdminProductConsultListDto
-  extends BaseDto<AdminProductConsultListDto>
-  implements Partial<ProductConsult> {
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Expose()
-  nanudaUserNo?: number;
-
+export class AdminProductConsultUpdateDto extends BaseDto<ProductConsult> {
   @ApiPropertyOptional({ enum: PRODUCT_CONSULT })
   @IsOptional()
   @Expose()
@@ -22,28 +15,16 @@ export class AdminProductConsultListDto
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  adminName?: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Expose()
-  adminNo?: number;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Expose()
-  addressCode?: string;
+  pConsultManager?: number;
 
   @ApiPropertyOptional({ enum: AVAILABLE_TIME })
   @IsOptional()
-  @Expose()
   @IsEnum(AVAILABLE_TIME)
+  @Expose()
   hopeTime?: AVAILABLE_TIME;
 
-  @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
+  @ApiPropertyOptional()
   @IsOptional()
-  @IsEnum(ORDER_BY_VALUE)
-  @Default(ORDER_BY_VALUE.DESC)
   @Expose()
-  orderByNo?: ORDER_BY_VALUE;
+  confirmDate?: Date;
 }
