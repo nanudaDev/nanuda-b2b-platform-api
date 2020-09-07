@@ -138,7 +138,10 @@ export class NanudaDeliverySpaceService extends BaseService {
    * find one for nanuda user
    * @param deliverySpaceNo
    */
-  async findOneForNanudaUser(deliverySpaceNo: number): Promise<DeliverySpace> {
+  async findOneForNanudaUser(
+    deliverySpaceNo: number,
+    nanudaUserNo?: number,
+  ): Promise<DeliverySpace> {
     const consult = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
@@ -151,7 +154,19 @@ export class NanudaDeliverySpaceService extends BaseService {
     if (!consult) {
       throw new NotFoundException();
     }
-
+    const likedCount = await this.faveMapperRepo.find({
+      deliverySpaceNo: deliverySpaceNo,
+    });
+    consult.likedCount = likedCount.length;
+    if (nanudaUserNo) {
+      const liked = await this.faveMapperRepo.findOne({
+        nanudaUserNo: nanudaUserNo,
+        deliverySpaceNo: deliverySpaceNo,
+      });
+      if (liked) {
+        consult.likedYn = true;
+      }
+    }
     return consult;
   }
 }

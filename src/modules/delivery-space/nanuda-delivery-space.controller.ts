@@ -39,9 +39,11 @@ export class NanudaDeliverySpaceController extends BaseController {
   @Get('/nanuda/delivery-space/:id([0-9]+)')
   async findOne(
     @Param('id', ParseIntPipe) deliverySpaceNo: number,
+    @Query() nanudaUserNo?,
   ): Promise<DeliverySpace> {
     return await this.nanudaDeliverySpaceService.findOneForNanudaUser(
       deliverySpaceNo,
+      nanudaUserNo.nanudaUserNo,
     );
   }
 }
