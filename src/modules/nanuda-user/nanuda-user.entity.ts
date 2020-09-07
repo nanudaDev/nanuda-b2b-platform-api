@@ -7,6 +7,7 @@ import { FounderConsult } from '../founder-consult/founder-consult.entity';
 import { CodeManagement } from '../code-management/code-management.entity';
 import { Space } from '../space/space.entity';
 import { DeliveryFounderConsultContract } from '../delivery-founder-consult-contract/delivery-founder-consult-contract.entity';
+import { ProductConsult } from '../product-consult/product-consult.entity';
 @Entity({ name: 'NANUDA_USER' })
 export class NanudaUser extends BaseUser {
   @Column({
@@ -80,4 +81,10 @@ export class NanudaUser extends BaseUser {
     contracts => contracts.nanudaUser,
   )
   deliveryFounderConsultContracts?: DeliveryFounderConsultContract[];
+
+  @OneToMany(
+    type => ProductConsult,
+    productConsults => productConsults.nanudaUser,
+  )
+  productConsults?: ProductConsult[];
 }

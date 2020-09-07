@@ -88,6 +88,8 @@ export class Inquiry extends BaseEntity<Inquiry> {
   })
   isClosed?: YN;
 
+  replyCount?: number;
+
   @ManyToOne(type => Admin)
   @JoinColumn({ name: 'ADMIN_NO' })
   admin?: Admin;
