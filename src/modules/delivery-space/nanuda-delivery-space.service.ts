@@ -104,6 +104,12 @@ export class NanudaDeliverySpaceService extends BaseService {
         deliverySpaceListDto.companyDistrictNo,
         deliverySpaceListDto.exclude('companyDistrictNo'),
       )
+      .AndWhereLike(
+        'companyDistrict',
+        'address',
+        deliverySpaceListDto.address,
+        deliverySpaceListDto.exclude('address'),
+      )
       .WhereAndOrder(deliverySpaceListDto)
       .Paginate(pagination);
 
