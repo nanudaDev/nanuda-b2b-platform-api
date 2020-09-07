@@ -16,6 +16,8 @@ import { DeliveryFounderConsultContractHistory } from '../delivery-founder-consu
 import { DeliverySpaceController } from './delivery-space.controller';
 import { NanudaSlackNotificationService } from 'src/core/utils';
 import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/delivery-space-brand-mapper.entity';
+import { NanudaDeliverySpaceController } from './nanuda-delivery-space.controller';
+import { NanudaDeliverySpaceService } from './nanuda-delivery-space.service';
 
 @Module({
   imports: [
@@ -32,7 +34,15 @@ import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/deliver
     ]),
     FileUploadModule,
   ],
-  controllers: [AdminDeliverySpaceController, DeliverySpaceController],
-  providers: [DeliverySpaceService, NanudaSlackNotificationService],
+  controllers: [
+    AdminDeliverySpaceController,
+    DeliverySpaceController,
+    NanudaDeliverySpaceController,
+  ],
+  providers: [
+    DeliverySpaceService,
+    NanudaSlackNotificationService,
+    NanudaDeliverySpaceService,
+  ],
 })
 export class DeliverySpaceModule {}

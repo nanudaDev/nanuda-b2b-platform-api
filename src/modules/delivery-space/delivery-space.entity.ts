@@ -21,6 +21,7 @@ import { CompanyUser } from '../company-user/company-user.entity';
 import { FileUpload } from '../file-upload/file-upload.entity';
 import { DeliveryFounderConsultContractHistory } from '../delivery-founder-consult-contract-history/delivery-founder-consult-contract-history.entity';
 import { Brand } from '../brand/brand.entity';
+import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 
 @Entity({ name: 'B2B_DELIVERY_SPACE' })
 export class DeliverySpace extends BaseEntity<DeliverySpace> {
@@ -115,6 +116,9 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
   // no database
   remainingCount?: number;
 
+  // no database
+  likedCount?: number;
+
   @ManyToOne(
     type => CompanyUser,
     companyUser => companyUser.deliverySpaces,
@@ -191,4 +195,15 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
     },
   })
   brands?: Brand[];
+
+  @ManyToMany(
+    type => NanudaUser,
+    nanudaUser => nanudaUser.favoriteDeliverySpaces,
+  )
+  @JoinTable({
+    name: 'B2B_FAVORITE_SPACE_MAPPER',
+    joinColumn: { name: 'REFERENCE_NO' },
+    inverseJoinColumn: { name: 'NANUDA_USER' },
+  })
+  nanudaUsers?: NanudaUser[];
 }

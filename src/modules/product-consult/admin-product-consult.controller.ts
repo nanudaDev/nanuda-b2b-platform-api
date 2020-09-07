@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { AuthRolesGuard, CONST_ADMIN_USER, BaseController } from 'src/core';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ProductConsultService } from './product.service';
+import { ProductConsultService } from './product-consult.service';
 import {
   AdminProductConsultListDto,
   AdminProductConsultUpdateDto,
