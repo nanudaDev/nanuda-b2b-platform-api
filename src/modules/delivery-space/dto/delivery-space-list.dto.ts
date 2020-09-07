@@ -75,6 +75,11 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @Expose()
   nanudaUserPhone?: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  nanudaUserNo?: number;
+
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsOptional()
   @IsEnum(ORDER_BY_VALUE)

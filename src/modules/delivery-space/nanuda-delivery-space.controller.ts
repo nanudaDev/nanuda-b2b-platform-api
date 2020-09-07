@@ -26,10 +26,13 @@ export class NanudaDeliverySpaceController extends BaseController {
     @Query() pagination: PaginatedRequest,
     @Query() nanudaUserNo?: number,
   ): Promise<PaginatedResponse<DeliverySpace>> {
+    console.log(nanudaUserNo);
+    if (nanudaUserNo) {
+      nanudaDeliverySpaceListDto.nanudaUserNo = nanudaUserNo;
+    }
     return await this.nanudaDeliverySpaceService.findAllForNanudaUser(
       nanudaDeliverySpaceListDto,
       pagination,
-      nanudaUserNo,
     );
   }
 
