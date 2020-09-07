@@ -121,6 +121,8 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
 
   likedYn?: boolean;
 
+  consultCount?: number;
+
   @ManyToOne(
     type => CompanyUser,
     companyUser => companyUser.deliverySpaces,
