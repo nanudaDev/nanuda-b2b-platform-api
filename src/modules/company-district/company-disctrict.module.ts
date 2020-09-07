@@ -9,6 +9,8 @@ import { CompanyDistrictAmenityMapper } from '../company-district-amenity-mapper
 import { CompanyDistrictAnalysisService } from './company-district-analysis.service';
 import { CompanyDistrictAnalysisSenderService } from './company-district-analysis-sender.service';
 import { FileUploadModule } from '../file-upload/file-upload.module';
+import { NanudaCompanyDistrictController } from './nanuda-company-district.controller';
+import { NanudaCompanyDistrictService } from './nanuda-company-district.service';
 
 @Module({
   imports: [
@@ -19,11 +21,16 @@ import { FileUploadModule } from '../file-upload/file-upload.module';
     ]),
     FileUploadModule,
   ],
-  controllers: [AdminCompanyDistrictController, CompanyDistrictController],
+  controllers: [
+    AdminCompanyDistrictController,
+    CompanyDistrictController,
+    NanudaCompanyDistrictController,
+  ],
   providers: [
     CompanyDistrictService,
     CompanyDistrictAnalysisService,
     CompanyDistrictAnalysisSenderService,
+    NanudaCompanyDistrictService,
   ],
 })
 export class CompanyDistrictModule {}
