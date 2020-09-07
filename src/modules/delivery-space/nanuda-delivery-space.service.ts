@@ -11,6 +11,7 @@ import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/deliver
 import { DeliveryFounderConsultContractHistory } from '../delivery-founder-consult-contract-history/delivery-founder-consult-contract-history.entity';
 import { DeliverySpaceListDto } from './dto';
 import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
+import { FavoriteSpaceMapper } from '../favorite-space-mapper/favorite-space-mapper.entity';
 
 @Injectable()
 export class NanudaDeliverySpaceService extends BaseService {
@@ -35,6 +36,8 @@ export class NanudaDeliverySpaceService extends BaseService {
     private readonly deliveryFounderConsultContractHistoryRepo: Repository<
       DeliveryFounderConsultContractHistory
     >,
+    @InjectRepository(FavoriteSpaceMapper)
+    private readonly faveMapperRepo: Repository<FavoriteSpaceMapper>,
     @InjectEntityManager() private readonly entityManager: EntityManager,
   ) {
     super();
@@ -48,6 +51,7 @@ export class NanudaDeliverySpaceService extends BaseService {
   async findAllForNanudaUser(
     deliverySpaceListDto: DeliverySpaceListDto,
     pagination: PaginatedRequest,
+    nanudaUserNo?: number,
   ): Promise<PaginatedResponse<DeliverySpace>> {
     const qb = this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
@@ -56,6 +60,7 @@ export class NanudaDeliverySpaceService extends BaseService {
         'amenities',
         'deliverySpaceOptions',
         'deliveryFounderConsults',
+        'favoritedUsers',
       ])
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
@@ -85,6 +90,26 @@ export class NanudaDeliverySpaceService extends BaseService {
       .Paginate(pagination);
 
     const [items, totalCount] = await qb.getManyAndCount();
+    await Promise.all(
+      items.map(item => {
+        item.likedCount = item.favoritedUsers.length;
+        delete item.favoritedUsers;
+      }),
+    );
+    // 사용자 로그인 시 본인 라이크 볼 수 있게
+    if (nanudaUserNo && nanudaUserNo > 0) {
+      await Promise.all(
+        items.map(async item => {
+          const liked = await this.faveMapperRepo.findOne({
+            nanudaUserNo: nanudaUserNo,
+            deliverySpaceNo: item.no,
+          });
+          if (liked) {
+            item.likedYn = true;
+          }
+        }),
+      );
+    }
     return { items, totalCount };
   }
 

@@ -6,14 +6,11 @@ import {
   IsNumberString,
   IsNumber,
   IsOptional,
-  IsEmail,
   IsEnum,
-  IsJSON,
   IsArray,
   ValidateNested,
 } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
-import { NanudaUserUpdateHistory } from 'src/modules/nanuda-user-update-history/nanuda-user-update-history.entity';
 import { YN, Default } from 'src/common';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto/file-upload.dto';
 

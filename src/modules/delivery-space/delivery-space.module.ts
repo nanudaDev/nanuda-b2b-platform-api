@@ -18,6 +18,7 @@ import { NanudaSlackNotificationService } from 'src/core/utils';
 import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/delivery-space-brand-mapper.entity';
 import { NanudaDeliverySpaceController } from './nanuda-delivery-space.controller';
 import { NanudaDeliverySpaceService } from './nanuda-delivery-space.service';
+import { FavoriteSpaceMapper } from '../favorite-space-mapper/favorite-space-mapper.entity';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { NanudaDeliverySpaceService } from './nanuda-delivery-space.service';
       DeliverySpaceAmenityMapper,
       DeliveryFounderConsultContract,
       DeliveryFounderConsultContractHistory,
+      FavoriteSpaceMapper,
     ]),
     FileUploadModule,
   ],
