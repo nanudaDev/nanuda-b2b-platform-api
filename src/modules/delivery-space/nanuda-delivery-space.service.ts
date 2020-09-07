@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { BaseService, FOUNDER_CONSULT } from 'src/core';
+import { BaseService, FOUNDER_CONSULT, APPROVAL_STATUS } from 'src/core';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { DeliverySpace } from './delivery-space.entity';
-import { Repository, EntityManager } from 'typeorm';
+import { Repository, EntityManager, In } from 'typeorm';
 import { CompanyDistrict } from '../company-district/company-district.entity';
 import { DeliveryFounderConsultContract } from '../delivery-founder-consult-contract/delivery-founder-consult-contract.entity';
 import { DeliverySpaceAmenityMapper } from '../delivery-space-amenity-mapper/delivery-space-amenity-mapper.entity';
@@ -12,6 +12,7 @@ import { DeliveryFounderConsultContractHistory } from '../delivery-founder-consu
 import { DeliverySpaceListDto } from './dto';
 import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
 import { FavoriteSpaceMapper } from '../favorite-space-mapper/favorite-space-mapper.entity';
+import { DeliveryFounderConsult } from '../delivery-founder-consult/delivery-founder-consult.entity';
 
 @Injectable()
 export class NanudaDeliverySpaceService extends BaseService {
@@ -65,7 +66,6 @@ export class NanudaDeliverySpaceService extends BaseService {
       .CustomLeftJoinAndSelect([
         'amenities',
         'deliverySpaceOptions',
-        'deliveryFounderConsults',
         'favoritedUsers',
       ])
       .innerJoinAndSelect('companyDistrict.company', 'company')
@@ -74,6 +74,10 @@ export class NanudaDeliverySpaceService extends BaseService {
       //   .andWhere('deliveryFounderConsults.status != :status', {
       //     status: FOUNDER_CONSULT.F_DIST_COMPLETE,
       //   })
+      .andWhere(
+        'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
+        { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
+      )
       .AndWhereLike(
         'amenities',
         'amenityName',
@@ -116,9 +120,21 @@ export class NanudaDeliverySpaceService extends BaseService {
     const [items, totalCount] = await qb.getManyAndCount();
     // add favorite mark
     await Promise.all(
-      items.map(item => {
+      items.map(async item => {
         item.likedCount = item.favoritedUsers.length;
         delete item.favoritedUsers;
+        const consults = await this.entityManager
+          .getRepository(DeliveryFounderConsult)
+          .find({
+            where: {
+              status: In([
+                FOUNDER_CONSULT.F_NEW_REG,
+                FOUNDER_CONSULT.F_PROCEEDING,
+              ]),
+              deliverySpaceNo: item.no,
+            },
+          });
+        item.consultCount = consults.length;
       }),
     );
 
@@ -164,6 +180,15 @@ export class NanudaDeliverySpaceService extends BaseService {
       deliverySpaceNo: deliverySpaceNo,
     });
     consult.likedCount = likedCount.length;
+    const consults = await this.entityManager
+      .getRepository(DeliveryFounderConsult)
+      .find({
+        where: {
+          status: In([FOUNDER_CONSULT.F_NEW_REG, FOUNDER_CONSULT.F_PROCEEDING]),
+          deliverySpaceNo: deliverySpaceNo,
+        },
+      });
+    consult.consultCount = consults.length;
     if (nanudaUserNo) {
       const liked = await this.faveMapperRepo.findOne({
         nanudaUserNo: nanudaUserNo,
