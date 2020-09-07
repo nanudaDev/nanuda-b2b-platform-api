@@ -65,7 +65,9 @@ export class SmsAuthService extends BaseService {
     if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
       console.log(smsAuth.authCode);
     }
-    smsAuth = await this.smsAuthRepo.save(smsAuth);
+    if (process.env.NODE_ENV === ENVIRONMENT.PRODUCTION) {
+      await this.smsAuthRepo.save(smsAuth);
+    }
     await this.smsNotificationService.sendLoginPrompt(req, newAuthCode);
     return true;
   }
