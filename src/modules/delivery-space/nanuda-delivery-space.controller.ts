@@ -24,11 +24,12 @@ export class NanudaDeliverySpaceController extends BaseController {
   async findAll(
     @Query() nanudaDeliverySpaceListDto: DeliverySpaceListDto,
     @Query() pagination: PaginatedRequest,
+    @Query() nanudaUserNo?: number,
   ): Promise<PaginatedResponse<DeliverySpace>> {
-    console.log(pagination);
     return await this.nanudaDeliverySpaceService.findAllForNanudaUser(
       nanudaDeliverySpaceListDto,
       pagination,
+      nanudaUserNo,
     );
   }
 

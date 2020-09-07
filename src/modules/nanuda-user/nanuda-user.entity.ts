@@ -99,7 +99,7 @@ export class NanudaUser extends BaseUser {
 
   @ManyToMany(
     type => DeliverySpace,
-    deliverySpace => deliverySpace.nanudaUsers,
+    deliverySpace => deliverySpace.favoritedUsers,
   )
   @JoinTable({
     name: 'B2B_FAVORITE_SPACE_MAPPER',

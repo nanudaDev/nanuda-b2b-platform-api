@@ -1,13 +1,7 @@
 import { BaseDto } from 'src/core';
 import { DeliverySpace } from '../delivery-space.entity';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsOptional,
-  IsNumberString,
-  IsEnum,
-  IsNumber,
-  IsIP,
-} from 'class-validator';
+import { IsOptional, IsEnum, IsNumber } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 import { YN, ORDER_BY_VALUE, Default } from 'src/common';
 

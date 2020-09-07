@@ -119,6 +119,8 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
   // no database
   likedCount?: number;
 
+  likedYn?: boolean;
+
   @ManyToOne(
     type => CompanyUser,
     companyUser => companyUser.deliverySpaces,
@@ -203,7 +205,7 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
   @JoinTable({
     name: 'B2B_FAVORITE_SPACE_MAPPER',
     joinColumn: { name: 'REFERENCE_NO' },
-    inverseJoinColumn: { name: 'NANUDA_USER' },
+    inverseJoinColumn: { name: 'NANUDA_USER_NO' },
   })
-  nanudaUsers?: NanudaUser[];
+  favoritedUsers?: NanudaUser[];
 }
