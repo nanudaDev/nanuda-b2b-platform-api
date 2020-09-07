@@ -57,6 +57,7 @@ export class SmsAuthService extends BaseService {
     let smsAuth = new SmsAuth();
     let newAuthCode = Math.floor(100000 + Math.random() * 900000);
     if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
+      // for test case only
       newAuthCode = 123456;
     }
     smsAuth.phone = companyUserSmsAuthRegisterDto.phone;
