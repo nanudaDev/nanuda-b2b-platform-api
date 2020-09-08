@@ -62,14 +62,12 @@ export class NanudaFavoriteSpaceMapperController extends BaseController {
    * delete
    * @param favoriteSpaceMapperNo
    */
-  @Delete('/nanuda/favorite-space/:id([0-9]+)')
-  async delete(
-    @Param('id', ParseIntPipe) favoriteSpaceMapperNo: number,
-    @Query() nanudaUserNo,
-  ) {
+  @Delete('/nanuda/favorite-space')
+  async delete(@Query() deliverySpaceNo, @Query() nanudaUserNo) {
+    console.log(deliverySpaceNo);
     return {
       isDeleted: await this.favoriteSpaceMapperService.deleteFavorite(
-        favoriteSpaceMapperNo,
+        deliverySpaceNo.deliverySpaceNo,
         nanudaUserNo.nanudaUserNo,
       ),
     };
