@@ -10,4 +10,9 @@ export class AdminDeliverySpaceCreateDto extends DeliverySpaceCreateDto {
   @Expose()
   @IsArray()
   brandIds?: number[];
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  desc?: string;
 }
