@@ -97,6 +97,12 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
   })
   monthlyRentFee?: string;
 
+  @Column({
+    type: 'text',
+    name: 'DESC',
+  })
+  desc?: string;
+
   @Column('char', {
     length: 1,
     name: 'SHOW_YN',
