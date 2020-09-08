@@ -67,6 +67,7 @@ export class NanudaDeliverySpaceService extends BaseService {
         'amenities',
         'deliverySpaceOptions',
         'favoritedUsers',
+        'contracts',
       ])
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
@@ -135,6 +136,8 @@ export class NanudaDeliverySpaceService extends BaseService {
             },
           });
         item.consultCount = consults.length;
+        item.remainingCount = item.quantity - item.contracts.length;
+        delete item.contracts;
       }),
     );
 
@@ -167,7 +170,13 @@ export class NanudaDeliverySpaceService extends BaseService {
     const consult = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
-      .CustomLeftJoinAndSelect(['amenities', 'deliverySpaceOptions'])
+      .CustomLeftJoinAndSelect([
+        'amenities',
+        'deliverySpaceOptions',
+        'contracts',
+        'brands',
+      ])
+      .leftJoinAndSelect('companyDistrict.amenities', 'commonAmenities')
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('deliverySpace.no = :no', { no: deliverySpaceNo })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
@@ -198,6 +207,8 @@ export class NanudaDeliverySpaceService extends BaseService {
         consult.likedYn = true;
       }
     }
+    consult.remainingCount = consult.quantity - consult.contracts.length;
+    delete consult.contracts;
     return consult;
   }
 }

@@ -50,4 +50,9 @@ export class AdminDeliverySpaceUpdateDto extends DeliverySpaceUpdateDto {
   @Expose()
   @IsArray()
   brandIds?: number[];
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  desc?: string;
 }
