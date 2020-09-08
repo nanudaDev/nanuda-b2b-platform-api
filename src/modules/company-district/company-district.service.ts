@@ -309,6 +309,8 @@ export class CompanyDistrictService extends BaseService {
     let district = await this.companyDistrictRepo.findOne(companyDistrictNo);
     district.lat = adminCompanyDistrictLatLonDto.lat;
     district.lon = adminCompanyDistrictLatLonDto.lon;
+    district.region1DepthName = adminCompanyDistrictLatLonDto.region1DepthName;
+    district.region2DepthName = adminCompanyDistrictLatLonDto.region2DepthName;
     // update vicinity
     this.companyDistrictAnalysisSenderService.setVicinityAnalysis(
       companyDistrictNo,
