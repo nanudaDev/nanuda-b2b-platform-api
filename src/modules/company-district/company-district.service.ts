@@ -168,7 +168,11 @@ export class CompanyDistrictService extends BaseService {
     const companyDistrict = await this.companyDistrictRepo
       .createQueryBuilder('companyDistrict')
       .CustomInnerJoinAndSelect(['codeManagement', 'company'])
-      .CustomLeftJoinAndSelect(['companyDistrictUpdateHistories', 'amenities'])
+      .CustomLeftJoinAndSelect([
+        'companyDistrictUpdateHistories',
+        'amenities',
+        'deliverySpaces',
+      ])
       .orderBy('companyDistrictUpdateHistories.no', ORDER_BY_VALUE.DESC)
       .where('companyDistrict.no = :no', { no: companyDistrictNo })
       .getOne();
