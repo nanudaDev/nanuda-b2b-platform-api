@@ -46,11 +46,11 @@ export class FavoriteSpaceMapperService extends BaseService {
    * delete from mapper
    * @param favoriteSpaceMapperNo
    */
-  async deleteFavorite(favoriteSpaceMapperNo: number, nanudaUserNo: number) {
+  async deleteFavorite(deliverySpaceNo: number, nanudaUserNo: number) {
     await this.entityManager.transaction(async entityManager => {
-      console.log(favoriteSpaceMapperNo);
+      console.log(deliverySpaceNo);
       const check = await this.favoriteSpaceMapperRepo.findOne({
-        no: favoriteSpaceMapperNo,
+        deliverySpaceNo: deliverySpaceNo,
         nanudaUserNo: nanudaUserNo,
       });
       console.log(check);
@@ -61,7 +61,9 @@ export class FavoriteSpaceMapperService extends BaseService {
         .createQueryBuilder()
         .delete()
         .from(FavoriteSpaceMapper)
-        .where('no = :no', { no: favoriteSpaceMapperNo })
+        .where('deliverySpaceNo = :deliverySpaceNo', {
+          deliverySpaceNo: deliverySpaceNo,
+        })
         .andWhere('nanudaUserNo = :nanudaUserNo', {
           nanudaUserNo: nanudaUserNo,
         })
