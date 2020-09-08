@@ -1,10 +1,14 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { BaseService } from 'src/core';
-import { FavoriteSpaceMapperCreateDto } from './dto';
+import {
+  FavoriteSpaceMapperCreateDto,
+  NanudaFavoriteSpaceMapperListDto,
+} from './dto';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { FavoriteSpaceMapper } from './favorite-space-mapper.entity';
 import { Repository, EntityManager } from 'typeorm';
+import { PaginatedRequest, PaginatedResponse } from 'src/common';
 
 @Injectable()
 export class FavoriteSpaceMapperService extends BaseService {
@@ -23,6 +27,12 @@ export class FavoriteSpaceMapperService extends BaseService {
   async create(
     favoriteSpaceMapperCreateDto: FavoriteSpaceMapperCreateDto,
   ): Promise<FavoriteSpaceMapper> {
+    // const check = await this.favoriteSpaceMapperRepo.find({
+    //   where: favoriteSpaceMapperCreateDto,
+    // });
+    // if (check) {
+    //   throw new BadRequestException({ message: 'Already liked!' });
+    // }
     let newFavoriteSpace = new FavoriteSpaceMapper(
       favoriteSpaceMapperCreateDto,
     );
@@ -36,11 +46,12 @@ export class FavoriteSpaceMapperService extends BaseService {
    * delete from mapper
    * @param favoriteSpaceMapperNo
    */
-  async deleteFavorite(favoriteSpaceMapperNo: number, nanudaUserNo?: number) {
+  async deleteFavorite(favoriteSpaceMapperNo: number, nanudaUserNo: number) {
     await this.entityManager.transaction(async entityManager => {
       console.log(favoriteSpaceMapperNo);
       const check = await this.favoriteSpaceMapperRepo.findOne({
         no: favoriteSpaceMapperNo,
+        nanudaUserNo: nanudaUserNo,
       });
       console.log(check);
       if (!check) {
@@ -51,10 +62,39 @@ export class FavoriteSpaceMapperService extends BaseService {
         .delete()
         .from(FavoriteSpaceMapper)
         .where('no = :no', { no: favoriteSpaceMapperNo })
+        .andWhere('nanudaUserNo = :nanudaUserNo', {
+          nanudaUserNo: nanudaUserNo,
+        })
         .execute();
 
       return true;
     });
     return true;
+  }
+
+  /**
+   * find all favorite for nanuda user
+   * @param nanudaUserNo
+   * @param nanudaFavoriteSpaceMapperListDto
+   * @param pagination
+   */
+  async findFavoritedSpace(
+    nanudaFavoriteSpaceMapperListDto: NanudaFavoriteSpaceMapperListDto,
+    pagination?: PaginatedRequest,
+  ): Promise<PaginatedResponse<FavoriteSpaceMapper>> {
+    const nanudaUserNo = nanudaFavoriteSpaceMapperListDto.nanudaUserNo;
+    delete nanudaFavoriteSpaceMapperListDto.nanudaUserNo;
+    const qb = this.favoriteSpaceMapperRepo
+      .createQueryBuilder('favorite')
+      .CustomInnerJoinAndSelect(['deliverySpace'])
+      .innerJoinAndSelect('deliverySpace.companyDistrict', 'companyDistrict')
+      .where('favorite.nanudaUserNo = :no', {
+        no: nanudaUserNo,
+      })
+      .WhereAndOrder(nanudaFavoriteSpaceMapperListDto)
+      .Paginate(pagination);
+
+    const [items, totalCount] = await qb.getManyAndCount();
+    return { items, totalCount };
   }
 }

@@ -6,12 +6,17 @@ import {
   Param,
   ParseIntPipe,
   Query,
+  Get,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { BaseController } from 'src/core';
-import { FavoriteSpaceMapperCreateDto } from './dto';
+import {
+  FavoriteSpaceMapperCreateDto,
+  NanudaFavoriteSpaceMapperListDto,
+} from './dto';
 import { FavoriteSpaceMapper } from './favorite-space-mapper.entity';
 import { FavoriteSpaceMapperService } from './favorite-space-mapper.service';
+import { PaginatedRequest, PaginatedResponse } from 'src/common';
 
 @Controller()
 @ApiTags('NANUDA FAVORITE SPACES')
@@ -20,6 +25,22 @@ export class NanudaFavoriteSpaceMapperController extends BaseController {
     private readonly favoriteSpaceMapperService: FavoriteSpaceMapperService,
   ) {
     super();
+  }
+
+  /**
+   * find favorite space
+   * @param nanudaFavoriteSpaceMapperListDto
+   * @param pagination
+   */
+  @Get('/nanuda/my-favorite')
+  async findMyFavorite(
+    @Query() nanudaFavoriteSpaceMapperListDto: NanudaFavoriteSpaceMapperListDto,
+    @Query() pagination?: PaginatedRequest,
+  ) {
+    return await this.favoriteSpaceMapperService.findFavoritedSpace(
+      nanudaFavoriteSpaceMapperListDto,
+      pagination,
+    );
   }
 
   /**
@@ -42,11 +63,14 @@ export class NanudaFavoriteSpaceMapperController extends BaseController {
    * @param favoriteSpaceMapperNo
    */
   @Delete('/nanuda/favorite-space/:id([0-9]+)')
-  async delete(@Param('id', ParseIntPipe) favoriteSpaceMapperNo: number) {
-    console.log(123);
+  async delete(
+    @Param('id', ParseIntPipe) favoriteSpaceMapperNo: number,
+    @Query() nanudaUserNo,
+  ) {
     return {
       isDeleted: await this.favoriteSpaceMapperService.deleteFavorite(
         favoriteSpaceMapperNo,
+        nanudaUserNo.nanudaUserNo,
       ),
     };
   }
