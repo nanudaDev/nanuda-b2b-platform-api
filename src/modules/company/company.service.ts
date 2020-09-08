@@ -129,7 +129,13 @@ export class CompanyService extends BaseService {
         company.companyStatus = APPROVAL_STATUS.UPDATE_APPROVAL;
         company = await entityManager.save(company);
         // create new update history data
-        if (companyUpdateDto.logo && companyUpdateDto.logo.length > 0) {
+        if (companyUpdateDto.logo && companyUpdateDto.logo.length > 1) {
+          throw new BadRequestException({
+            message: 'Can only upload one image!',
+            error: 400,
+          });
+        }
+        if (companyUpdateDto.logo && companyUpdateDto.logo.length === 1) {
           companyUpdateDto.logo = await this.fileUploadService.moveS3File(
             companyUpdateDto.logo,
           );
@@ -174,7 +180,16 @@ export class CompanyService extends BaseService {
         // company.companyStatus = APPROVAL_STATUS.APPROVAL;
         if (
           adminCompanyUpdateDto.logo &&
-          adminCompanyUpdateDto.logo.length > 0
+          adminCompanyUpdateDto.logo.length > 1
+        ) {
+          throw new BadRequestException({
+            message: 'Can only upload one image!',
+            error: 400,
+          });
+        }
+        if (
+          adminCompanyUpdateDto.logo &&
+          adminCompanyUpdateDto.logo.length === 1
         ) {
           adminCompanyUpdateDto.logo = await this.fileUploadService.moveS3File(
             adminCompanyUpdateDto.logo,

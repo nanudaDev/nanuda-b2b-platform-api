@@ -1,17 +1,9 @@
 import { BaseDto } from 'src/core';
 import { DeliverySpace } from '../delivery-space.entity';
-import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
-import {
-  IsOptional,
-  IsNumberString,
-  IsEnum,
-  IsArray,
-  ValidateNested,
-  IsNotEmpty,
-} from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsOptional, IsNumberString, IsEnum, IsArray } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 import { YN, Default } from 'src/common';
-import { FileAttachmentDto } from 'src/modules/file-upload/dto';
 
 export class DeliverySpaceUpdateDto extends BaseDto<DeliverySpaceUpdateDto>
   implements Partial<DeliverySpace> {

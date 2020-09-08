@@ -1,3 +1,4 @@
+require('dotenv').config();
 import {
   Injectable,
   UnauthorizedException,
@@ -6,6 +7,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
 import { ADMIN_USER, COMPANY_USER } from 'src/shared';
+import { ENVIRONMENT } from 'src/config';
 @Injectable()
 export class AuthRolesGuard extends AuthGuard('jwt') {
   readonly roles: (ADMIN_USER | COMPANY_USER)[];
@@ -16,9 +18,13 @@ export class AuthRolesGuard extends AuthGuard('jwt') {
 
   handleRequest(err, user, info, context: ExecutionContextHost) {
     if (err || !user) {
+      if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
+        console.log(err, 'err');
+        console.log(user, 'user');
+      }
       throw err ||
         new UnauthorizedException({
-          message: '권한이 없습니다.',
+          message: '세션이 만료되었습니다. 다시 로그인해주세요.',
           error: 401,
         });
     }

@@ -363,13 +363,74 @@ export class DashboardService extends BaseService {
     const query = `SELECT (SELECT NANUDA_NAME FROM NANUDA_KITCHEN_MASTER WHERE NANUDA_NO = A.NANUDA_NO) AS NANUDA_NAME, DATE_FORMAT(PAYMENT_TIME,'%Y-%m-%d') AS DATE_VAL, SUM(TOTAL_AMOUNT) AS SALES FROM PAYMENT_LIST A WHERE CARD_CANCEL_FL = 'N' AND APPROVAL_NO != 'undefined' AND DATE_FORMAT(PAYMENT_TIME,'%Y-%m-%d') BETWEEN DATE_FORMAT(DATE_SUB(now(), INTERVAL ${days} DAY),'%Y-%m-%d') AND DATE_FORMAT(now(),'%Y-%m-%d') GROUP BY LEFT(DATE_VAL,10), A.NANUDA_NO ORDER BY A.NANUDA_NO, DATE_VAL`;
     const chartData = new Graph();
     // labels for months
-    const labels = [];
+    const labels: any = [];
+    const shopName: any = [];
     chartData.labels = labels;
     // dataset array
-    const datasets = [];
+    const datasets: any = [];
     chartData.datasets = datasets;
     const graphData = await this.paymentListRepo.manager.query(query);
-    return graphData;
+    graphData.map((data, i) => {
+      if (!labels.includes(data.DATE_VAL)) {
+        labels.push(data.DATE_VAL);
+      }
+      // push the name of the dates into labels
+      if (!shopName.includes(data.NANUDA_NAME)) {
+        shopName.push(data.NANUDA_NAME);
+      }
+    });
+    let grouped = graphData.reduce((r, a) => {
+      r[a.NANUDA_NAME] = [...(r[a.NANUDA_NAME] || []), a.DATE_VAL];
+      return r;
+    }, {});
+    shopName.map(names => {
+      labels.map(date => {
+        if (!grouped[names].includes(date)) {
+          graphData.push({
+            NANUDA_NAME: names,
+            SALES: 0,
+            DATE_VAL: date,
+          });
+        }
+      });
+    });
+    // create real dates
+    graphData.map(data => {
+      const date = data.DATE_VAL;
+      const parts = date.split('-');
+      const newDate = new Date(parts[0], parts[1] - 1, parts[2]);
+      data.NEW_DATE = newDate;
+    });
+
+    graphData.sort((a, b) => a.NEW_DATE - b.NEW_DATE);
+
+    graphData.map((data, i) => {
+      let dataset: any = {};
+      dataset.label = data.NANUDA_NAME;
+      dataset.backgroundColor = `#${((Math.random() * 0xffffff) << 0).toString(
+        16,
+      )}`;
+      dataset.data = [];
+      graphData.map((revenue, i) => {
+        if (revenue.NANUDA_NAME === data.NANUDA_NAME) {
+          dataset.data.splice(i, 0, revenue.SALES);
+        }
+      });
+      chartData.datasets.splice(i, 0, dataset);
+    });
+    // remove duplicate objects from mapping
+    const uniqueData = Array.from(
+      new Set(
+        chartData.datasets
+          .map(data => data.label)
+          .map(label => {
+            return chartData.datasets.find(data => data.label === label);
+          }),
+      ),
+    );
+    chartData.datasets = uniqueData;
+    chartData.labels = labels;
+    return chartData;
   }
 
   private removeDuplicate(array: any) {
