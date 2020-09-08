@@ -27,12 +27,13 @@ export class FavoriteSpaceMapperService extends BaseService {
   async create(
     favoriteSpaceMapperCreateDto: FavoriteSpaceMapperCreateDto,
   ): Promise<FavoriteSpaceMapper> {
-    // const check = await this.favoriteSpaceMapperRepo.find({
-    //   where: favoriteSpaceMapperCreateDto,
-    // });
-    // if (check) {
-    //   throw new BadRequestException({ message: 'Already liked!' });
-    // }
+    const check = await this.favoriteSpaceMapperRepo.findOne({
+      deliverySpaceNo: favoriteSpaceMapperCreateDto.deliverySpaceNo,
+      nanudaUserNo: favoriteSpaceMapperCreateDto.nanudaUserNo,
+    });
+    if (check) {
+      throw new BadRequestException({ message: 'Already liked!' });
+    }
     let newFavoriteSpace = new FavoriteSpaceMapper(
       favoriteSpaceMapperCreateDto,
     );
