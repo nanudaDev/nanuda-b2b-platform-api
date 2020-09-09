@@ -44,6 +44,8 @@ export class NanudaCompanyDistrictService extends BaseService {
         'companyDistrict.region1DepthName',
         'companyDistrict.address',
         'companyDistrict.nameKr',
+        'companyDistrict.lat',
+        'companyDistrict.lon',
         'deliverySpaces',
       ])
       .getMany();
@@ -71,6 +73,8 @@ export class NanudaCompanyDistrictService extends BaseService {
         'companyDistrict.address',
         'companyDistrict.nameKr',
         'deliverySpaces',
+        'companyDistrict.lat',
+        'companyDistrict.lon',
       ])
       // .limit(2)
       .getMany();
@@ -97,6 +101,8 @@ export class NanudaCompanyDistrictService extends BaseService {
         'companyDistrict.address',
         'companyDistrict.nameKr',
         'deliverySpaces',
+        'companyDistrict.lat',
+        'companyDistrict.lon',
       ])
       .getMany();
     districts.map(district => {
