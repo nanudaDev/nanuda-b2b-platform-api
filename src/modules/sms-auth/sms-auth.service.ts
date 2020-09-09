@@ -105,6 +105,11 @@ export class SmsAuthService extends BaseService {
     return true;
   }
 
+  /**
+   * send message to nanuda user
+   * @param adminSendMessageDto
+   * @param req
+   */
   async sendAdminMessage(
     adminSendMessageDto: AdminSendMessageDto,
     req?: Request,

@@ -164,6 +164,10 @@ export class AdminCompanyDistrictController extends BaseController {
    */
   @Delete('/admin/company-district/:id([0-9]+)')
   async deleteDistrict(@Param('id', ParseIntPipe) companyDistrictNo: number) {
-    return await this.companyDistrictService.deleteDistrict(companyDistrictNo);
+    return {
+      isDeleted: await this.companyDistrictService.deleteDistrict(
+        companyDistrictNo,
+      ),
+    };
   }
 }

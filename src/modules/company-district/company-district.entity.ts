@@ -60,6 +60,24 @@ export class CompanyDistrict extends BaseEntity<CompanyDistrict> {
   })
   address: string;
 
+  @Column({
+    type: 'varchar',
+    name: 'REGION_1DEPTH_NAME',
+  })
+  region1DepthName?: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'REGION_2DEPTH_NAME',
+  })
+  region2DepthName?: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'REGION_3DEPTH_NAME',
+  })
+  region3DepthName?: string;
+
   @Column('varchar', {
     length: 20,
     name: 'SPACE_SCORE',
@@ -159,4 +177,6 @@ export class CompanyDistrict extends BaseEntity<CompanyDistrict> {
   @ManyToOne(type => CompanyDistrictUpdateHistory)
   @JoinColumn({ name: 'NO', referencedColumnName: 'companyDistrictNo' })
   companyDistrictUpdateHistories?: CompanyDistrictUpdateHistory[];
+
+  deliverySpaceCount?: number;
 }

@@ -31,6 +31,21 @@ export class CompanyDistrictListDto extends BaseDto<CompanyDistrictListDto>
   @Expose()
   address?: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  region1DepthName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  region2DepthName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  keyword?: string;
+
   @ApiPropertyOptional({ enum: APPROVAL_STATUS })
   @IsOptional()
   @Expose()

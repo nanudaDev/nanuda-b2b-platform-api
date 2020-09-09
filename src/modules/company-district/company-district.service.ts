@@ -309,6 +309,9 @@ export class CompanyDistrictService extends BaseService {
     let district = await this.companyDistrictRepo.findOne(companyDistrictNo);
     district.lat = adminCompanyDistrictLatLonDto.lat;
     district.lon = adminCompanyDistrictLatLonDto.lon;
+    district.region1DepthName = adminCompanyDistrictLatLonDto.region1DepthName;
+    district.region2DepthName = adminCompanyDistrictLatLonDto.region2DepthName;
+    district.region3DepthName = adminCompanyDistrictLatLonDto.region3DepthName;
     // update vicinity
     this.companyDistrictAnalysisSenderService.setVicinityAnalysis(
       companyDistrictNo,
@@ -528,39 +531,40 @@ export class CompanyDistrictService extends BaseService {
    * @param companyDistrictNo
    */
   async deleteDistrict(companyDistrictNo: number) {
-    const district = await this.entityManager.transaction(
-      async entityManager => {
-        // company district amenity mapper
-        await entityManager
-          .createQueryBuilder()
-          .delete()
-          .from(CompanyDistrictAmenityMapper)
-          .where('companyDistrictNo = :companyDistrictNo', {
-            companyDistrictNo: companyDistrictNo,
-          })
-          .execute();
+    await this.entityManager.transaction(async entityManager => {
+      // company district amenity mapper
+      await entityManager
+        .createQueryBuilder()
+        .delete()
+        .from(CompanyDistrictAmenityMapper)
+        .where('companyDistrictNo = :companyDistrictNo', {
+          companyDistrictNo: companyDistrictNo,
+        })
+        .execute();
 
-        // delete delivery space
-        await entityManager
-          .createQueryBuilder()
-          .delete()
-          .from(DeliverySpace)
-          .where('companyDistrictNo = :companyDistrictNo', {
-            companyDistrictNo: companyDistrictNo,
-          })
-          .execute();
+      // delete delivery space
+      await entityManager
+        .createQueryBuilder()
+        .delete()
+        .from(DeliverySpace)
+        .where('companyDistrictNo = :companyDistrictNo', {
+          companyDistrictNo: companyDistrictNo,
+        })
+        .execute();
 
-        // TODO: FAVORITES
+      // TODO: FAVORITES
 
-        // delete district
-        await entityManager
-          .createQueryBuilder()
-          .delete()
-          .from(CompanyDistrict)
-          .where('no = :no', { no: companyDistrictNo })
-          .execute();
-      },
-    );
+      // delete district
+      await entityManager
+        .createQueryBuilder()
+        .delete()
+        .from(CompanyDistrict)
+        .where('no = :no', { no: companyDistrictNo })
+        .execute();
+
+      return true;
+    });
+    return true;
   }
 
   private async __find_one_company_district_update_history(
