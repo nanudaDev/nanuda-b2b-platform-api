@@ -111,6 +111,11 @@ export class NanudaCompanyDistrictService extends BaseService {
         'region2DepthName',
         companyDistrictListDto.keyword,
       )
+      // .AndWhereLike(
+      //   'companyDistrict',
+      //   'region3DepthName',
+      //   companyDistrictListDto.keyword,
+      // )
       .select([
         'companyDistrict.region2DepthName',
         'companyDistrict.region3DepthName',
@@ -120,15 +125,18 @@ export class NanudaCompanyDistrictService extends BaseService {
       dropdownDistrict,
       'region2DepthName',
     );
+    console.log(dropdownDistrict);
     reduced.map(reduce => {
       const top = new DropdownResults();
       top.name = reduce.region2DepthName;
       top.district = true;
       topResults.push(top);
-      const drop = new DropdownResults();
-      drop.name = `${reduce.region2DepthName} ${reduce.region3DepthName}`;
-      drop.region = true;
-      secondResults.push(drop);
+    });
+    dropdownDistrict.map(district => {
+      const second = new DropdownResults();
+      second.name = `${district.region2DepthName} ${district.region3DepthName}`;
+      second.region = true;
+      secondResults.push(second);
     });
     return { topResults, secondResults };
   }
