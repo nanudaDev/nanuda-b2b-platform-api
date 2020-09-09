@@ -25,9 +25,9 @@ export class NanudaCompanyDistrictController extends BaseController {
   async search(
     @Query() companyDistrictListDto: CompanyDistrictListDto,
   ): Promise<SearchResults> {
-    if (!companyDistrictListDto.keyword) {
-      return new SearchResults();
-    }
+    // if (!companyDistrictListDto.keyword) {
+    //   return new SearchResults();
+    // }
     return await this.companyDistrictService.search(companyDistrictListDto);
   }
 }
