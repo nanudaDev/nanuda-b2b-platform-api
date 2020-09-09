@@ -72,6 +72,12 @@ export class CompanyDistrict extends BaseEntity<CompanyDistrict> {
   })
   region2DepthName?: string;
 
+  @Column({
+    type: 'varchar',
+    name: 'REGION_3DEPTH_NAME',
+  })
+  region3DepthName?: string;
+
   @Column('varchar', {
     length: 20,
     name: 'SPACE_SCORE',

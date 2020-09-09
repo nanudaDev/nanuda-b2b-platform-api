@@ -151,6 +151,8 @@ export class NanudaDeliverySpaceService extends BaseService {
           });
           if (liked) {
             item.likedYn = true;
+          } else {
+            item.likedYn = false;
           }
         }),
       );
@@ -205,6 +207,8 @@ export class NanudaDeliverySpaceService extends BaseService {
       });
       if (liked) {
         consult.likedYn = true;
+      } else {
+        consult.likedYn = false;
       }
     }
     consult.remainingCount = consult.quantity - consult.contracts.length;
