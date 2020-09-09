@@ -95,6 +95,46 @@ export class NanudaCompanyDistrictService extends BaseService {
     return searchResults;
   }
 
+  async getCenterForMap(companyDistrictListDto: CompanyDistrictListDto) {
+    //     "https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000" \
+    // --data-urlencode "query=카카오프렌즈" \
+    // -H "Authorization: KakaoAK {REST_API_KEY}"
+    const searchResults = new SearchResults();
+    if (companyDistrictListDto.keyword) {
+      let latLon = await Axios.get(
+        'https://dapi.kakao.com/v2/local/search/address.json',
+        {
+          params: { query: companyDistrictListDto.keyword },
+          headers: {
+            Authorization: `KakaoAK ${process.env.KAKAO_API_KEY}`,
+            mode: 'cors',
+          },
+        },
+      );
+      if (latLon.data.documents && latLon.data.documents.length === 0) {
+        latLon = await Axios.get(
+          'https://dapi.kakao.com/v2/local/search/keyword.json',
+          {
+            params: { query: companyDistrictListDto.keyword },
+            headers: {
+              Authorization: `KakaoAK ${process.env.KAKAO_API_KEY}`,
+              mode: 'cors',
+            },
+          },
+        );
+        searchResults.lat = latLon.data.documents[0].y;
+        searchResults.lon = latLon.data.documents[0].x;
+      }
+      searchResults.lat = latLon.data.documents[0].y;
+      searchResults.lon = latLon.data.documents[0].x;
+    }
+    return searchResults;
+  }
+
+  /**
+   * get dropdown
+   * @param companyDistrictListDto
+   */
   async companyDistrictDropDown(
     companyDistrictListDto: CompanyDistrictListDto,
   ) {
@@ -111,11 +151,6 @@ export class NanudaCompanyDistrictService extends BaseService {
         'region2DepthName',
         companyDistrictListDto.keyword,
       )
-      // .AndWhereLike(
-      //   'companyDistrict',
-      //   'region3DepthName',
-      //   companyDistrictListDto.keyword,
-      // )
       .select([
         'companyDistrict.region2DepthName',
         'companyDistrict.region3DepthName',
