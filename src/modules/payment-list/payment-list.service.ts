@@ -27,6 +27,13 @@ export class PaymentListService extends BaseService {
     const qb = this.paymentListRepo
       .createQueryBuilder('paymentList')
       //   AndWhereLike...
+      .CustomLeftJoinAndSelect(['nanudaKitchenMaster'])
+      .AndWhereLike(
+        'nanudaKitchenMaster',
+        'nanudaName',
+        adminPaymentListDto.nanudaKitchenMasterName,
+        adminPaymentListDto.exclude('nanudaKitchenMasterName'),
+      )
       .WhereAndOrder(adminPaymentListDto)
       .Paginate(pagination);
 

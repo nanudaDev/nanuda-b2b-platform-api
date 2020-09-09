@@ -12,6 +12,11 @@ export class AdminPaymentListDto extends BaseDto<AdminPaymentListDto>
   @Expose()
   paymentListNo?: number;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  nanudaKitchenMasterName?: string;
+
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsOptional()
   @Expose()
