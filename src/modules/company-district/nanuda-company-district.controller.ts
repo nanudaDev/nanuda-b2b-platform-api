@@ -44,4 +44,18 @@ export class NanudaCompanyDistrictController extends BaseController {
       companyDistrictListDto,
     );
   }
+
+  /**
+   * get center
+   * @param companyDistrictListDto
+   */
+  @Get('/nanuda/company-district/get-center')
+  async getCenter(@Query() companyDistrictListDto: CompanyDistrictListDto) {
+    // if (!companyDistrictListDto.keyword) {
+    //   return new SearchResults();
+    // }
+    return await this.companyDistrictService.getCenterForMap(
+      companyDistrictListDto,
+    );
+  }
 }
