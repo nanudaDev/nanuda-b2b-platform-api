@@ -38,8 +38,19 @@ export class NanudaCompanyDistrictService extends BaseService {
         'region1DepthName',
         companyDistrictListDto.keyword,
       )
-      .limit(2)
+      // .limit(2)
+      .select([
+        'companyDistrict.no',
+        'companyDistrict.region1DepthName',
+        'companyDistrict.address',
+        'companyDistrict.nameKr',
+        'deliverySpaces',
+      ])
       .getMany();
+    cities.map(city => {
+      city.deliverySpaceCount = city.deliverySpaces.length;
+      delete city.deliverySpaces;
+    });
     searchResults.cities = cities;
 
     const regions = await this.companyDistrictRepo
@@ -53,24 +64,46 @@ export class NanudaCompanyDistrictService extends BaseService {
         'region2DepthName',
         companyDistrictListDto.keyword,
       )
-      .limit(2)
+      .select([
+        'companyDistrict.no',
+        'companyDistrict.region2DepthName',
+        'companyDistrict.region1DepthName',
+        'companyDistrict.address',
+        'companyDistrict.nameKr',
+        'deliverySpaces',
+      ])
+      // .limit(2)
       .getMany();
+    regions.map(region => {
+      region.deliverySpaceCount = region.deliverySpaces.length;
+      delete region.deliverySpaces;
+    });
     searchResults.regions = regions;
 
-    // const districts = await this.companyDistrictRepo
-    //   .createQueryBuilder('companyDistrict')
-    //   .CustomInnerJoinAndSelect(['deliverySpaces'])
-    //   .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
-    //     companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
-    //   })
-    //   .AndWhereLike(
-    //     'companyDistrict',
-    //     'address',
-    //     companyDistrictListDto.keyword,
-    //   )
-    //   .limit(2)
-    //   .getMany();
-    // searchResults.districts = districts;
+    const districts = await this.companyDistrictRepo
+      .createQueryBuilder('companyDistrict')
+      .CustomInnerJoinAndSelect(['deliverySpaces'])
+      // .AndWhereLike('companyDistrict', 'nameKr', companyDistrictListDto.keyword)
+      .AndWhereLike(
+        'companyDistrict',
+        'region3DepthName',
+        companyDistrictListDto.keyword,
+      )
+      .select([
+        'companyDistrict.no',
+        'companyDistrict.region3DepthName',
+        'companyDistrict.region2DepthName',
+        'companyDistrict.region1DepthName',
+        'companyDistrict.address',
+        'companyDistrict.nameKr',
+        'deliverySpaces',
+      ])
+      .getMany();
+    districts.map(district => {
+      district.deliverySpaceCount = district.deliverySpaces.length;
+      delete district.deliverySpaces;
+    });
+    searchResults.districts = districts;
     return searchResults;
   }
 }

@@ -177,4 +177,6 @@ export class CompanyDistrict extends BaseEntity<CompanyDistrict> {
   @ManyToOne(type => CompanyDistrictUpdateHistory)
   @JoinColumn({ name: 'NO', referencedColumnName: 'companyDistrictNo' })
   companyDistrictUpdateHistories?: CompanyDistrictUpdateHistory[];
+
+  deliverySpaceCount?: number;
 }
