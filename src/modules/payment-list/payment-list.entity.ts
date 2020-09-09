@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { BaseEntity, BaseKitchenEntity } from 'src/core';
+import { NanudaKitchenMaster } from '../nanuda-kitchen-master/nanuda-kitchen-master.entity';
 
 @Entity({ name: 'PAYMENT_LIST' })
 export class PaymentList extends BaseKitchenEntity<PaymentList> {
@@ -164,4 +171,11 @@ export class PaymentList extends BaseKitchenEntity<PaymentList> {
     nullable: true,
   })
   paymentTime: Date;
+
+  @ManyToOne(
+    type => NanudaKitchenMaster,
+    nanudaKitchenMaster => nanudaKitchenMaster.paymentLists,
+  )
+  @JoinColumn({ name: 'NANUDA_NO' })
+  nanudaKitchenMaster?: NanudaKitchenMaster;
 }

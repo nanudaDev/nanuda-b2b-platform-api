@@ -30,4 +30,18 @@ export class NanudaCompanyDistrictController extends BaseController {
     // }
     return await this.companyDistrictService.search(companyDistrictListDto);
   }
+
+  /**
+   * search districts
+   * @param companyDistrictListDto
+   */
+  @Get('/nanuda/company-district/dropdown')
+  async dropdown(@Query() companyDistrictListDto: CompanyDistrictListDto) {
+    // if (!companyDistrictListDto.keyword) {
+    //   return new SearchResults();
+    // }
+    return await this.companyDistrictService.companyDistrictDropDown(
+      companyDistrictListDto,
+    );
+  }
 }
