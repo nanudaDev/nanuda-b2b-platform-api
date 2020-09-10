@@ -59,6 +59,15 @@ export class PaymentListService extends BaseService {
         adminPaymentListDto.exclude('started'),
       );
     }
+    if (adminPaymentListDto.nanudaKitchenMenuName) {
+      qb.leftJoinAndSelect('nanudaKitchenMaster.menus', 'menus');
+      qb.AndWhereLike(
+        'menus',
+        'menuName',
+        adminPaymentListDto.nanudaKitchenMenuName,
+      );
+      delete adminPaymentListDto.nanudaKitchenMenuName;
+    }
     qb.WhereAndOrder(adminPaymentListDto);
     qb.Paginate(pagination);
 
@@ -111,8 +120,17 @@ export class PaymentListService extends BaseService {
         null,
         adminPaymentListDto.exclude('started'),
       )
-      .select('SUM(paymentList.totalAmount)', 'sum')
-      .getRawOne();
-    return await qb;
+      .select('SUM(paymentList.totalAmount)', 'sum');
+    if (adminPaymentListDto.nanudaKitchenMenuName) {
+      qb.leftJoinAndSelect('nanudaKitchenMaster.menus', 'menus');
+      qb.AndWhereLike(
+        'menus',
+        'menuName',
+        adminPaymentListDto.nanudaKitchenMenuName,
+        adminPaymentListDto.exclude('nanudaKitchenName'),
+      );
+      delete adminPaymentListDto.nanudaKitchenMenuName;
+    }
+    return await qb.getRawOne();
   }
 }
