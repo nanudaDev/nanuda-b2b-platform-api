@@ -6,6 +6,7 @@ import { CompanyDistrict } from './company-district.entity';
 import { Repository } from 'typeorm';
 import { CompanyDistrictListDto } from './dto';
 import Axios from 'axios';
+import { YN } from 'src/common';
 
 export class SearchResults {
   lat: string;
@@ -16,6 +17,7 @@ export class SearchResults {
 }
 
 export class DropdownResults {
+  no?: number;
   district?: boolean;
   region?: boolean;
   name?: string;
@@ -87,11 +89,17 @@ export class NanudaCompanyDistrictService extends BaseService {
         'deliverySpaces',
       ])
       .getMany();
+    // TODO: typeorm subquery로 해결
     cities.map(city => {
-      city.deliverySpaceCount = city.deliverySpaces.length;
+      const filteredArray = city.deliverySpaces.filter(
+        deliverySpace =>
+          deliverySpace.showYn === YN.YES && deliverySpace.delYn === YN.NO,
+      );
+      city.deliverySpaceCount = filteredArray.length;
       delete city.deliverySpaces;
     });
-    searchResults.cities = cities;
+    const filteredCities = cities.filter(city => city.deliverySpaceCount > 0);
+    searchResults.cities = filteredCities;
     return searchResults;
   }
 
@@ -152,6 +160,7 @@ export class NanudaCompanyDistrictService extends BaseService {
         companyDistrictListDto.keyword,
       )
       .select([
+        'companyDistrict.no',
         'companyDistrict.region2DepthName',
         'companyDistrict.region3DepthName',
       ])
@@ -163,12 +172,14 @@ export class NanudaCompanyDistrictService extends BaseService {
     console.log(dropdownDistrict);
     reduced.map(reduce => {
       const top = new DropdownResults();
+      top.no = reduce.no;
       top.name = reduce.region2DepthName;
       top.district = true;
       topResults.push(top);
     });
     dropdownDistrict.map(district => {
       const second = new DropdownResults();
+      second.no = district.no;
       second.name = `${district.region2DepthName} ${district.region3DepthName}`;
       second.region = true;
       secondResults.push(second);

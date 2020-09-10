@@ -34,10 +34,51 @@ export class PaymentListService extends BaseService {
         adminPaymentListDto.nanudaKitchenMasterName,
         adminPaymentListDto.exclude('nanudaKitchenMasterName'),
       )
-      .WhereAndOrder(adminPaymentListDto)
-      .Paginate(pagination);
+      .AndWhereLike(
+        'paymentList',
+        'totalAmount',
+        adminPaymentListDto.totalAmount,
+        adminPaymentListDto.exclude('totalAmount'),
+      )
+      .AndWhereLike(
+        'paymentList',
+        'businessNo',
+        adminPaymentListDto.businessNo,
+        adminPaymentListDto.exclude('businessNo'),
+      )
+      .AndWhereLike(
+        'paymentList',
+        'shopName',
+        adminPaymentListDto.shopName,
+        adminPaymentListDto.exclude('shopName'),
+      );
+    if (adminPaymentListDto.started) {
+      qb.AndWhereBetweenStartAndEndDate(
+        adminPaymentListDto.started,
+        null,
+        adminPaymentListDto.exclude('started'),
+      );
+    }
+    qb.WhereAndOrder(adminPaymentListDto);
+    qb.Paginate(pagination);
 
     const [items, totalCount] = await qb.getManyAndCount();
     return { items, totalCount };
+  }
+
+  /**
+   * find one for payment list
+   * @param paymentListNo
+   */
+  async findOne(paymentListNo: number): Promise<PaymentList> {
+    const qb = await this.paymentListRepo
+      .createQueryBuilder('paymentList')
+      .CustomLeftJoinAndSelect(['nanudaKitchenMaster'])
+      .where('paymentList.paymentListNo = :paymentListNo', {
+        paymentListNo: paymentListNo,
+      })
+      .getOne();
+
+    return qb;
   }
 }
