@@ -39,6 +39,16 @@ export class AdminPaymentListController extends BaseController {
   }
 
   /**
+   * find all payment list
+   * @param adminPaymentListDto
+   * @param pagination
+   */
+  @Get('/admin/payment-list/total-revenue')
+  async findRevenue(@Query() adminPaymentListDto: AdminPaymentListDto) {
+    return await this.paymentListService.getTotalRevenue(adminPaymentListDto);
+  }
+
+  /**
    * find one payment list
    * @param paymentListNo
    */

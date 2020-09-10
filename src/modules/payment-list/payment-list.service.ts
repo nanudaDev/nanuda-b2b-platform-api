@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaymentList } from './payment-list.entity';
 import { Repository } from 'typeorm';
 import { AdminPaymentListDto } from './dto';
-import { PaginatedRequest, PaginatedResponse } from 'src/common';
+import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
 
 @Injectable()
 export class PaymentListService extends BaseService {
@@ -80,5 +80,39 @@ export class PaymentListService extends BaseService {
       .getOne();
 
     return qb;
+  }
+
+  /**
+   * get total revenue
+   * @param adminPaymentListDto
+   */
+  async getTotalRevenue(adminPaymentListDto: AdminPaymentListDto) {
+    const qb = this.paymentListRepo
+      .createQueryBuilder('paymentList')
+      //   AndWhereLike...
+      .CustomLeftJoinAndSelect(['nanudaKitchenMaster'])
+      .where('paymentList.cardCancelFl = :cardCancelFl', {
+        cardCancelFl: YN.NO,
+      })
+      .AndWhereLike(
+        'nanudaKitchenMaster',
+        'nanudaName',
+        adminPaymentListDto.nanudaKitchenMasterName,
+        adminPaymentListDto.exclude('nanudaKitchenMasterName'),
+      )
+      .AndWhereLike(
+        'paymentList',
+        'totalAmount',
+        adminPaymentListDto.totalAmount,
+        adminPaymentListDto.exclude('totalAmount'),
+      )
+      .AndWhereBetweenStartAndEndDate(
+        adminPaymentListDto.started,
+        null,
+        adminPaymentListDto.exclude('started'),
+      )
+      .select('SUM(paymentList.totalAmount)', 'sum')
+      .getRawOne();
+    return await qb;
   }
 }
