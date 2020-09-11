@@ -166,11 +166,12 @@ export class PaymentList extends BaseKitchenEntity<PaymentList> {
   })
   cardCancelFl: string;
 
+  // select query builder를 따로 만들지 않기 위해 치환자는 createdAt으로 고정한다
   @Column('datetime', {
     name: 'PAYMENT_TIME',
     nullable: true,
   })
-  paymentTime: Date;
+  createdAt: Date;
 
   @ManyToOne(
     type => NanudaKitchenMaster,

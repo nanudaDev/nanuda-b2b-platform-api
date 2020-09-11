@@ -17,6 +17,7 @@ export * from './founder-consult/founder-consult.module';
 export * from './inquiry/inquiry.module';
 export * from './payment-list/payment-list.module';
 export * from './product-consult/product-consult.module';
+export * from './nanuda-kitchen-menu/nanuda-kitchen-menu.module';
 export * from './nanuda-user/nanuda-user.module';
 export * from './notice-board/notice-board.module';
 export * from './search/search.module';
