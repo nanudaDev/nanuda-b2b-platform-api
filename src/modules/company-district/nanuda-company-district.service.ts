@@ -41,7 +41,7 @@ export class NanudaCompanyDistrictService extends BaseService {
   ): Promise<SearchResults> {
     const searchResults = new SearchResults();
 
-    //     "https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000" \
+    // "https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000" \
     // --data-urlencode "query=카카오프렌즈" \
     // -H "Authorization: KakaoAK {REST_API_KEY}"
     if (companyDistrictListDto.keyword) {
@@ -103,6 +103,10 @@ export class NanudaCompanyDistrictService extends BaseService {
     return searchResults;
   }
 
+  /**
+   * get center for map keyword
+   * @param companyDistrictListDto
+   */
   async getCenterForMap(companyDistrictListDto: CompanyDistrictListDto) {
     //     "https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000" \
     // --data-urlencode "query=카카오프렌즈" \
@@ -154,13 +158,8 @@ export class NanudaCompanyDistrictService extends BaseService {
       .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
         companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
       })
-      // .AndWhereLike(
-      //   'companyDistrict',
-      //   'region2DepthName',
-      //   companyDistrictListDto.keyword,
-      // )
       .andWhere(
-        'companyDistrict.region1DepthName like :keyword or companyDistrict.region2DepthName like :keyword',
+        'companyDistrict.region1DepthName like :keyword or companyDistrict.region2DepthName like :keyword or companyDistrict.region3DepthName like :keyword',
         {
           keyword: `%${companyDistrictListDto.keyword}%`,
         },
@@ -176,7 +175,7 @@ export class NanudaCompanyDistrictService extends BaseService {
       dropdownDistrict,
       'region2DepthName',
     );
-    console.log(dropdownDistrict);
+    // reduce map
     reduced.map(reduce => {
       const top = new DropdownResults();
       top.no = reduce.no;
