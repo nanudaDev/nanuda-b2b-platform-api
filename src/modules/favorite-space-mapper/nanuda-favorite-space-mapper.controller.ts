@@ -13,6 +13,7 @@ import { BaseController } from 'src/core';
 import {
   FavoriteSpaceMapperCreateDto,
   NanudaFavoriteSpaceMapperListDto,
+  NanudaFavoriteSpaceMapperDeleteDto,
 } from './dto';
 import { FavoriteSpaceMapper } from './favorite-space-mapper.entity';
 import { FavoriteSpaceMapperService } from './favorite-space-mapper.service';
@@ -64,11 +65,26 @@ export class NanudaFavoriteSpaceMapperController extends BaseController {
    */
   @Delete('/nanuda/favorite-space')
   async delete(@Query() deliverySpaceNo, @Query() nanudaUserNo) {
-    console.log(deliverySpaceNo);
     return {
       isDeleted: await this.favoriteSpaceMapperService.deleteFavorite(
         deliverySpaceNo.deliverySpaceNo,
         nanudaUserNo.nanudaUserNo,
+      ),
+    };
+  }
+
+  /**
+   * delete multiple
+   * @param nanudaFavoriteSpaceMapperDeleteDto
+   * @param nanudaUserNo
+   */
+  @Delete('/nanuda/favorite-space/multiple')
+  async multipleDelete(@Body() deleteDto: NanudaFavoriteSpaceMapperDeleteDto) {
+    console.log(deleteDto);
+    return {
+      isDeletedCount: await this.favoriteSpaceMapperService.deleteMultiple(
+        deleteDto,
+        deleteDto.nanudaUserNo,
       ),
     };
   }
