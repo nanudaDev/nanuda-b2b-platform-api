@@ -7,6 +7,7 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 import { BaseEntity } from 'src/core';
 import { YN } from 'src/common';
@@ -14,6 +15,7 @@ import { FoodCategory } from '../food-category/food-category.entity';
 import { FileAttachmentDto } from '../file-upload/dto';
 import { Admin } from '../admin';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
+import { Menu } from '../menu/menu.entity';
 
 @Entity({ name: 'BRAND' })
 export class Brand extends BaseEntity<Brand> {
@@ -108,4 +110,10 @@ export class Brand extends BaseEntity<Brand> {
     },
   })
   deliverySpaces?: DeliverySpace[];
+
+  @OneToMany(
+    type => Menu,
+    menu => menu.brand,
+  )
+  menus?: Menu[];
 }
