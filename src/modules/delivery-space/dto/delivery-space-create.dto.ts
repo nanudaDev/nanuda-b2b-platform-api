@@ -60,13 +60,6 @@ export class DeliverySpaceCreateDto extends BaseDto<DeliverySpaceCreateDto>
   @Default(YN.NO)
   showYn?: YN;
 
-  @ApiPropertyOptional({ enum: YN })
-  @IsEnum(YN)
-  @IsOptional()
-  @Default(YN.YES)
-  @Expose()
-  delYn?: YN;
-
   @ApiPropertyOptional({ type: [FileAttachmentDto] })
   @Type(() => FileAttachmentDto)
   @IsOptional()

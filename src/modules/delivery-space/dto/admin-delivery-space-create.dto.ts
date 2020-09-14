@@ -15,4 +15,11 @@ export class AdminDeliverySpaceCreateDto extends DeliverySpaceCreateDto {
   @IsOptional()
   @Expose()
   desc?: string;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsEnum(YN)
+  @IsOptional()
+  @Default(YN.YES)
+  @Expose()
+  delYn?: YN;
 }
