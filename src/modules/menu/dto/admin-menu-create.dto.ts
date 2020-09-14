@@ -32,6 +32,7 @@ export class AdminMenuCreateDto extends BaseDto<AdminMenuCreateDto>
 
   @ApiPropertyOptional({ type: [FileAttachmentDto] })
   @IsArray()
+  @IsOptional()
   @Type(() => FileAttachmentDto)
   @ValidateNested({ each: true })
   @Expose()

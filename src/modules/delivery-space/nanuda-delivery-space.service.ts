@@ -20,23 +20,6 @@ export class NanudaDeliverySpaceService extends BaseService {
     @InjectRepository(DeliverySpace)
     private readonly deliverySpaceRepo: Repository<DeliverySpace>,
     @InjectRepository(CompanyDistrict)
-    private readonly companyDistrictRepo: Repository<CompanyDistrict>,
-    @InjectRepository(DeliveryFounderConsultContract)
-    private readonly duplicateCheckRepo: Repository<
-      DeliveryFounderConsultContract
-    >,
-    @InjectRepository(DeliverySpaceAmenityMapper)
-    private readonly amenityMapperRepo: Repository<DeliverySpaceAmenityMapper>,
-    @InjectRepository(DeliverySpaceDeliveryOptionMapper)
-    private deliveryOptionMapperRepo: Repository<
-      DeliverySpaceDeliveryOptionMapper
-    >,
-    @InjectRepository(DeliverySpaceBrandMapper)
-    private readonly deliveryBrandMapper: Repository<DeliverySpaceBrandMapper>,
-    @InjectRepository(DeliveryFounderConsultContractHistory)
-    private readonly deliveryFounderConsultContractHistoryRepo: Repository<
-      DeliveryFounderConsultContractHistory
-    >,
     @InjectRepository(FavoriteSpaceMapper)
     private readonly faveMapperRepo: Repository<FavoriteSpaceMapper>,
     @InjectEntityManager() private readonly entityManager: EntityManager,

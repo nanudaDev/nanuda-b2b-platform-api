@@ -8,6 +8,7 @@ import {
   AdminMenuListDto,
   AdminMenuCreateDto,
   AdminMenuDeleteDto,
+  AdminMenuUpdateDto,
 } from './dto';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
 import { Menu } from './menu.entity';
@@ -63,6 +64,10 @@ export class MenuService extends BaseService {
     return { items, totalCount };
   }
 
+  /**
+   * find one for admin
+   * @param menuNo
+   */
   async findOneForAdmin(menuNo: number): Promise<Menu> {
     const menu = await this.menuRepo
       .createQueryBuilder('menu')
@@ -103,7 +108,40 @@ export class MenuService extends BaseService {
     return newMenu;
   }
 
-  //   async deleteMenusForAdmin(adminMenuDeleteDto: AdminMenuDeleteDto) {
+  /**
+   * delete menu for admin
+   * @param adminMenuDeleteDto
+   */
+  async deleteMenusForAdmin(adminMenuDeleteDto: AdminMenuDeleteDto) {
+    // AndWhereIn 같은 경우는 SelectQueryBuilder에서만 적용한다
+    const deleted = await this.menuRepo
+      .createQueryBuilder()
+      .delete()
+      .from(Menu)
+      .where('no IN (:...nos)', { nos: adminMenuDeleteDto.menuNos })
+      .execute();
 
-  //   }
+    return deleted;
+  }
+
+  /**
+   * update menu for admin
+   * @param menuNo
+   * @param adminMenuUpdateDto
+   */
+  async updateForAdmin(
+    menuNo: number,
+    adminMenuUpdateDto: AdminMenuUpdateDto,
+  ): Promise<Menu> {
+    let menu = await this.menuRepo
+      .createQueryBuilder('menu')
+      .CustomLeftJoinAndSelect(['brand'])
+      .where('menu.no = :no', { no: menuNo })
+      .getOne();
+
+    menu = menu.set(adminMenuUpdateDto);
+    menu = await this.menuRepo.save(menu);
+
+    return menu;
+  }
 }
