@@ -3,6 +3,7 @@ import { BaseService } from 'src/core';
 import {
   FavoriteSpaceMapperCreateDto,
   NanudaFavoriteSpaceMapperListDto,
+  NanudaFavoriteSpaceMapperDeleteDto,
 } from './dto';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
@@ -44,6 +45,7 @@ export class FavoriteSpaceMapperService extends BaseService {
   }
 
   /**
+   * single delete
    * delete from mapper
    * @param favoriteSpaceMapperNo
    */
@@ -73,6 +75,26 @@ export class FavoriteSpaceMapperService extends BaseService {
       return true;
     });
     return true;
+  }
+
+  /**
+   * delete array
+   * @param nanudaFavoriteSpaceMapperDeleteDto
+   */
+  async deleteMultiple(
+    nanudaFavoriteSpaceMapperDeleteDto: NanudaFavoriteSpaceMapperDeleteDto,
+    nanudaUserNo,
+  ) {
+    const qb = await this.favoriteSpaceMapperRepo
+      .createQueryBuilder()
+      .delete()
+      .from(FavoriteSpaceMapper)
+      .where('deliverySpaceNo IN (:...nos)', {
+        nos: nanudaFavoriteSpaceMapperDeleteDto.favoriteSpaceNos,
+      })
+      .andWhere('nanudaUserNo = :nanudaUserNo', { nanudaUserNo: nanudaUserNo })
+      .execute();
+    return qb.affected;
   }
 
   /**
