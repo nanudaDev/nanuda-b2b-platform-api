@@ -412,6 +412,7 @@ SelectQueryBuilder.prototype.AndWhereLike = function<Entity>(
   excludedRequestDto?: any,
 ): SelectQueryBuilder<Entity> {
   if (value !== undefined) {
+    console.log(`${ALIAS_DELIMETER}`);
     this.andWhere(
       `${alias}.${property} LIKE :${alias}${ALIAS_DELIMETER}${property}`,
       {
