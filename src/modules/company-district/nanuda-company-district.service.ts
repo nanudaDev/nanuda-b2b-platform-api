@@ -154,13 +154,20 @@ export class NanudaCompanyDistrictService extends BaseService {
       .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
         companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
       })
-      .AndWhereLike(
-        'companyDistrict',
-        'region2DepthName',
-        companyDistrictListDto.keyword,
+      // .AndWhereLike(
+      //   'companyDistrict',
+      //   'region2DepthName',
+      //   companyDistrictListDto.keyword,
+      // )
+      .andWhere(
+        'companyDistrict.region1DepthName like :keyword or companyDistrict.region2DepthName like :keyword',
+        {
+          keyword: `%${companyDistrictListDto.keyword}%`,
+        },
       )
       .select([
         'companyDistrict.no',
+        'companyDistrict.region1DepthName',
         'companyDistrict.region2DepthName',
         'companyDistrict.region3DepthName',
       ])
