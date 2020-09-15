@@ -8,6 +8,7 @@ import { AdminBrandController } from './admin-brand.controller';
 import { Admin } from '../admin';
 import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/delivery-space-brand-mapper.entity';
 import { SpaceNanudaBrand } from '../space-nanuda-brand/space-nanuda-brand.entity';
+import { SpaceTypeBrandMapper } from '../space-type-brand-mapper/space-type-brand-mapper.entity';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { SpaceNanudaBrand } from '../space-nanuda-brand/space-nanuda-brand.entit
       FoodCategory,
       DeliverySpaceBrandMapper,
       SpaceNanudaBrand,
+      SpaceTypeBrandMapper,
     ]),
     FileUploadModule,
   ],

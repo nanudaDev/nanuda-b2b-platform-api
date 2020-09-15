@@ -9,7 +9,7 @@ import {
   JoinTable,
   OneToMany,
 } from 'typeorm';
-import { BaseEntity } from 'src/core';
+import { BaseEntity, SPACE_TYPE } from 'src/core';
 import { YN } from 'src/common';
 import { FoodCategory } from '../food-category/food-category.entity';
 import { FileAttachmentDto } from '../file-upload/dto';
@@ -87,6 +87,8 @@ export class Brand extends BaseEntity<Brand> {
     default: YN.NO,
   })
   delYn?: YN;
+
+  spaceTypeNo?: SPACE_TYPE;
 
   @OneToOne(type => FoodCategory)
   @JoinColumn({ name: 'CATEGORY_NO' })
