@@ -64,6 +64,19 @@ export class BrandService extends BaseService {
         });
       }
     }
+    if (
+      adminBrandCreateDto.mainMenuImage &&
+      adminBrandCreateDto.mainMenuImage.length > 0
+    ) {
+      adminBrandCreateDto.mainMenuImage = await this.fileUploadService.moveS3File(
+        adminBrandCreateDto.mainMenuImage,
+      );
+      if (!adminBrandCreateDto.mainMenuImage) {
+        throw new BadRequestException({
+          message: 'Upload Failed! (main menu image)',
+        });
+      }
+    }
     brand = await this.brandRepo.save(brand);
     return brand;
   }
@@ -167,11 +180,26 @@ export class BrandService extends BaseService {
           throw new BadRequestException({ message: 'Upload Failed!' });
         }
       }
-
+      if (
+        adminBrandUpdateDto.mainMenuImage &&
+        adminBrandUpdateDto.mainMenuImage.length > 0
+      ) {
+        adminBrandUpdateDto.mainMenuImage = await this.fileUploadService.moveS3File(
+          adminBrandUpdateDto.mainMenuImage,
+        );
+        if (!adminBrandUpdateDto.mainMenuImage) {
+          throw new BadRequestException({
+            message: 'Upload Failed! (main menu image)',
+          });
+        }
+      }
       brand = brand.set(adminBrandUpdateDto);
       brand.adminNo = adminNo;
       brand = await entityManager.save(brand);
-      if (adminBrandUpdateDto.spaceTypeNo) {
+      const isMapped = await entityManager
+        .getRepository(SpaceTypeBrandMapper)
+        .findOne({ brandNo: brandNo });
+      if (adminBrandUpdateDto.spaceTypeNo && !isMapped) {
         let spaceTypeBrandMapper = new SpaceTypeBrandMapper();
         spaceTypeBrandMapper.spaceTypeNo = adminBrandUpdateDto.spaceTypeNo;
         spaceTypeBrandMapper.brandNo = brand.no;

@@ -40,6 +40,12 @@ export class Brand extends BaseEntity<Brand> {
   logo?: FileAttachmentDto[];
 
   @Column({
+    type: 'json',
+    name: 'MAIN_MENU_IMAGE',
+  })
+  mainMenuImage?: FileAttachmentDto[];
+
+  @Column({
     type: 'varchar',
     name: 'NAME_KR',
     nullable: false,

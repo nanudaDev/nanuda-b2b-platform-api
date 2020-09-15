@@ -30,7 +30,7 @@ export class FavoriteSpaceMapper extends BaseMapperEntity<FavoriteSpaceMapper> {
     name: 'REFERENCE_NO',
     nullable: false,
   })
-  deliverySpaceNo: number;
+  deliverySpaceNo?: number;
 
   @Column({
     type: 'varchar',

@@ -54,4 +54,12 @@ export class AdminBrandCreateDto extends BaseDto<AdminBrandCreateDto>
   @IsArray()
   @ValidateNested()
   logo?: FileAttachmentDto[];
+
+  @ApiPropertyOptional({ type: [FileAttachmentDto] })
+  @IsOptional()
+  @Expose()
+  @Type(() => FileAttachmentDto)
+  @IsArray()
+  @ValidateNested()
+  mainMenuImage?: FileAttachmentDto[];
 }

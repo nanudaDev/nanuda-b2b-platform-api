@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from '../../core';
 import { YN } from 'src/common';
-import { SPACE } from 'src/shared';
+import { SPACE, SPACE_TYPE } from 'src/shared';
 import { Company } from '../company/company.entity';
 import { CompanyDistrict } from '../company-district/company-district.entity';
 import { DeliverySpaceOption } from '../delivery-space-option/delivery-space-option.entity';
@@ -62,7 +62,7 @@ export class Space extends BaseEntity<Space> {
     name: 'SPACE_TYPE_NO',
     nullable: true,
   })
-  spaceTypeNo?: string;
+  spaceTypeNo?: SPACE_TYPE;
 
   @Column('text', {
     name: 'SPACE_INFO',
