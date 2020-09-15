@@ -419,16 +419,16 @@ export class DeliveryFounderConsultService extends BaseService {
     const nanudaUser = await this.nanudaUserRepo.findOne(
       adminDeliveryFounderConsultCreateDto.nanudaUserNo,
     );
-    if (
-      !nanudaUser.gender &&
-      adminDeliveryFounderConsultCreateDto.status ===
-        FOUNDER_CONSULT.F_DIST_COMPLETE
-    ) {
-      throw new BadRequestException({
-        message: '사용자 성별을 제시해주세요.',
-        error: 400,
-      });
-    }
+    // if (
+    //   !nanudaUser.gender &&
+    //   adminDeliveryFounderConsultCreateDto.status ===
+    //     FOUNDER_CONSULT.F_DIST_COMPLETE
+    // ) {
+    //   throw new BadRequestException({
+    //     message: '사용자 성별을 제시해주세요.',
+    //     error: 400,
+    //   });
+    // }
     deliveryFounderConsult = await this.deliveryFounderConsultRepo.save(
       deliveryFounderConsult,
     );
