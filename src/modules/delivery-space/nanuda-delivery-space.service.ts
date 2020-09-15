@@ -128,10 +128,12 @@ export class NanudaDeliverySpaceService extends BaseService {
     if (nanudaUserNo) {
       await Promise.all(
         items.map(async item => {
-          const liked = await this.faveMapperRepo.findOne({
-            nanudaUserNo: nanudaUserNo,
-            deliverySpaceNo: item.no,
-          });
+          const liked = await this.entityManager
+            .getRepository(FavoriteSpaceMapper)
+            .findOne({
+              nanudaUserNo: nanudaUserNo,
+              deliverySpaceNo: item.no,
+            });
           if (liked) {
             item.likedYn = true;
           } else {
@@ -188,10 +190,12 @@ export class NanudaDeliverySpaceService extends BaseService {
 
     consult.consultCount = consults.length;
     if (nanudaUserNo) {
-      const liked = await this.faveMapperRepo.findOne({
-        nanudaUserNo: nanudaUserNo,
-        deliverySpaceNo: deliverySpaceNo,
-      });
+      const liked = await this.entityManager
+        .getRepository(FavoriteSpaceMapper)
+        .findOne({
+          nanudaUserNo: nanudaUserNo,
+          deliverySpaceNo: deliverySpaceNo,
+        });
       if (liked) {
         consult.likedYn = true;
       } else {
