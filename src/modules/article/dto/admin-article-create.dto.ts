@@ -1,9 +1,10 @@
 import { BaseDto } from 'src/core';
-import { Brand } from '../brand.entity';
+import { Article } from '../article.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  IsNotEmpty,
   IsOptional,
+  IsNotEmpty,
+  IsUrl,
   IsEnum,
   IsArray,
   ValidateNested,
@@ -12,54 +13,41 @@ import { Expose, Type } from 'class-transformer';
 import { YN, Default } from 'src/common';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';
 
-export class AdminBrandCreateDto extends BaseDto<AdminBrandCreateDto>
-  implements Partial<Brand> {
+export class AdminArticleCreateDto extends BaseDto<AdminArticleCreateDto>
+  implements Partial<Article> {
   @ApiProperty()
   @IsNotEmpty()
   @Expose()
-  nameKr: string;
+  title: string;
+
+  @ApiPropertyOptional()
+  @IsUrl()
+  @IsOptional()
+  @Expose()
+  url?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  nameEng?: string;
+  mediaName?: string;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @IsEnum(YN)
+  @Expose()
+  @Default(YN.NO)
+  showYn?: YN;
 
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
   desc?: string;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Expose()
-  categoryNo?: number;
-
-  @ApiPropertyOptional({ enum: YN })
-  @IsOptional()
-  @IsEnum(YN)
-  @Default(YN.NO)
-  @Expose()
-  showYn?: YN;
-
-  @ApiPropertyOptional({ enum: YN })
-  @IsOptional()
-  @IsEnum(YN)
-  @Expose()
-  delYn?: YN;
-
   @ApiPropertyOptional({ type: [FileAttachmentDto] })
-  @IsOptional()
-  @Expose()
-  @Type(() => FileAttachmentDto)
   @IsArray()
   @ValidateNested({ each: true })
-  logo?: FileAttachmentDto[];
-
-  @ApiPropertyOptional({ type: [FileAttachmentDto] })
+  @Type(() => FileAttachmentDto)
   @IsOptional()
   @Expose()
-  @Type(() => FileAttachmentDto)
-  @IsArray()
-  @ValidateNested({ each: true })
-  mainMenuImage?: FileAttachmentDto[];
+  image?: FileAttachmentDto[];
 }
