@@ -382,16 +382,16 @@ export class DeliveryFounderConsultService extends BaseService {
         const nanudaUser = await this.nanudaUserRepo.findOne(
           deliveryFounderConsult.nanudaUserNo,
         );
-        if (
-          !nanudaUser.gender &&
-          adminDeliveryFounderConsultUpdateDto.status ===
-            FOUNDER_CONSULT.F_DIST_COMPLETE
-        ) {
-          throw new BadRequestException({
-            message: '사용자 성별을 제시해주세요.',
-            error: 400,
-          });
-        }
+        // if (
+        //   !nanudaUser.gender &&
+        //   adminDeliveryFounderConsultUpdateDto.status ===
+        //     FOUNDER_CONSULT.F_DIST_COMPLETE
+        // ) {
+        //   throw new BadRequestException({
+        //     message: '사용자 성별을 제시해주세요.',
+        //     error: 400,
+        //   });
+        // }
         if (
           adminDeliveryFounderConsultUpdateDto.companyDecisionStatus ===
           B2B_FOUNDER_CONSULT.B2B_F_CONTRACT_COMPLETE
