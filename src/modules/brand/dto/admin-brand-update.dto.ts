@@ -55,6 +55,14 @@ export class AdminBrandUpdateDto extends BaseDto<AdminBrandUpdateDto>
   @ValidateNested()
   logo?: FileAttachmentDto[];
 
+  @ApiPropertyOptional({ type: [FileAttachmentDto] })
+  @IsOptional()
+  @Expose()
+  @Type(() => FileAttachmentDto)
+  @IsArray()
+  @ValidateNested()
+  mainMenuImage?: FileAttachmentDto[];
+
   @ApiPropertyOptional({ enum: SPACE_TYPE })
   @IsOptional()
   @Expose()
