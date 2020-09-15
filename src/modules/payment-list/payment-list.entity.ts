@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { BaseEntity, BaseKitchenEntity } from 'src/core';
+import { NanudaKitchenMaster } from '../nanuda-kitchen-master/nanuda-kitchen-master.entity';
 
 @Entity({ name: 'PAYMENT_LIST' })
 export class PaymentList extends BaseKitchenEntity<PaymentList> {
@@ -159,9 +166,17 @@ export class PaymentList extends BaseKitchenEntity<PaymentList> {
   })
   cardCancelFl: string;
 
+  // select query builder를 따로 만들지 않기 위해 치환자는 createdAt으로 고정한다
   @Column('datetime', {
     name: 'PAYMENT_TIME',
     nullable: true,
   })
-  paymentTime: Date;
+  createdAt: Date;
+
+  @ManyToOne(
+    type => NanudaKitchenMaster,
+    nanudaKitchenMaster => nanudaKitchenMaster.paymentLists,
+  )
+  @JoinColumn({ name: 'NANUDA_NO' })
+  nanudaKitchenMaster?: NanudaKitchenMaster;
 }

@@ -288,9 +288,21 @@ export class DeliverySpaceService extends BaseService {
       }
       let newDeliverySpace = new DeliverySpace(adminDeliverySpaceCreateDto);
       newDeliverySpace.adminNo = adminNo;
-      newDeliverySpace.images = await this.fileUploadService.moveS3File(
-        adminDeliverySpaceCreateDto.images,
-      );
+      if (
+        newDeliverySpace.images &&
+        newDeliverySpace.images.length === 0 &&
+        newDeliverySpace.delYn === YN.NO
+      ) {
+        throw new BadRequestException({
+          message: '이미지 하나 이상은 있어야 노출합니다.',
+          error: 400,
+        });
+      }
+      if (newDeliverySpace.images && newDeliverySpace.images.length > 0) {
+        newDeliverySpace.images = await this.fileUploadService.moveS3File(
+          adminDeliverySpaceCreateDto.images,
+        );
+      }
       newDeliverySpace = await entityManager.save(newDeliverySpace);
       //   create mapper for amenity
       if (

@@ -7,13 +7,15 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
-import { BaseEntity } from 'src/core';
+import { BaseEntity, SPACE_TYPE } from 'src/core';
 import { YN } from 'src/common';
 import { FoodCategory } from '../food-category/food-category.entity';
 import { FileAttachmentDto } from '../file-upload/dto';
 import { Admin } from '../admin';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
+import { Menu } from '../menu/menu.entity';
 
 @Entity({ name: 'BRAND' })
 export class Brand extends BaseEntity<Brand> {
@@ -36,6 +38,12 @@ export class Brand extends BaseEntity<Brand> {
     name: 'LOGO',
   })
   logo?: FileAttachmentDto[];
+
+  @Column({
+    type: 'json',
+    name: 'MAIN_MENU_IMAGE',
+  })
+  mainMenuImage?: FileAttachmentDto[];
 
   @Column({
     type: 'varchar',
@@ -86,6 +94,8 @@ export class Brand extends BaseEntity<Brand> {
   })
   delYn?: YN;
 
+  spaceTypeNo?: SPACE_TYPE;
+
   @OneToOne(type => FoodCategory)
   @JoinColumn({ name: 'CATEGORY_NO' })
   category?: FoodCategory;
@@ -108,4 +118,10 @@ export class Brand extends BaseEntity<Brand> {
     },
   })
   deliverySpaces?: DeliverySpace[];
+
+  @OneToMany(
+    type => Menu,
+    menu => menu.brand,
+  )
+  menus?: Menu[];
 }

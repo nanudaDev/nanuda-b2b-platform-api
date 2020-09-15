@@ -1,4 +1,4 @@
-import { BaseDto } from 'src/core';
+import { BaseDto, SPACE_TYPE } from 'src/core';
 import { Brand } from '../brand.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
@@ -54,4 +54,17 @@ export class AdminBrandUpdateDto extends BaseDto<AdminBrandUpdateDto>
   @IsArray()
   @ValidateNested()
   logo?: FileAttachmentDto[];
+
+  @ApiPropertyOptional({ type: [FileAttachmentDto] })
+  @IsOptional()
+  @Expose()
+  @Type(() => FileAttachmentDto)
+  @IsArray()
+  @ValidateNested()
+  mainMenuImage?: FileAttachmentDto[];
+
+  @ApiPropertyOptional({ enum: SPACE_TYPE })
+  @IsOptional()
+  @Expose()
+  spaceTypeNo?: SPACE_TYPE;
 }

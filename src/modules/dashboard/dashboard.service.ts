@@ -268,7 +268,7 @@ export class DashboardService extends BaseService {
     founderConsults.map(founderConsult => {
       labels.push(founderConsult.space.sido);
     });
-    return this.removeDuplicate(labels);
+    return this.__remove_duplicate(labels);
   }
 
   /**
@@ -292,7 +292,7 @@ export class DashboardService extends BaseService {
     founderConsults.map(founderConsult => {
       labels.push(founderConsult.space.sigungu);
     });
-    return this.removeDuplicate(labels);
+    return this.__remove_duplicate(labels);
   }
 
   /**
@@ -433,7 +433,7 @@ export class DashboardService extends BaseService {
     return chartData;
   }
 
-  private removeDuplicate(array: any) {
+  private __remove_duplicate(array: any) {
     return array.filter((a: string, b: string) => array.indexOf(a) === b);
   }
 }

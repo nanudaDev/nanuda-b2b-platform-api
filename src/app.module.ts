@@ -32,9 +32,13 @@ import {
   PaymentListModule,
   ProductConsultModule,
   FavoriteSpaceMapperModule,
+  NanudaKitchenMenuModule,
+  MenuModule,
 } from './modules';
 import { AdminModule } from './modules/admin/admin.module';
 import { PaymentList } from './modules/payment-list/payment-list.entity';
+import { NanudaKitchenMaster } from './modules/nanuda-kitchen-master/nanuda-kitchen-master.entity';
+import { NanudaKitchenMenu } from './modules/nanuda-kitchen-menu/nanuda-kitchen-menu.entity';
 require('dotenv').config();
 const env = process.env;
 @Module({
@@ -70,7 +74,7 @@ const env = process.env;
       //   keepConnectionAlive: true,
       bigNumberStrings: false,
       supportBigNumbers: false,
-      entities: [PaymentList],
+      entities: [NanudaKitchenMaster, NanudaKitchenMenu, PaymentList],
       // migrations: [],
       // cli: {},
       // subscribers: [],
@@ -96,7 +100,9 @@ const env = process.env;
     FounderConsultModule,
     FounderConsultManagementModule,
     InquiryModule,
+    MenuModule,
     NanudaUserModule,
+    NanudaKitchenMenuModule,
     NoticeBoardModule,
     PaymentListModule,
     ProductConsultModule,

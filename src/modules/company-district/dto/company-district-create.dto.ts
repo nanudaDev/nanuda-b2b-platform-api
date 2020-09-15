@@ -62,6 +62,21 @@ export class CompanyDistrictCreateDto extends BaseDto<CompanyDistrictCreateDto>
   @Expose()
   lon: string;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @Expose()
+  region1DepthName: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @Expose()
+  region2DepthName: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @Expose()
+  region3DepthName: string;
+
   @ApiPropertyOptional({ type: [FileAttachmentDto] })
   @IsOptional()
   @Expose()

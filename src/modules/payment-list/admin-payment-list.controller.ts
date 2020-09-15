@@ -1,4 +1,11 @@
-import { Controller, UseGuards, Get, Query } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Get,
+  Query,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthRolesGuard, CONST_ADMIN_USER, BaseController } from 'src/core';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
@@ -29,5 +36,26 @@ export class AdminPaymentListController extends BaseController {
       adminPaymentListDto,
       pagination,
     );
+  }
+
+  /**
+   * find all payment list
+   * @param adminPaymentListDto
+   * @param pagination
+   */
+  @Get('/admin/payment-list/total-revenue')
+  async findRevenue(@Query() adminPaymentListDto: AdminPaymentListDto) {
+    return await this.paymentListService.getTotalRevenue(adminPaymentListDto);
+  }
+
+  /**
+   * find one payment list
+   * @param paymentListNo
+   */
+  @Get('/admin/payment-list/:id([0-9]+)')
+  async findOne(
+    @Param('id', ParseIntPipe) paymentListNo: number,
+  ): Promise<PaymentList> {
+    return await this.paymentListService.findOne(paymentListNo);
   }
 }

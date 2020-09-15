@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaymentList } from './payment-list.entity';
 import { Repository } from 'typeorm';
 import { AdminPaymentListDto } from './dto';
-import { PaginatedRequest, PaginatedResponse } from 'src/common';
+import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
 
 @Injectable()
 export class PaymentListService extends BaseService {
@@ -27,10 +27,110 @@ export class PaymentListService extends BaseService {
     const qb = this.paymentListRepo
       .createQueryBuilder('paymentList')
       //   AndWhereLike...
-      .WhereAndOrder(adminPaymentListDto)
-      .Paginate(pagination);
+      .CustomLeftJoinAndSelect(['nanudaKitchenMaster'])
+      .AndWhereLike(
+        'nanudaKitchenMaster',
+        'nanudaName',
+        adminPaymentListDto.nanudaKitchenMasterName,
+        adminPaymentListDto.exclude('nanudaKitchenMasterName'),
+      )
+      .AndWhereLike(
+        'paymentList',
+        'totalAmount',
+        adminPaymentListDto.totalAmount,
+        adminPaymentListDto.exclude('totalAmount'),
+      )
+      .AndWhereLike(
+        'paymentList',
+        'businessNo',
+        adminPaymentListDto.businessNo,
+        adminPaymentListDto.exclude('businessNo'),
+      )
+      .AndWhereLike(
+        'paymentList',
+        'shopName',
+        adminPaymentListDto.shopName,
+        adminPaymentListDto.exclude('shopName'),
+      );
+    if (adminPaymentListDto.started) {
+      qb.AndWhereBetweenStartAndEndDate(
+        adminPaymentListDto.started,
+        null,
+        adminPaymentListDto.exclude('started'),
+      );
+    }
+    if (adminPaymentListDto.nanudaKitchenMenuName) {
+      qb.leftJoinAndSelect('nanudaKitchenMaster.menus', 'menus');
+      qb.AndWhereLike(
+        'menus',
+        'menuName',
+        adminPaymentListDto.nanudaKitchenMenuName,
+      );
+      delete adminPaymentListDto.nanudaKitchenMenuName;
+    }
+    qb.WhereAndOrder(adminPaymentListDto);
+    qb.Paginate(pagination);
 
     const [items, totalCount] = await qb.getManyAndCount();
     return { items, totalCount };
+  }
+
+  /**
+   * find one for payment list
+   * @param paymentListNo
+   */
+  async findOne(paymentListNo: number): Promise<PaymentList> {
+    const qb = await this.paymentListRepo
+      .createQueryBuilder('paymentList')
+      .CustomLeftJoinAndSelect(['nanudaKitchenMaster'])
+      .where('paymentList.paymentListNo = :paymentListNo', {
+        paymentListNo: paymentListNo,
+      })
+      .getOne();
+
+    return qb;
+  }
+
+  /**
+   * get total revenue
+   * @param adminPaymentListDto
+   */
+  async getTotalRevenue(adminPaymentListDto: AdminPaymentListDto) {
+    const qb = this.paymentListRepo
+      .createQueryBuilder('paymentList')
+      //   AndWhereLike...
+      .CustomLeftJoinAndSelect(['nanudaKitchenMaster'])
+      .where('paymentList.cardCancelFl = :cardCancelFl', {
+        cardCancelFl: YN.NO,
+      })
+      .AndWhereLike(
+        'nanudaKitchenMaster',
+        'nanudaName',
+        adminPaymentListDto.nanudaKitchenMasterName,
+        adminPaymentListDto.exclude('nanudaKitchenMasterName'),
+      )
+      .AndWhereLike(
+        'paymentList',
+        'totalAmount',
+        adminPaymentListDto.totalAmount,
+        adminPaymentListDto.exclude('totalAmount'),
+      )
+      .AndWhereBetweenStartAndEndDate(
+        adminPaymentListDto.started,
+        null,
+        adminPaymentListDto.exclude('started'),
+      )
+      .select('SUM(paymentList.totalAmount)', 'sum');
+    if (adminPaymentListDto.nanudaKitchenMenuName) {
+      qb.leftJoinAndSelect('nanudaKitchenMaster.menus', 'menus');
+      qb.AndWhereLike(
+        'menus',
+        'menuName',
+        adminPaymentListDto.nanudaKitchenMenuName,
+        adminPaymentListDto.exclude('nanudaKitchenName'),
+      );
+      delete adminPaymentListDto.nanudaKitchenMenuName;
+    }
+    return await qb.getRawOne();
   }
 }

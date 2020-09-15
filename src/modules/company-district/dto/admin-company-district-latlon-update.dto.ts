@@ -22,4 +22,9 @@ export class AdminCompanyDistrictLatLonDto {
   @IsOptional()
   @Expose()
   region2DepthName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  region3DepthName?: string;
 }

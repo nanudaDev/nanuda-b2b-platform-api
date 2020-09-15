@@ -16,6 +16,7 @@ import { FileUploadService } from '../file-upload/file-upload.service';
 import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
 import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/delivery-space-brand-mapper.entity';
 import { SpaceNanudaBrand } from '../space-nanuda-brand/space-nanuda-brand.entity';
+import { SpaceTypeBrandMapper } from '../space-type-brand-mapper/space-type-brand-mapper.entity';
 
 @Injectable()
 export class BrandService extends BaseService {
@@ -60,6 +61,19 @@ export class BrandService extends BaseService {
       if (!adminBrandCreateDto.logo) {
         throw new BadRequestException({
           message: 'Upload Failed!',
+        });
+      }
+    }
+    if (
+      adminBrandCreateDto.mainMenuImage &&
+      adminBrandCreateDto.mainMenuImage.length > 0
+    ) {
+      adminBrandCreateDto.mainMenuImage = await this.fileUploadService.moveS3File(
+        adminBrandCreateDto.mainMenuImage,
+      );
+      if (!adminBrandCreateDto.mainMenuImage) {
+        throw new BadRequestException({
+          message: 'Upload Failed! (main menu image)',
         });
       }
     }
@@ -127,7 +141,7 @@ export class BrandService extends BaseService {
    * @param brandNo
    */
   async findOne(brandNo: number): Promise<Brand> {
-    const qb = await this.brandRepo
+    let qb = await this.brandRepo
       .createQueryBuilder('brand')
       .CustomLeftJoinAndSelect(['admin', 'category'])
       .where('brand.no = :no', { no: brandNo })
@@ -135,6 +149,12 @@ export class BrandService extends BaseService {
 
     if (!qb) {
       throw new NotFoundException();
+    }
+    const spaceTypeBrandMapper = await this.entityManager
+      .getRepository(SpaceTypeBrandMapper)
+      .findOne({ brandNo: brandNo });
+    if (spaceTypeBrandMapper) {
+      qb.spaceTypeNo = spaceTypeBrandMapper.spaceTypeNo;
     }
     return qb;
   }
@@ -160,9 +180,32 @@ export class BrandService extends BaseService {
           throw new BadRequestException({ message: 'Upload Failed!' });
         }
       }
+      if (
+        adminBrandUpdateDto.mainMenuImage &&
+        adminBrandUpdateDto.mainMenuImage.length > 0
+      ) {
+        adminBrandUpdateDto.mainMenuImage = await this.fileUploadService.moveS3File(
+          adminBrandUpdateDto.mainMenuImage,
+        );
+        if (!adminBrandUpdateDto.mainMenuImage) {
+          throw new BadRequestException({
+            message: 'Upload Failed! (main menu image)',
+          });
+        }
+      }
       brand = brand.set(adminBrandUpdateDto);
       brand.adminNo = adminNo;
       brand = await entityManager.save(brand);
+      const isMapped = await entityManager
+        .getRepository(SpaceTypeBrandMapper)
+        .findOne({ brandNo: brandNo });
+      if (adminBrandUpdateDto.spaceTypeNo && !isMapped) {
+        let spaceTypeBrandMapper = new SpaceTypeBrandMapper();
+        spaceTypeBrandMapper.spaceTypeNo = adminBrandUpdateDto.spaceTypeNo;
+        spaceTypeBrandMapper.brandNo = brand.no;
+        spaceTypeBrandMapper.brandName = brand.nameKr;
+        spaceTypeBrandMapper = await entityManager.save(spaceTypeBrandMapper);
+      }
       return brand;
     });
     return brand;

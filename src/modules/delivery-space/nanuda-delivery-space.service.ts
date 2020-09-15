@@ -20,23 +20,6 @@ export class NanudaDeliverySpaceService extends BaseService {
     @InjectRepository(DeliverySpace)
     private readonly deliverySpaceRepo: Repository<DeliverySpace>,
     @InjectRepository(CompanyDistrict)
-    private readonly companyDistrictRepo: Repository<CompanyDistrict>,
-    @InjectRepository(DeliveryFounderConsultContract)
-    private readonly duplicateCheckRepo: Repository<
-      DeliveryFounderConsultContract
-    >,
-    @InjectRepository(DeliverySpaceAmenityMapper)
-    private readonly amenityMapperRepo: Repository<DeliverySpaceAmenityMapper>,
-    @InjectRepository(DeliverySpaceDeliveryOptionMapper)
-    private deliveryOptionMapperRepo: Repository<
-      DeliverySpaceDeliveryOptionMapper
-    >,
-    @InjectRepository(DeliverySpaceBrandMapper)
-    private readonly deliveryBrandMapper: Repository<DeliverySpaceBrandMapper>,
-    @InjectRepository(DeliveryFounderConsultContractHistory)
-    private readonly deliveryFounderConsultContractHistoryRepo: Repository<
-      DeliveryFounderConsultContractHistory
-    >,
     @InjectRepository(FavoriteSpaceMapper)
     private readonly faveMapperRepo: Repository<FavoriteSpaceMapper>,
     @InjectEntityManager() private readonly entityManager: EntityManager,
@@ -145,12 +128,16 @@ export class NanudaDeliverySpaceService extends BaseService {
     if (nanudaUserNo) {
       await Promise.all(
         items.map(async item => {
-          const liked = await this.faveMapperRepo.findOne({
-            nanudaUserNo: nanudaUserNo,
-            deliverySpaceNo: item.no,
-          });
+          const liked = await this.entityManager
+            .getRepository(FavoriteSpaceMapper)
+            .findOne({
+              nanudaUserNo: nanudaUserNo,
+              deliverySpaceNo: item.no,
+            });
           if (liked) {
             item.likedYn = true;
+          } else {
+            item.likedYn = false;
           }
         }),
       );
@@ -167,6 +154,7 @@ export class NanudaDeliverySpaceService extends BaseService {
     deliverySpaceNo: number,
     nanudaUserNo?: number,
   ): Promise<DeliverySpace> {
+    console.log(deliverySpaceNo);
     const consult = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
@@ -185,10 +173,12 @@ export class NanudaDeliverySpaceService extends BaseService {
     if (!consult) {
       throw new NotFoundException();
     }
-    const likedCount = await this.faveMapperRepo.find({
-      deliverySpaceNo: deliverySpaceNo,
-    });
+    const likedCount = await this.entityManager
+      .getRepository(FavoriteSpaceMapper)
+      .find({ where: { deliverySpaceNo: deliverySpaceNo } });
+
     consult.likedCount = likedCount.length;
+
     const consults = await this.entityManager
       .getRepository(DeliveryFounderConsult)
       .find({
@@ -197,14 +187,19 @@ export class NanudaDeliverySpaceService extends BaseService {
           deliverySpaceNo: deliverySpaceNo,
         },
       });
+
     consult.consultCount = consults.length;
     if (nanudaUserNo) {
-      const liked = await this.faveMapperRepo.findOne({
-        nanudaUserNo: nanudaUserNo,
-        deliverySpaceNo: deliverySpaceNo,
-      });
+      const liked = await this.entityManager
+        .getRepository(FavoriteSpaceMapper)
+        .findOne({
+          nanudaUserNo: nanudaUserNo,
+          deliverySpaceNo: deliverySpaceNo,
+        });
       if (liked) {
         consult.likedYn = true;
+      } else {
+        consult.likedYn = false;
       }
     }
     consult.remainingCount = consult.quantity - consult.contracts.length;

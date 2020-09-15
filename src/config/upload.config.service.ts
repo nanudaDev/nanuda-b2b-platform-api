@@ -1,4 +1,5 @@
 export enum UPLOAD_TYPE {
+  ARTICLE = 'article',
   DELIVERY_SPACE = 'delivery-space',
   BANNER = 'banner',
   POPUP = 'popup',
@@ -8,6 +9,8 @@ export enum UPLOAD_TYPE {
   COMPANY_DISTRICT = 'company-district',
   BRAND_LOGO = 'brand-logo',
   NOTICE_BOARD = 'notice-board',
+  MENU = 'menu',
+  MAIN_MENU_IMAGE = 'main-menu-image',
 }
 
 export enum ACL {
@@ -57,6 +60,11 @@ export class UploadConfigService {
   };
 
   public readonly bucketTypes: UploadOptionConfig = {
+    [UPLOAD_TYPE.ARTICLE]: {
+      path: 'article',
+      sizeLimit: 1024 * 1024 * 10,
+      fileType: FileType.IMAGE,
+    },
     [UPLOAD_TYPE.DELIVERY_SPACE]: {
       path: 'delivery-space',
       sizeLimit: 1024 * 1024 * 10,
@@ -101,6 +109,16 @@ export class UploadConfigService {
       path: 'notice-board',
       sizeLimit: 1024 * 1024 * 10,
       fileType: FileType.DOCUMENT,
+    },
+    [UPLOAD_TYPE.MENU]: {
+      path: 'menu',
+      sizeLimit: 1024 * 1024 * 10,
+      fileType: FileType.IMAGE,
+    },
+    [UPLOAD_TYPE.MAIN_MENU_IMAGE]: {
+      path: 'main-menu-image',
+      sizeLimit: 1024 * 1024 * 10,
+      fileType: FileType.IMAGE,
     },
   };
 
