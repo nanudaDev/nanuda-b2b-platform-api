@@ -158,8 +158,10 @@ export class NanudaCompanyDistrictService extends BaseService {
       .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
         companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
       })
+      .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
       .andWhere(
-        'companyDistrict.region1DepthName like :keyword or companyDistrict.region2DepthName like :keyword or companyDistrict.region3DepthName like :keyword',
+        'companyDistrict.region1DepthName like :keyword or companyDistrict.region2DepthName like :keyword or companyDistrict.region3DepthName like :keyword or companyDistrict.address like :keyword',
         {
           keyword: `%${companyDistrictListDto.keyword}%`,
         },
@@ -171,7 +173,7 @@ export class NanudaCompanyDistrictService extends BaseService {
         'companyDistrict.region3DepthName',
       ])
       .getMany();
-    const reduced: any = this.removeDuplicate(
+    const reduced: any = this.__remove_duplicate(
       dropdownDistrict,
       'region2DepthName',
     );
@@ -179,21 +181,21 @@ export class NanudaCompanyDistrictService extends BaseService {
     reduced.map(reduce => {
       const top = new DropdownResults();
       top.no = reduce.no;
-      top.name = reduce.region2DepthName;
+      top.name = `${reduce.region1DepthName} ${reduce.region2DepthName}`;
       top.district = true;
       topResults.push(top);
     });
     dropdownDistrict.map(district => {
       const second = new DropdownResults();
       second.no = district.no;
-      second.name = `${district.region2DepthName} ${district.region3DepthName}`;
+      second.name = `${district.region1DepthName} ${district.region2DepthName} ${district.region3DepthName}`;
       second.region = true;
       secondResults.push(second);
     });
     return { topResults, secondResults };
   }
 
-  private removeDuplicate(array: any, key: string) {
+  private __remove_duplicate(array: any, key: string) {
     return [...new Map(array.map(item => [item[key], item])).values()];
   }
 }

@@ -8,6 +8,7 @@ export enum UPLOAD_TYPE {
   COMPANY_DISTRICT = 'company-district',
   BRAND_LOGO = 'brand-logo',
   NOTICE_BOARD = 'notice-board',
+  MENU = 'menu',
 }
 
 export enum ACL {
@@ -101,6 +102,11 @@ export class UploadConfigService {
       path: 'notice-board',
       sizeLimit: 1024 * 1024 * 10,
       fileType: FileType.DOCUMENT,
+    },
+    [UPLOAD_TYPE.MENU]: {
+      path: 'menu',
+      sizeLimit: 1024 * 1024 * 10,
+      fileType: FileType.IMAGE,
     },
   };
 
