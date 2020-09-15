@@ -171,7 +171,10 @@ export class BrandService extends BaseService {
       brand = brand.set(adminBrandUpdateDto);
       brand.adminNo = adminNo;
       brand = await entityManager.save(brand);
-      if (adminBrandUpdateDto.spaceTypeNo) {
+      const isMapped = await entityManager
+        .getRepository(SpaceTypeBrandMapper)
+        .findOne({ brandNo: brandNo });
+      if (adminBrandUpdateDto.spaceTypeNo && !isMapped) {
         let spaceTypeBrandMapper = new SpaceTypeBrandMapper();
         spaceTypeBrandMapper.spaceTypeNo = adminBrandUpdateDto.spaceTypeNo;
         spaceTypeBrandMapper.brandNo = brand.no;
