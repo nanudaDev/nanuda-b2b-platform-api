@@ -482,7 +482,7 @@ export class DeliveryFounderConsultService extends BaseService {
       ])
       .innerJoinAndSelect('deliverySpaces.companyDistrict', 'companyDistrict')
       .innerJoin('deliveryConsult.nanudaUser', 'nanudaUser')
-      .innerJoinAndSelect('nanudaUser.genderInfo', 'genderInfo')
+      .leftJoinAndSelect('nanudaUser.genderInfo', 'genderInfo')
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
       .addSelect(['nanudaUser.name', 'nanudaUser.gender'])
