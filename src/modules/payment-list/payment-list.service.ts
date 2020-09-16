@@ -83,7 +83,7 @@ export class PaymentListService extends BaseService {
   async findOne(paymentListNo: number): Promise<PaymentList> {
     const qb = await this.paymentListRepo
       .createQueryBuilder('paymentList')
-      .CustomLeftJoinAndSelect(['nanudaKitchenMaster'])
+      .CustomLeftJoinAndSelect(['nanudaKitchenMaster', 'kioskOrderList'])
       .where('paymentList.paymentListNo = :paymentListNo', {
         paymentListNo: paymentListNo,
       })
