@@ -146,4 +146,11 @@ export class AdminCodeManagementController extends BaseController {
   async findInquiryCodes(): Promise<CodeManagement[]> {
     return await this.codeManagementService.findInquiryTypes();
   }
+
+  @Get('/admin/code-management/:any')
+  async findAnyType(
+    @Param('any') categoryType: string,
+  ): Promise<CodeManagement[]> {
+    return await this.codeManagementService.findAnyTypes(categoryType);
+  }
 }

@@ -133,4 +133,24 @@ export class PaymentListService extends BaseService {
     }
     return await qb.getRawOne();
   }
+
+  /**
+   * get brand revenue for today
+   * @param nanudaNo
+   */
+  async getTodayRevenueForBrand(nanudaNo: number) {
+    const started = new Date();
+    const qb = this.paymentListRepo
+      .createQueryBuilder('paymentList')
+      //   AndWhereLike...
+      .CustomLeftJoinAndSelect(['nanudaKitchenMaster'])
+      .where('paymentList.cardCancelFl = :cardCancelFl', {
+        cardCancelFl: YN.NO,
+      })
+      .andWhere('paymentList.nanudaNo = :nanudaNo', { nanudaNo: nanudaNo })
+      .AndWhereBetweenStartAndEndDate(started, null)
+      .select('SUM(paymentList.totalAmount)', 'sum');
+
+    return await qb.getRawOne();
+  }
 }
