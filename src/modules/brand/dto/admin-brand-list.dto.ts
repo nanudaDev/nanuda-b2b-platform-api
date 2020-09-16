@@ -11,4 +11,9 @@ export class AdminBrandListDto extends BrandListDto {
   @IsEnum(YN)
   @Expose()
   delYn?: YN;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  kioskNo?: number;
 }

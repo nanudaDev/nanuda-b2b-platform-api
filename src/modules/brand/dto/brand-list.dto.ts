@@ -1,4 +1,4 @@
-import { BaseDto } from 'src/core';
+import { BaseDto, STORE_COUNT, BRAND, DIFFICULTY } from 'src/core';
 import { Brand } from '../brand.entity';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsEnum } from 'class-validator';
@@ -42,6 +42,24 @@ export class BrandListDto extends BaseDto<BrandListDto>
   @IsEnum(YN)
   @Expose()
   showYn?: YN;
+
+  @ApiPropertyOptional({ enum: STORE_COUNT })
+  @IsEnum(STORE_COUNT)
+  @IsOptional()
+  @Expose()
+  storeCount?: STORE_COUNT;
+
+  @ApiPropertyOptional({ enum: BRAND })
+  @IsOptional()
+  @IsEnum(BRAND)
+  @Expose()
+  cost?: BRAND;
+
+  @ApiPropertyOptional({ enum: DIFFICULTY })
+  @IsOptional()
+  @IsEnum(DIFFICULTY)
+  @Expose()
+  difficulty?: DIFFICULTY;
 
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsEnum(ORDER_BY_VALUE)
