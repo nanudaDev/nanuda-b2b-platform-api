@@ -9,13 +9,20 @@ import {
   JoinTable,
   OneToMany,
 } from 'typeorm';
-import { BaseEntity, SPACE_TYPE } from 'src/core';
+import {
+  BaseEntity,
+  SPACE_TYPE,
+  BRAND,
+  DIFFICULTY,
+  STORE_COUNT,
+} from 'src/core';
 import { YN } from 'src/common';
 import { FoodCategory } from '../food-category/food-category.entity';
 import { FileAttachmentDto } from '../file-upload/dto';
 import { Admin } from '../admin';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 import { Menu } from '../menu/menu.entity';
+import { CodeManagement } from '../code-management/code-management.entity';
 
 @Entity({ name: 'BRAND' })
 export class Brand extends BaseEntity<Brand> {
@@ -94,11 +101,47 @@ export class Brand extends BaseEntity<Brand> {
   })
   delYn?: YN;
 
+  @Column({
+    type: 'varchar',
+    name: 'COST',
+  })
+  cost?: BRAND;
+
+  @Column({
+    type: 'varchar',
+    name: 'DIFFICULTY',
+  })
+  difficulty?: DIFFICULTY;
+
+  @Column({
+    type: 'varchar',
+    name: 'STORE_COUNT',
+  })
+  storeCount?: STORE_COUNT;
+
+  @Column({
+    type: 'int',
+    name: 'KIOSK_NO',
+  })
+  kioskNo?: number;
+
   spaceTypeNo?: SPACE_TYPE;
 
   @OneToOne(type => FoodCategory)
   @JoinColumn({ name: 'CATEGORY_NO' })
   category?: FoodCategory;
+
+  @OneToOne(type => CodeManagement)
+  @JoinColumn({ name: 'STORE_COUNT', referencedColumnName: 'key' })
+  storeCountValue?: CodeManagement;
+
+  @OneToOne(type => CodeManagement)
+  @JoinColumn({ name: 'DIFFICULTY', referencedColumnName: 'key' })
+  difficultyValue?: CodeManagement;
+
+  @OneToOne(type => CodeManagement)
+  @JoinColumn({ name: 'COST', referencedColumnName: 'key' })
+  costValue?: CodeManagement;
 
   @ManyToOne(type => Admin)
   @JoinColumn({ name: 'ADMIN_NO' })

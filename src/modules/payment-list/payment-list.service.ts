@@ -55,8 +55,9 @@ export class PaymentListService extends BaseService {
     if (adminPaymentListDto.started) {
       qb.AndWhereBetweenStartAndEndDate(
         adminPaymentListDto.started,
-        null,
+        adminPaymentListDto.ended,
         adminPaymentListDto.exclude('started'),
+        adminPaymentListDto.exclude('ended'),
       );
     }
     if (adminPaymentListDto.nanudaKitchenMenuName) {
@@ -82,7 +83,7 @@ export class PaymentListService extends BaseService {
   async findOne(paymentListNo: number): Promise<PaymentList> {
     const qb = await this.paymentListRepo
       .createQueryBuilder('paymentList')
-      .CustomLeftJoinAndSelect(['nanudaKitchenMaster'])
+      .CustomLeftJoinAndSelect(['nanudaKitchenMaster', 'kioskOrderList'])
       .where('paymentList.paymentListNo = :paymentListNo', {
         paymentListNo: paymentListNo,
       })
@@ -117,8 +118,9 @@ export class PaymentListService extends BaseService {
       )
       .AndWhereBetweenStartAndEndDate(
         adminPaymentListDto.started,
-        null,
+        adminPaymentListDto.ended,
         adminPaymentListDto.exclude('started'),
+        adminPaymentListDto.exclude('ended'),
       )
       .select('SUM(paymentList.totalAmount)', 'sum');
     if (adminPaymentListDto.nanudaKitchenMenuName) {
@@ -131,6 +133,26 @@ export class PaymentListService extends BaseService {
       );
       delete adminPaymentListDto.nanudaKitchenMenuName;
     }
+    return await qb.getRawOne();
+  }
+
+  /**
+   * get brand revenue for today
+   * @param nanudaNo
+   */
+  async getTodayRevenueForBrand(nanudaNo: number) {
+    const started = new Date();
+    const qb = this.paymentListRepo
+      .createQueryBuilder('paymentList')
+      //   AndWhereLike...
+      .CustomLeftJoinAndSelect(['nanudaKitchenMaster'])
+      .where('paymentList.cardCancelFl = :cardCancelFl', {
+        cardCancelFl: YN.NO,
+      })
+      .andWhere('paymentList.nanudaNo = :nanudaNo', { nanudaNo: nanudaNo })
+      .AndWhereBetweenStartAndEndDate(started, null)
+      .select('SUM(paymentList.totalAmount)', 'sum');
+
     return await qb.getRawOne();
   }
 }

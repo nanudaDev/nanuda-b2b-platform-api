@@ -4,9 +4,11 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { BaseEntity, BaseKitchenEntity } from 'src/core';
 import { NanudaKitchenMaster } from '../nanuda-kitchen-master/nanuda-kitchen-master.entity';
+import { KioskOrderList } from '../kiosk-order-list/kiosk-order-list.entity';
 
 @Entity({ name: 'PAYMENT_LIST' })
 export class PaymentList extends BaseKitchenEntity<PaymentList> {
@@ -172,6 +174,10 @@ export class PaymentList extends BaseKitchenEntity<PaymentList> {
     nullable: true,
   })
   createdAt: Date;
+
+  @OneToOne(type => KioskOrderList)
+  @JoinColumn({ name: 'APPROVAL_NO', referencedColumnName: 'approvalNo' })
+  kioskOrderList?: KioskOrderList;
 
   @ManyToOne(
     type => NanudaKitchenMaster,

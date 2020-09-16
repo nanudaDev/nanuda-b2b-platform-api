@@ -92,7 +92,13 @@ export class BrandService extends BaseService {
   ): Promise<PaginatedResponse<Brand>> {
     const qb = this.brandRepo
       .createQueryBuilder('brand')
-      .CustomLeftJoinAndSelect(['admin', 'category'])
+      .CustomLeftJoinAndSelect([
+        'admin',
+        'category',
+        'costValue',
+        'storeCountValue',
+        'difficultyValue',
+      ])
       .AndWhereLike(
         'brand',
         'nameKr',
@@ -143,7 +149,13 @@ export class BrandService extends BaseService {
   async findOne(brandNo: number): Promise<Brand> {
     let qb = await this.brandRepo
       .createQueryBuilder('brand')
-      .CustomLeftJoinAndSelect(['admin', 'category'])
+      .CustomLeftJoinAndSelect([
+        'admin',
+        'category',
+        'costValue',
+        'storeCountValue',
+        'difficultyValue',
+      ])
       .where('brand.no = :no', { no: brandNo })
       .getOne();
 

@@ -21,14 +21,14 @@ import { CodeManagement } from './code-management.entity';
 import { PaginatedRequest, PaginatedResponse, UserInfo } from '../../common';
 import { AdminCodeManagementUpdateDto } from './dto/admin-code-management-update.dto';
 import { AuthRolesGuard } from 'src/core/guards';
-import { ADMIN_USER } from 'src/shared';
+import { ADMIN_USER, CONST_ADMIN_USER } from 'src/shared';
 import { Admin } from '../admin';
 
 // TODO: ADD GUARDS LOGIC
 @ApiTags('ADMIN Code management')
 @ApiBearerAuth()
 @Controller()
-@UseGuards(new AuthRolesGuard(ADMIN_USER.SUPER))
+@UseGuards(new AuthRolesGuard(...CONST_ADMIN_USER))
 export class AdminCodeManagementController extends BaseController {
   constructor(private readonly codeManagementService: CodeManagementService) {
     super();
@@ -145,5 +145,12 @@ export class AdminCodeManagementController extends BaseController {
   @Get('/admin/code-management/inquiry')
   async findInquiryCodes(): Promise<CodeManagement[]> {
     return await this.codeManagementService.findInquiryTypes();
+  }
+
+  @Get('/admin/code-management/:any')
+  async findAnyType(
+    @Param('any') categoryType: string,
+  ): Promise<CodeManagement[]> {
+    return await this.codeManagementService.findAnyTypes(categoryType);
   }
 }

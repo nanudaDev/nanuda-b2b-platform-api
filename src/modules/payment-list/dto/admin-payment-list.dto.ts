@@ -30,6 +30,11 @@ export class AdminPaymentListDto extends BaseDto<AdminPaymentListDto>
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  ended?: Date;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   paymentListNo?: number;
 
   @ApiPropertyOptional()

@@ -1,4 +1,4 @@
-import { BaseDto, SPACE_TYPE } from 'src/core';
+import { BaseDto, SPACE_TYPE, STORE_COUNT, BRAND, DIFFICULTY } from 'src/core';
 import { Brand } from '../brand.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
@@ -54,6 +54,29 @@ export class AdminBrandUpdateDto extends BaseDto<AdminBrandUpdateDto>
   @IsArray()
   @ValidateNested()
   logo?: FileAttachmentDto[];
+
+  @ApiPropertyOptional({ enum: STORE_COUNT })
+  @IsEnum(STORE_COUNT)
+  @IsOptional()
+  @Expose()
+  storeCount?: STORE_COUNT;
+
+  @ApiPropertyOptional({ enum: BRAND })
+  @IsOptional()
+  @IsEnum(BRAND)
+  @Expose()
+  cost?: BRAND;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  kioskNo?: number;
+
+  @ApiPropertyOptional({ enum: DIFFICULTY })
+  @IsOptional()
+  @IsEnum(DIFFICULTY)
+  @Expose()
+  difficulty?: DIFFICULTY;
 
   @ApiPropertyOptional({ type: [FileAttachmentDto] })
   @IsOptional()
