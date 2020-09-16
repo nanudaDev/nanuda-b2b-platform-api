@@ -58,4 +58,13 @@ export class AdminPaymentListController extends BaseController {
   ): Promise<PaymentList> {
     return await this.paymentListService.findOne(paymentListNo);
   }
+
+  /**
+   * get revenue for brand today
+   * @param nanudaNo
+   */
+  @Get('/admin/payment-list/brand/:id([0-9]+)')
+  async findRevenueForBrand(@Param('id', ParseIntPipe) nanudaNo: number) {
+    return await this.paymentListService.getTodayRevenueForBrand(nanudaNo);
+  }
 }
