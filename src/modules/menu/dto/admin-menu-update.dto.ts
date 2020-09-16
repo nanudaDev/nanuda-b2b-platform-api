@@ -3,7 +3,7 @@ import { Menu } from '../menu.entity';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsEnum } from 'class-validator';
 import { Expose } from 'class-transformer';
-import { YN } from 'src/common';
+import { YN, Default } from 'src/common';
 
 export class AdminMenuUpdateDto extends BaseDto<AdminMenuUpdateDto>
   implements Partial<Menu> {
@@ -16,6 +16,13 @@ export class AdminMenuUpdateDto extends BaseDto<AdminMenuUpdateDto>
   @IsOptional()
   @Expose()
   nameEng?: string;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @Expose()
+  @Default(YN.NO)
+  @IsEnum(YN)
+  mainYn?: YN;
 
   @ApiPropertyOptional()
   @IsOptional()

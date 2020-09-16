@@ -66,6 +66,5 @@ export class AdminBrandUpdateDto extends BaseDto<AdminBrandUpdateDto>
   @ApiPropertyOptional({ enum: SPACE_TYPE })
   @IsOptional()
   @Expose()
-  @IsEnum(SPACE_TYPE)
   spaceTypeNo?: SPACE_TYPE;
 }
