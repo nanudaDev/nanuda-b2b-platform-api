@@ -55,8 +55,9 @@ export class PaymentListService extends BaseService {
     if (adminPaymentListDto.started) {
       qb.AndWhereBetweenStartAndEndDate(
         adminPaymentListDto.started,
-        null,
+        adminPaymentListDto.ended,
         adminPaymentListDto.exclude('started'),
+        adminPaymentListDto.exclude('ended'),
       );
     }
     if (adminPaymentListDto.nanudaKitchenMenuName) {
@@ -117,8 +118,9 @@ export class PaymentListService extends BaseService {
       )
       .AndWhereBetweenStartAndEndDate(
         adminPaymentListDto.started,
-        null,
+        adminPaymentListDto.ended,
         adminPaymentListDto.exclude('started'),
+        adminPaymentListDto.exclude('ended'),
       )
       .select('SUM(paymentList.totalAmount)', 'sum');
     if (adminPaymentListDto.nanudaKitchenMenuName) {
