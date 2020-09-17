@@ -134,12 +134,12 @@ export class AdminDeliveryFounderConsultListDto
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  startDate?: Date;
+  started?: Date;
 
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  endDate?: Date;
+  ended?: Date;
 
   @ApiPropertyOptional()
   @IsOptional()

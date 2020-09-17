@@ -131,12 +131,11 @@ export class FounderConsultService extends BaseService {
         adminFounderConsultListDto.exclude('gender'),
       )
       // .WhereAndOrder(adminFounderConsultListDto)
-      .orderBy('founderConsult.no', ORDER_BY_VALUE.DESC)
-      .AndWhereBetweenOpenedAt(
-        adminFounderConsultListDto.startDate,
-        adminFounderConsultListDto.endDate,
-        adminFounderConsultListDto.exclude('startDate'),
-        adminFounderConsultListDto.exclude('endDate'),
+      .AndWhereBetweenStartAndEndDate(
+        adminFounderConsultListDto.started,
+        adminFounderConsultListDto.ended,
+        adminFounderConsultListDto.exclude('started'),
+        adminFounderConsultListDto.exclude('ended'),
       )
       .WhereAndOrder(adminFounderConsultListDto)
       .Paginate(pagination);
