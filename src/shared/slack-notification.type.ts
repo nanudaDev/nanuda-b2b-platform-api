@@ -5,3 +5,7 @@ export enum SLACK_NOTIFICATION_PROPERTY {
   newInquiry = '나누다 플랫폼 문의',
   inquiryReply = '나누다 플랫폼 문의 답변',
 }
+
+export enum B2C_SLACK_NOTIFICATION_PROPERTY {
+  founderConsultUsername = '배달형 상담 신청 안내',
+}

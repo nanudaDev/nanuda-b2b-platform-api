@@ -1,6 +1,7 @@
 export * from './auth/auth.module';
 export * from './company/company.module';
 export * from './admin';
+export * from './article/article.module';
 export * from './brand/brand.module';
 export * from './company-district/company-disctrict.module';
 export * from './company-user/company-user.module';
