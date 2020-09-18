@@ -533,10 +533,10 @@ export class DeliveryFounderConsultService extends BaseService {
       .orderBy('deliveryConsult.no', ORDER_BY_VALUE.DESC)
       .Paginate(pagination)
       .AndWhereBetweenOpenedAt(
-        deliveryFounderConsultListDto.startDate,
-        deliveryFounderConsultListDto.endDate,
-        deliveryFounderConsultListDto.exclude('startDate'),
-        deliveryFounderConsultListDto.exclude('endDate'),
+        deliveryFounderConsultListDto.started,
+        deliveryFounderConsultListDto.ended,
+        deliveryFounderConsultListDto.exclude('started'),
+        deliveryFounderConsultListDto.exclude('ended'),
       )
       .WhereAndOrder(deliveryFounderConsultListDto);
 

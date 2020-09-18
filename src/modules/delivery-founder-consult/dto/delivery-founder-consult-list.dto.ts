@@ -17,6 +17,11 @@ export class DeliveryFounderConsultListDto
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  nanudaUserNo?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   deliverySpaceNo?: number;
 
   @ApiPropertyOptional()
@@ -125,12 +130,12 @@ export class DeliveryFounderConsultListDto
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  startDate?: Date;
+  started?: Date;
 
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  endDate?: Date;
+  ended?: Date;
 
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsEnum(ORDER_BY_VALUE)
