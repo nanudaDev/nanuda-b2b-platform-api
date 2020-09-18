@@ -34,6 +34,7 @@ import {
   FavoriteSpaceMapperModule,
   NanudaKitchenMenuModule,
   MenuModule,
+  ArticleModule,
 } from './modules';
 import { AdminModule } from './modules/admin/admin.module';
 import { PaymentList } from './modules/payment-list/payment-list.entity';
@@ -90,6 +91,7 @@ const env = process.env;
     AuthModule,
     AdminModule,
     AmenityModule,
+    ArticleModule,
     BrandModule,
     CodeManagementModule,
     CompanyModule,
