@@ -62,6 +62,9 @@ export class NanudaDeliverySpaceService extends BaseService {
         'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
         { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
       )
+      .andWhere('company.companyStatus = :companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
       .AndWhereLike(
         'amenities',
         'amenityName',
