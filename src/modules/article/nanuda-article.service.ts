@@ -4,7 +4,7 @@ import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { Article } from './article.entity';
 import { Repository, EntityManager } from 'typeorm';
 import { NanudaArticleListDto } from './dto';
-import { PaginatedRequest, PaginatedResponse } from 'src/common';
+import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
 
 @Injectable()
 export class NanudaArticleService extends BaseService {
@@ -39,6 +39,7 @@ export class NanudaArticleService extends BaseService {
         nanudaArticleListDto.mediaName,
         nanudaArticleListDto.exclude('mediaName'),
       )
+      .where('article.showYn = :showYn', { showYn: YN.YES })
       .WhereAndOrder(nanudaArticleListDto)
       .Paginate(pagination);
 
