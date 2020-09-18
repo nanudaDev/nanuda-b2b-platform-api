@@ -1,9 +1,13 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { BaseController } from 'src/core';
 import { NanudaDeliveryFounderConsultService } from './nanuda-delivery-founder-consult.service';
-import { NanudaDeliveryFounderConsultCreateDto } from './dto';
+import {
+  NanudaDeliveryFounderConsultCreateDto,
+  DeliveryFounderConsultListDto,
+} from './dto';
 import { DeliveryFounderConsult } from './delivery-founder-consult.entity';
+import { PaginatedRequest, PaginatedResponse } from 'src/common';
 
 @Controller()
 @ApiTags('NANUDA DELIVERY FOUNDER CONSULT')
@@ -25,6 +29,22 @@ export class NanudaDeliveryFounderConsultController extends BaseController {
   ): Promise<DeliveryFounderConsult> {
     return await this.nanudaDeliveryFounderConsultService.create(
       nanudaDeliveryFounderConsultCreateDto,
+    );
+  }
+
+  /**
+   * find all
+   * @param deliveryFounderConsultListDto
+   * @param pagination
+   */
+  @Get('/nanuda/delivery-founder-consult')
+  async findAll(
+    @Query() deliveryFounderConsultListDto: DeliveryFounderConsultListDto,
+    @Query() pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<DeliveryFounderConsult>> {
+    return await this.nanudaDeliveryFounderConsultService.findAllForNanudaUser(
+      deliveryFounderConsultListDto,
+      pagination,
     );
   }
 }

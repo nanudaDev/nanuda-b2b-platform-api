@@ -17,6 +17,11 @@ export class DeliveryFounderConsultListDto
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  nanudaUserNo?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   deliverySpaceNo?: number;
 
   @ApiPropertyOptional()

@@ -74,13 +74,18 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
     return consult;
   }
 
+  /**
+   * find all for user
+   * @param deliveryFounderConsultListDto
+   * @param pagination
+   */
   async findAllForNanudaUser(
     deliveryFounderConsultListDto: DeliveryFounderConsultListDto,
     pagination: PaginatedRequest,
   ): Promise<PaginatedResponse<DeliveryFounderConsult>> {
     const qb = this.deliveryFounderConsultRepo
       .createQueryBuilder('deliveryFounderConsult')
-      .CustomInnerJoinAndSelect(['deliverySpaces', 'nanudaUser'])
+      .CustomInnerJoinAndSelect(['deliverySpaces'])
       .innerJoinAndSelect('deliverySpaces.companyDistrict', 'companyDistrict')
       .AndWhereLike(
         'deliveryFounderConsult',
@@ -94,7 +99,9 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
         deliveryFounderConsultListDto.exclude('started'),
         deliveryFounderConsultListDto.exclude('ended'),
       )
-      //   .where('nanudaUser.no = :nanudaUserNo')
+      //   .where('nanudaUser.no = :nanudaUserNo', {
+      //     nanudaUserNo: deliveryFounderConsultListDto.nanudaUserNo,
+      //   })
       .WhereAndOrder(deliveryFounderConsultListDto)
       .Paginate(pagination);
 
