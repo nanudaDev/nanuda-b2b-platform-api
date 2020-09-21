@@ -195,6 +195,117 @@ export class NanudaCompanyDistrictService extends BaseService {
     return { topResults, secondResults };
   }
 
+  async companyDistrictDown2(companyDistrictListDto: CompanyDistrictListDto) {
+    const topResults: DropdownResults[] = [];
+    const secondResults: DropdownResults[] = [];
+    const thirdResulsts: DropdownResults[] = [];
+    const first = await this.companyDistrictRepo
+      .createQueryBuilder('companyDistrict')
+      .CustomInnerJoinAndSelect(['deliverySpaces'])
+      .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
+        companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
+      // .andWhere(
+      //   'companyDistrict.region1DepthName like :keyword or companyDistrict.region2DepthName like :keyword or companyDistrict.region3DepthName like :keyword or companyDistrict.address like :keyword',
+      //   {
+      //     keyword: `%${companyDistrictListDto.keyword}%`,
+      //   },
+      // )
+      .AndWhereLike(
+        'companyDistrict',
+        'region1DepthName',
+        companyDistrictListDto.keyword,
+      )
+      .select(['companyDistrict.no', 'companyDistrict.region1DepthName'])
+      .getMany();
+
+    const firstReduced: any = this.__remove_duplicate(
+      first,
+      'region1DepthName',
+    );
+    firstReduced.map(reduce => {
+      const top = new DropdownResults();
+      top.no = reduce.no;
+      top.name = reduce.region1DepthName;
+      topResults.push(top);
+    });
+
+    const second = await this.companyDistrictRepo
+      .createQueryBuilder('companyDistrict')
+      .CustomInnerJoinAndSelect(['deliverySpaces'])
+      .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
+        companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
+      // .andWhere(
+      //   'companyDistrict.region1DepthName like :keyword or companyDistrict.region2DepthName like :keyword or companyDistrict.region3DepthName like :keyword or companyDistrict.address like :keyword',
+      //   {
+      //     keyword: `%${companyDistrictListDto.keyword}%`,
+      //   },
+      // )
+      .AndWhereLike(
+        'companyDistrict',
+        'region2DepthName',
+        companyDistrictListDto.keyword,
+      )
+      .select([
+        'companyDistrict.no',
+        'companyDistrict.region1DepthName',
+        'companyDistrict.region2DepthName',
+      ])
+      .getMany();
+
+    const secondReduced: any = this.__remove_duplicate(
+      second,
+      'region2DepthName',
+    );
+
+    secondReduced.map(reduce => {
+      const top = new DropdownResults();
+      top.no = reduce.no;
+      top.name = `${reduce.region1DepthName} ${reduce.region2DepthName}`;
+      secondResults.push(top);
+    });
+
+    const third = await this.companyDistrictRepo
+      .createQueryBuilder('companyDistrict')
+      .CustomInnerJoinAndSelect(['deliverySpaces'])
+      .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
+        companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
+      .AndWhereLike(
+        'companyDistrict',
+        'region3DepthName',
+        companyDistrictListDto.keyword,
+      )
+      .select([
+        'companyDistrict.no',
+        'companyDistrict.region1DepthName',
+        'companyDistrict.region2DepthName',
+        'companyDistrict.region3DepthName',
+      ])
+      .getMany();
+
+    const thirdReduced: any = this.__remove_duplicate(
+      third,
+      'region3DepthName',
+    );
+
+    thirdReduced.map(reduce => {
+      const top = new DropdownResults();
+      top.no = reduce.no;
+      top.name = `${reduce.region1DepthName} ${reduce.region2DepthName} ${reduce.region3DepthName}`;
+      thirdResulsts.push(top);
+    });
+
+    return [...topResults, ...secondResults, ...thirdResulsts];
+  }
+
   private __remove_duplicate(array: any, key: string) {
     return [...new Map(array.map(item => [item[key], item])).values()];
   }

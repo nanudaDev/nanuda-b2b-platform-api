@@ -37,10 +37,14 @@ export class NanudaCompanyDistrictController extends BaseController {
    */
   @Get('/nanuda/company-district/dropdown')
   async dropdown(@Query() companyDistrictListDto: CompanyDistrictListDto) {
-    // if (!companyDistrictListDto.keyword) {
-    //   return new SearchResults();
-    // }
     return await this.companyDistrictService.companyDistrictDropDown(
+      companyDistrictListDto,
+    );
+  }
+
+  @Get('/nanuda/company-district/dropdown-test')
+  async dropdown2(@Query() companyDistrictListDto: CompanyDistrictListDto) {
+    return await this.companyDistrictService.companyDistrictDown2(
       companyDistrictListDto,
     );
   }
@@ -51,9 +55,6 @@ export class NanudaCompanyDistrictController extends BaseController {
    */
   @Get('/nanuda/company-district/get-center')
   async getCenter(@Query() companyDistrictListDto: CompanyDistrictListDto) {
-    // if (!companyDistrictListDto.keyword) {
-    //   return new SearchResults();
-    // }
     return await this.companyDistrictService.getCenterForMap(
       companyDistrictListDto,
     );

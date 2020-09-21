@@ -1,6 +1,7 @@
 export * from './auth/auth.module';
 export * from './company/company.module';
 export * from './admin';
+export * from './article/article.module';
 export * from './brand/brand.module';
 export * from './company-district/company-disctrict.module';
 export * from './company-user/company-user.module';
@@ -25,5 +26,6 @@ export * from './search/search.module';
 export * from './sms-auth/sms-auth.module';
 export * from './space/space.module';
 export * from './space-type/space-type.module';
+export * from './survey/survey.module';
 export * from './amenity/amenity.module';
 export * from './founder-consult-management/founder-consult-management.module';

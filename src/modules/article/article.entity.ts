@@ -10,6 +10,8 @@ import { Admin } from '../admin';
 import { YN } from 'src/common';
 import { FileAttachmentDto } from '../file-upload/dto';
 
+// TODO: article category도 아마 추가할 수도 있음
+// 일단은 매체명 정도로
 @Entity({ name: 'ARTICLE' })
 export class Article extends BaseEntity<Article> {
   @PrimaryGeneratedColumn({

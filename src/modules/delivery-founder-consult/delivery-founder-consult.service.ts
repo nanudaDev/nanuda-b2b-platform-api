@@ -151,21 +151,27 @@ export class DeliveryFounderConsultService extends BaseService {
         'gender',
         adminDeliveryFounderConsultListDto.gender,
         adminDeliveryFounderConsultListDto.exclude('gender'),
+      )
+      // .AndWhereBetweenOpenedAt(
+      //   adminDeliveryFounderConsultListDto.startDate,
+      //   adminDeliveryFounderConsultListDto.endDate,
+      //   adminDeliveryFounderConsultListDto.exclude('startDate'),
+      //   adminDeliveryFounderConsultListDto.exclude('endDate'),
+      // )
+      // if (adminDeliveryFounderConsultListDto.startDate) {
+      //   qb.AndWhereBetweenStartAndEndDate(
+      //     adminDeliveryFounderConsultListDto.startDate,
+      //     adminDeliveryFounderConsultListDto.endDate,
+      //   );
+      // } else {
+      //   throw new BadRequestException({ message: 'Needs start date!' });
+      // }
+      .AndWhereBetweenStartAndEndDate(
+        adminDeliveryFounderConsultListDto.started,
+        adminDeliveryFounderConsultListDto.ended,
+        adminDeliveryFounderConsultListDto.exclude('started'),
+        adminDeliveryFounderConsultListDto.exclude('ended '),
       );
-    // .AndWhereBetweenOpenedAt(
-    //   adminDeliveryFounderConsultListDto.startDate,
-    //   adminDeliveryFounderConsultListDto.endDate,
-    //   adminDeliveryFounderConsultListDto.exclude('startDate'),
-    //   adminDeliveryFounderConsultListDto.exclude('endDate'),
-    // )
-    // if (adminDeliveryFounderConsultListDto.startDate) {
-    //   qb.AndWhereBetweenStartAndEndDate(
-    //     adminDeliveryFounderConsultListDto.startDate,
-    //     adminDeliveryFounderConsultListDto.endDate,
-    //   );
-    // } else {
-    //   throw new BadRequestException({ message: 'Needs start date!' });
-    // }
     qb.WhereAndOrder(adminDeliveryFounderConsultListDto);
     qb.Paginate(pagination);
     const [items, totalCount] = await qb.getManyAndCount();
@@ -279,12 +285,6 @@ export class DeliveryFounderConsultService extends BaseService {
       //   adminDeliveryFounderConsultListDto.exclude('startDate'),
       //   adminDeliveryFounderConsultListDto.exclude('endDate'),
       // )
-      .AndWhereBetweenStartAndEndDate(
-        adminDeliveryFounderConsultListDto.startDate,
-        adminDeliveryFounderConsultListDto.endDate,
-        adminDeliveryFounderConsultListDto.exclude('startDate'),
-        adminDeliveryFounderConsultListDto.exclude('endDate'),
-      )
       .WhereAndOrder(adminDeliveryFounderConsultListDto);
 
     return await qb.getMany();
@@ -533,10 +533,10 @@ export class DeliveryFounderConsultService extends BaseService {
       .orderBy('deliveryConsult.no', ORDER_BY_VALUE.DESC)
       .Paginate(pagination)
       .AndWhereBetweenOpenedAt(
-        deliveryFounderConsultListDto.startDate,
-        deliveryFounderConsultListDto.endDate,
-        deliveryFounderConsultListDto.exclude('startDate'),
-        deliveryFounderConsultListDto.exclude('endDate'),
+        deliveryFounderConsultListDto.started,
+        deliveryFounderConsultListDto.ended,
+        deliveryFounderConsultListDto.exclude('started'),
+        deliveryFounderConsultListDto.exclude('ended'),
       )
       .WhereAndOrder(deliveryFounderConsultListDto);
 

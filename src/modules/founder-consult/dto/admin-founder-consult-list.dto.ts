@@ -130,17 +130,17 @@ export class AdminFounderConsultListDto
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  startDate?: Date;
+  started?: Date;
 
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  endDate?: Date;
+  ended?: Date;
 
-  // @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
-  // @IsEnum(ORDER_BY_VALUE)
-  // @IsOptional()
-  // @Default(ORDER_BY_VALUE.DESC)
-  // @Expose()
-  // orderByNo: ORDER_BY_VALUE;
+  @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
+  @IsEnum(ORDER_BY_VALUE)
+  @IsOptional()
+  @Default(ORDER_BY_VALUE.DESC)
+  @Expose()
+  orderByNo?: ORDER_BY_VALUE;
 }
