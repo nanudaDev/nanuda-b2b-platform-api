@@ -13,6 +13,7 @@ import { DeliverySpaceListDto } from './dto';
 import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
 import { FavoriteSpaceMapper } from '../favorite-space-mapper/favorite-space-mapper.entity';
 import { DeliveryFounderConsult } from '../delivery-founder-consult/delivery-founder-consult.entity';
+import { type } from 'os';
 
 @Injectable()
 export class NanudaDeliverySpaceService extends BaseService {
@@ -77,7 +78,7 @@ export class NanudaDeliverySpaceService extends BaseService {
         deliverySpaceListDto.deliverySpaceOptionName,
         deliverySpaceListDto.exclude('deliverySpaceOptions'),
       )
-      .AndWhereLike(
+      .AndWhereEqual(
         'deliverySpace',
         'monthlyRentFee',
         deliverySpaceListDto.monthlyRentFee,
@@ -208,5 +209,31 @@ export class NanudaDeliverySpaceService extends BaseService {
     consult.remainingCount = consult.quantity - consult.contracts.length;
     delete consult.contracts;
     return consult;
+  }
+
+  /**
+   * find relative spaces by deposit range
+   * @param deliverySpaceNo
+   * @param pagination
+   */
+  async findRelativeSpaces(
+    deliverySpaceNo: number,
+    pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<DeliverySpace>> {
+    const selectedDeliverySpace = await this.deliverySpaceRepo.findOne(
+      deliverySpaceNo,
+    );
+    console.log(typeof selectedDeliverySpace.deposit);
+    const qb = this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .CustomInnerJoinAndSelect(['companyDistrict'])
+      .andWhere(
+        `deliverySpace.deposit BETWEEN ${selectedDeliverySpace.deposit} - 200 AND ${selectedDeliverySpace.deposit} + 200`,
+      )
+      .Paginate(pagination);
+
+    console.log(qb.getSql());
+    const [items, totalCount] = await qb.getManyAndCount();
+    return { items, totalCount };
   }
 }

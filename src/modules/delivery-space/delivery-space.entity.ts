@@ -84,20 +84,20 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
   })
   quantity: number;
 
-  @Column('varchar', {
+  @Column('int', {
     name: 'DEPOSIT',
   })
-  deposit?: string;
+  deposit?: number;
 
-  @Column('varchar', {
+  @Column('int', {
     name: 'MONTHLY_UTILITY_FEE',
   })
-  monthlyUtilityFee?: string;
+  monthlyUtilityFee?: number;
 
-  @Column('varchar', {
+  @Column('int', {
     name: 'MONTHLY_RENT_FEE',
   })
-  monthlyRentFee?: string;
+  monthlyRentFee?: number;
 
   @Column({
     type: 'text',

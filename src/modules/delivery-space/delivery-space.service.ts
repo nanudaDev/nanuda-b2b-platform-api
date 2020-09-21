@@ -234,7 +234,7 @@ export class DeliverySpaceService extends BaseService {
         adminDeiverySpaceListDto.exclude('deliverySpaceOptions'),
       )
       //   .AndWhereLike('deliverySpace', 'size', adminDeiverySpaceListDto.size, adminDeiverySpaceListDto.exclude('size'))
-      .AndWhereLike(
+      .AndWhereEqual(
         'deliverySpace',
         'monthlyRentFee',
         adminDeiverySpaceListDto.monthlyRentFee,
@@ -569,7 +569,7 @@ export class DeliverySpaceService extends BaseService {
         deliverySpaceListDto.exclude('deliverySpaceOptions'),
       )
       //   .AndWhereLike('deliverySpace', 'size', adminDeiverySpaceListDto.size, adminDeiverySpaceListDto.exclude('size'))
-      .AndWhereLike(
+      .AndWhereEqual(
         'deliverySpace',
         'monthlyRentFee',
         deliverySpaceListDto.monthlyRentFee,

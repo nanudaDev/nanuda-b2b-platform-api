@@ -32,8 +32,8 @@ export class AdminDeliverySpaceUpdateDto extends DeliverySpaceUpdateDto {
   @Expose()
   newImages?: FileAttachmentDto[];
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @Type(() => Number)
   @Expose()
   companyDistrictNo: number;
@@ -41,7 +41,6 @@ export class AdminDeliverySpaceUpdateDto extends DeliverySpaceUpdateDto {
   @ApiPropertyOptional({ enum: YN })
   @IsEnum(YN)
   @IsOptional()
-  @Default(YN.NO)
   @Expose()
   delYn?: YN;
 
