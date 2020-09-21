@@ -11,15 +11,4 @@ export class NanudaSurveyService extends BaseService {
   ) {
     super();
   }
-
-  async findOne(surveyNo: number): Promise<Survey> {
-    const survey = await this.surveyRepo
-      .createQueryBuilder('survey')
-      .CustomInnerJoinAndSelect(['question'])
-      .innerJoinAndSelect('question.answers', 'answers')
-      .where('survey.no = :no', { no: surveyNo })
-      .getOne();
-
-    return survey;
-  }
 }

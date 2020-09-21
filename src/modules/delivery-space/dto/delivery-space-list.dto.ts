@@ -48,12 +48,12 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  monthlyRentFee?: string;
+  monthlyRentFee?: number;
 
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  deposit?: string;
+  deposit?: number;
 
   @ApiPropertyOptional()
   @IsOptional()

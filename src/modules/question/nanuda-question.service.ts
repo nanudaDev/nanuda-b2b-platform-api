@@ -12,14 +12,4 @@ export class NanudaQuestionService extends BaseService {
   ) {
     super();
   }
-
-  async findOne(questionNo: number): Promise<Question> {
-    const question = await this.questionRepo
-      .createQueryBuilder('question')
-      .CustomInnerJoinAndSelect(['answers'])
-      .where('question.no = :no', { no: questionNo })
-      .getOne();
-
-    return question;
-  }
 }

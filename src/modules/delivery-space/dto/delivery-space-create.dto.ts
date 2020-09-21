@@ -40,18 +40,18 @@ export class DeliverySpaceCreateDto extends BaseDto<DeliverySpaceCreateDto>
   @ApiProperty()
   @IsNumberString()
   @Expose()
-  deposit: string;
+  deposit: number;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumberString()
   @Expose()
-  monthlyUtilityFee?: string;
+  monthlyUtilityFee?: number;
 
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  monthlyRentFee?: string;
+  monthlyRentFee?: number;
 
   @ApiPropertyOptional({ enum: YN })
   @IsOptional()
