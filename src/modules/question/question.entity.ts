@@ -32,10 +32,4 @@ export class Question extends BaseEntity<Question> {
     default: YN.NO,
   })
   initialQuestionYn: YN;
-
-  @OneToMany(
-    type => Answer,
-    answer => answer.question,
-  )
-  answers?: Answer[];
 }

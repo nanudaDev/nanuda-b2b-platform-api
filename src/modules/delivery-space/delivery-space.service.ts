@@ -3,7 +3,7 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { BaseService } from 'src/core';
+import { BaseService, SPACE_TYPE, SPACE } from 'src/core';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { DeliverySpace } from './delivery-space.entity';
 import { Repository, EntityManager } from 'typeorm';
@@ -24,6 +24,7 @@ import { FileUploadService } from '../file-upload/file-upload.service';
 import { DeliveryFounderConsultContractHistory } from '../delivery-founder-consult-contract-history/delivery-founder-consult-contract-history.entity';
 import { NanudaSlackNotificationService } from 'src/core/utils';
 import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/delivery-space-brand-mapper.entity';
+import { BestSpaceMapper } from '../best-space/best-space.entity';
 
 @Injectable()
 export class DeliverySpaceService extends BaseService {
@@ -304,6 +305,18 @@ export class DeliverySpaceService extends BaseService {
         );
       }
       newDeliverySpace = await entityManager.save(newDeliverySpace);
+
+      /**
+       * best space
+       */
+      if (adminDeliverySpaceCreateDto.isBestedYn === YN.YES) {
+        let newBestMapper = new BestSpaceMapper();
+        newBestMapper.spaceNo = newDeliverySpace.no;
+        newBestMapper.spaceTypeNo = SPACE_TYPE.ONLY_DELIVERY;
+        newBestMapper.showYn = adminDeliverySpaceCreateDto.isBestedShowYn;
+        // create new best
+        await entityManager.getRepository(BestSpaceMapper).save(newBestMapper);
+      }
       //   create mapper for amenity
       if (
         adminDeliverySpaceCreateDto.amenityIds &&
@@ -461,6 +474,39 @@ export class DeliverySpaceService extends BaseService {
         }
         deliverySpace = deliverySpace.set(adminDeliverySpaceUpdateDto);
         deliverySpace.adminNo = adminNo;
+        if (adminDeliverySpaceUpdateDto.isBestedYn === YN.YES) {
+          // check if bested already
+          const check = await entityManager
+            .getRepository(BestSpaceMapper)
+            .findOne({
+              spaceNo: deliverySpaceNo,
+              spaceTypeNo: SPACE_TYPE.ONLY_DELIVERY,
+            });
+          if (check) {
+            throw new BadRequestException({
+              message: 'Already in best space list.',
+            });
+          }
+          let newBestMapper = new BestSpaceMapper();
+          newBestMapper.spaceNo = deliverySpaceNo;
+          newBestMapper.spaceTypeNo = SPACE_TYPE.ONLY_DELIVERY;
+          newBestMapper.showYn = adminDeliverySpaceUpdateDto.isBestedShowYn;
+          await entityManager
+            .getRepository(BestSpaceMapper)
+            .save(newBestMapper);
+        }
+        if (adminDeliverySpaceUpdateDto.isBestedYn === YN.NO) {
+          await entityManager
+            .getRepository(BestSpaceMapper)
+            .createQueryBuilder()
+            .delete()
+            .from(BestSpaceMapper)
+            .where('spaceNo = :spaceNo', { spaceNo: deliverySpaceNo })
+            .andWhere('spaceTypeNo = :spaceTypeNo', {
+              spaceTypeNo: SPACE_TYPE.ONLY_DELIVERY,
+            })
+            .execute();
+        }
         deliverySpace = await entityManager.save(deliverySpace);
         return deliverySpace;
       },
