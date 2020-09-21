@@ -121,19 +121,16 @@ export class ArticleService extends BaseService {
     articleNo: number,
     adminArticleUpdateDto: AdminArticleUpdateDto,
   ): Promise<Article> {
-    let article = await this.articleRepo.findOne(articleNo);
-    if (!article) {
-      throw new NotFoundException();
-    }
-    article = article.set(article);
-    if (article.image && article.image.length > 0) {
-      article.image = await this.fileUploadService.moveS3File(article.image);
-      if (!article.image) {
-        throw new BadRequestException({
-          message: 'Upload failed!',
-        });
+    if (adminArticleUpdateDto.image && adminArticleUpdateDto.image.length > 0) {
+      adminArticleUpdateDto.image = await this.fileUploadService.moveS3File(
+        adminArticleUpdateDto.image,
+      );
+      if (!adminArticleUpdateDto.image) {
+        throw new BadRequestException({ message: 'Upload failed!' });
       }
     }
+    let article = await this.articleRepo.findOne(articleNo);
+    article = article.set(adminArticleUpdateDto);
     article.adminNo = adminNo;
     article = await this.articleRepo.save(article);
     return article;

@@ -35,6 +35,7 @@ import {
   NanudaKitchenMenuModule,
   MenuModule,
   ArticleModule,
+  SurveyModule,
 } from './modules';
 import { AdminModule } from './modules/admin/admin.module';
 import { PaymentList } from './modules/payment-list/payment-list.entity';
@@ -118,6 +119,7 @@ const env = process.env;
     SearchModule,
     SmsAuthModule,
     SpaceTypeModule,
+    SurveyModule,
   ],
   controllers: [AppController],
   providers: [

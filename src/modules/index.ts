@@ -26,5 +26,6 @@ export * from './search/search.module';
 export * from './sms-auth/sms-auth.module';
 export * from './space/space.module';
 export * from './space-type/space-type.module';
+export * from './survey/survey.module';
 export * from './amenity/amenity.module';
 export * from './founder-consult-management/founder-consult-management.module';
