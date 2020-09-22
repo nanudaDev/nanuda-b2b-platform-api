@@ -35,23 +35,4 @@ export class NanudaSurveyQuestionAnswerService extends BaseService {
     }
     return question;
   }
-
-  //   /**
-  //    * find next question
-  //    * @param surveyQuestionNo
-  //    */
-  //   async findNextQuestion(
-  //     surveyQuestionNo: number,
-  //   ): Promise<SurveyQuestionAnswerMapper> {
-  //     const question = await this.mapperRepo
-  //       .createQueryBuilder()
-  //       .CustomInnerJoinAndSelect(['question', 'rightAnswer', 'leftAnswer'])
-  //       .where('mapper.no = :no', { no: surveyQuestionNo })
-  //       .getOne();
-
-  //     question.rightAnswer.responseQuestionNo = question.rightAnswerResponseNo;
-  //     question.leftAnswer.responseQuestionNo = question.leftAnswerResponseNo;
-
-  //     return question;
-  //   }
 }
