@@ -1,6 +1,6 @@
 import { BaseDto, PRODUCT_CONSULT } from 'src/core';
 import { ProductConsult } from '../product-consult.entity';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsEnum } from 'class-validator';
 import { Expose } from 'class-transformer';
 import { ORDER_BY_VALUE, Default, AVAILABLE_TIME } from 'src/common';
@@ -12,6 +12,11 @@ export class AdminProductConsultListDto
   @IsOptional()
   @Expose()
   nanudaUserNo?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @Expose()
+  nanudaUserPhone?: string;
 
   @ApiPropertyOptional({ enum: PRODUCT_CONSULT })
   @IsOptional()

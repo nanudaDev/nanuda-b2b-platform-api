@@ -30,7 +30,7 @@ export class ProductConsultService extends BaseService {
   ): Promise<PaginatedResponse<ProductConsult>> {
     const qb = this.productConsultRepo
       .createQueryBuilder('productConsult')
-      .CustomLeftJoinAndSelect(['admin'])
+      .CustomLeftJoinAndSelect(['admin', 'nanudaUser'])
       .CustomInnerJoinAndSelect(['codeManagement', 'addressInfo'])
       .AndWhereLike(
         'productConsult',
@@ -43,6 +43,12 @@ export class ProductConsultService extends BaseService {
         'name',
         adminProductConsutListDto.adminName,
         adminProductConsutListDto.exclude('adminName'),
+      )
+      .AndWhereLike(
+        'nanudaUser',
+        'phone',
+        adminProductConsutListDto.nanudaUserPhone,
+        adminProductConsutListDto.exclude('nanudaUserPhone'),
       )
       .AndWhereEqual(
         'productConsult',
