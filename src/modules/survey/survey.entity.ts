@@ -29,6 +29,14 @@ export class Survey extends BaseEntity<Survey> {
   })
   initialQuestionNo?: number;
 
+  @Column({
+    type: 'int',
+    name: 'QUESTIONS_LENGTH',
+    nullable: false,
+    default: 1,
+  })
+  questionsLength: number;
+
   @OneToOne(type => Question)
   @JoinColumn({ name: 'INITIAL_QUESTION_NO' })
   question?: Question;

@@ -36,6 +36,7 @@ import {
   MenuModule,
   ArticleModule,
   SurveyModule,
+  BestSpaceMapperModule,
 } from './modules';
 import { AdminModule } from './modules/admin/admin.module';
 import { PaymentList } from './modules/payment-list/payment-list.entity';
@@ -93,6 +94,7 @@ const env = process.env;
     AdminModule,
     AmenityModule,
     ArticleModule,
+    BestSpaceMapperModule,
     BrandModule,
     CodeManagementModule,
     CompanyModule,

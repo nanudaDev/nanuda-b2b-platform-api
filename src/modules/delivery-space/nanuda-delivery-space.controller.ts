@@ -51,4 +51,20 @@ export class NanudaDeliverySpaceController extends BaseController {
       nanudaUserNo.nanudaUserNo,
     );
   }
+
+  /**
+   * find relative spaces
+   * @param deliverySpaceNo
+   * @param pagination
+   */
+  @Get('/nanuda/delivery-space/:id([0-9]+)/similar')
+  async findSimilarSpaces(
+    @Param('id', ParseIntPipe) deliverySpaceNo: number,
+    @Query() pagination?: PaginatedRequest,
+  ): Promise<PaginatedResponse<DeliverySpace>> {
+    return await this.nanudaDeliverySpaceService.findRelativeSpaces(
+      deliverySpaceNo,
+      pagination,
+    );
+  }
 }
