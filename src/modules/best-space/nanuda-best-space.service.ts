@@ -27,6 +27,7 @@ export class NanudaBestSpaceService extends BaseService {
     const qb = this.bestSpaceMapperRepo
       .createQueryBuilder('bestSpace')
       .CustomInnerJoinAndSelect(['deliverySpace'])
+      .innerJoinAndSelect('deliverySpace.companyDistrict', 'companyDistrict')
       .leftJoinAndSelect('deliverySpace.brands', 'brands')
       .where('bestSpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.showYn = :spaceShowYn', { spaceShowYn: YN.YES })
