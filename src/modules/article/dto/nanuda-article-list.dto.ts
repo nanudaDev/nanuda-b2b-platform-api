@@ -2,7 +2,7 @@ import { BaseDto } from 'src/core';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsEnum } from 'class-validator';
 import { Expose } from 'class-transformer';
-import { ORDER_BY_VALUE, Default } from 'src/common';
+import { ORDER_BY_VALUE, Default, YN } from 'src/common';
 
 export class NanudaArticleListDto extends BaseDto<NanudaArticleListDto> {
   @ApiPropertyOptional()
@@ -14,6 +14,12 @@ export class NanudaArticleListDto extends BaseDto<NanudaArticleListDto> {
   @IsOptional()
   @Expose()
   mediaName?: string;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @IsEnum(YN)
+  @Expose()
+  aboutUsYn?: YN;
 
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsOptional()
