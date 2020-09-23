@@ -38,6 +38,13 @@ export class AdminArticleCreateDto extends BaseDto<AdminArticleCreateDto>
   @Default(YN.NO)
   showYn?: YN;
 
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @IsEnum(YN)
+  @Expose()
+  @Default(YN.NO)
+  aboutUsYn?: YN;
+
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()

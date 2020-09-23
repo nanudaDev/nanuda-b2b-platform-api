@@ -43,4 +43,10 @@ export class AdminArticleUpdateDto extends BaseDto<AdminArticleUpdateDto>
   @IsEnum(YN)
   @Expose()
   showYn?: YN;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @IsEnum(YN)
+  @Expose()
+  aboutUsYn?: YN;
 }
