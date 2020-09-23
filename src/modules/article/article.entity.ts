@@ -68,6 +68,14 @@ export class Article extends BaseEntity<Article> {
   })
   showYn: YN;
 
+  @Column({
+    type: 'char',
+    name: 'ABOUT_US_YN',
+    nullable: false,
+    default: YN.NO,
+  })
+  aboutUsYn: YN;
+
   @OneToOne(type => Admin)
   @JoinColumn({ name: 'ADMIN_NO' })
   admin?: Admin;
