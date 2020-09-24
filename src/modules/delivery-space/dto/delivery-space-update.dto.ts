@@ -24,19 +24,16 @@ export class DeliverySpaceUpdateDto extends BaseDto<DeliverySpaceUpdateDto>
 
   @ApiPropertyOptional()
   @IsOptional()
-  @Type(() => Number)
   @Expose()
   size: number;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNumberString()
   @Expose()
   deposit: number;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNumberString()
   @Expose()
   monthlyUtilityFee?: number;
 
