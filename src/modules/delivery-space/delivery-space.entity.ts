@@ -30,6 +30,7 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
   @PrimaryGeneratedColumn({
     type: 'int',
     unsigned: true,
+    name: 'NO',
   })
   no: number;
 
@@ -218,4 +219,8 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
     inverseJoinColumn: { name: 'NANUDA_USER_NO' },
   })
   favoritedUsers?: NanudaUser[];
+
+  @OneToOne(type => BestSpaceMapper)
+  @JoinColumn({ name: 'NO', referencedColumnName: 'spaceNo' })
+  isBested?: BestSpaceMapper;
 }

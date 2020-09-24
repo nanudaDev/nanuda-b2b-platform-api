@@ -17,11 +17,10 @@ export class NanudaDeliveryFounderConsultCreateDto extends BaseDto<
   @Expose()
   deliverySpaceNo?: number;
 
-  @ApiPropertyOptional({ enum: FOOD_CATEGORY })
+  @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  @IsEnum(FOOD_CATEGORY)
-  hopeFoodCategory?: FOOD_CATEGORY;
+  hopeFoodCategory?: string;
 
   @ApiPropertyOptional({ enum: AVAILABLE_TIME })
   @IsOptional()

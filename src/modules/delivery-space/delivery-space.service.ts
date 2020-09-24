@@ -72,6 +72,7 @@ export class DeliverySpaceService extends BaseService {
         'amenities',
         'contracts',
         'brands',
+        'isBested',
       ])
       .leftJoinAndSelect('contracts.nanudaUser', 'nanudaUser')
       .where('deliverySpace.no = :no', { no: deliverySpaceNo })
@@ -195,6 +196,7 @@ export class DeliverySpaceService extends BaseService {
         'amenities',
         'contracts',
         'brands',
+        'isBested',
       ])
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .AndWhereLike(
