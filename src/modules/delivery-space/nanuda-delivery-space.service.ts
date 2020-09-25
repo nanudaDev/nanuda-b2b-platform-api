@@ -102,8 +102,8 @@ export class NanudaDeliverySpaceService extends BaseService {
         deliverySpaceListDto.address,
         deliverySpaceListDto.exclude('address'),
       )
-      .WhereAndOrder(deliverySpaceListDto)
-      .Paginate(pagination);
+      .WhereAndOrder(deliverySpaceListDto);
+    // .Paginate(pagination);
 
     const [items, totalCount] = await qb.getManyAndCount();
     // add favorite mark
@@ -228,8 +228,14 @@ export class NanudaDeliverySpaceService extends BaseService {
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
       .andWhere(
+        'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
+        { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
+      )
+      .andWhere(
         `deliverySpace.deposit BETWEEN ${selectedDeliverySpace.deposit} - 200 AND ${selectedDeliverySpace.deposit} + 200`,
       )
+      .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .Paginate(pagination);
 
     console.log(qb.getSql());
