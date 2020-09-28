@@ -51,9 +51,21 @@ export class ProductConsultService extends BaseService {
       )
       .AndWhereLike(
         'nanudaUser',
+        'name',
+        adminProductConsutListDto.nanudaUserName,
+        adminProductConsutListDto.exclude('nanudaUserName'),
+      )
+      .AndWhereLike(
+        'nanudaUser',
         'phone',
         adminProductConsutListDto.nanudaUserPhone,
         adminProductConsutListDto.exclude('nanudaUserPhone'),
+      )
+      .AndWhereEqual(
+        'nanudaUser',
+        'gender',
+        adminProductConsutListDto.gender,
+        adminProductConsutListDto.exclude('gender'),
       )
       .AndWhereEqual(
         'productConsult',
