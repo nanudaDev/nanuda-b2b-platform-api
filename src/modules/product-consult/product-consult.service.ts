@@ -71,7 +71,7 @@ export class ProductConsultService extends BaseService {
     const consult = await this.productConsultRepo
       .createQueryBuilder('productConsult')
       .CustomInnerJoinAndSelect(['codeManagement'])
-      .CustomLeftJoinAndSelect(['admin', 'addressInfo'])
+      .CustomLeftJoinAndSelect(['admin', 'addressInfo', 'nanudaUser'])
       .where('productConsult.no = :no', { no: productConsultNo })
       .getOne();
     if (!consult) {
