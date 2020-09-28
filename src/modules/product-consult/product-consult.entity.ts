@@ -14,6 +14,7 @@ import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 import { Admin } from '../admin';
 import { CodeManagement } from '../code-management/code-management.entity';
 import { AddressInfo } from '../address-info/address-info.entity';
+import { SpaceType } from '../space-type/space-type.entity';
 
 @Entity({ name: 'PRODUCT_CONSULT' })
 export class ProductConsult extends BaseEntity<ProductConsult> {
@@ -106,4 +107,13 @@ export class ProductConsult extends BaseEntity<ProductConsult> {
   @OneToOne(type => AddressInfo)
   @JoinColumn({ name: 'ADDRESS_CODE', referencedColumnName: 'addressCode' })
   addressInfo?: AddressInfo;
+
+  // 가능한 시간
+  @OneToOne(type => CodeManagement)
+  @JoinColumn({ name: 'HOPE_TIME', referencedColumnName: 'key' })
+  availableTime?: CodeManagement;
+
+  @OneToOne(type => SpaceType)
+  @JoinColumn({ name: 'SPACE_TYPE_NO' })
+  spaceType?: SpaceType;
 }
