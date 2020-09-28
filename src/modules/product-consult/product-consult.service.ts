@@ -30,7 +30,12 @@ export class ProductConsultService extends BaseService {
   ): Promise<PaginatedResponse<ProductConsult>> {
     const qb = this.productConsultRepo
       .createQueryBuilder('productConsult')
-      .CustomLeftJoinAndSelect(['admin', 'nanudaUser'])
+      .CustomLeftJoinAndSelect([
+        'admin',
+        'nanudaUser',
+        'availableTime',
+        'spaceType',
+      ])
       .CustomInnerJoinAndSelect(['codeManagement', 'addressInfo'])
       .AndWhereLike(
         'productConsult',
@@ -71,7 +76,13 @@ export class ProductConsultService extends BaseService {
     const consult = await this.productConsultRepo
       .createQueryBuilder('productConsult')
       .CustomInnerJoinAndSelect(['codeManagement'])
-      .CustomLeftJoinAndSelect(['admin', 'addressInfo', 'nanudaUser'])
+      .CustomLeftJoinAndSelect([
+        'admin',
+        'addressInfo',
+        'nanudaUser',
+        'availableTime',
+        'spaceType',
+      ])
       .where('productConsult.no = :no', { no: productConsultNo })
       .getOne();
     if (!consult) {
