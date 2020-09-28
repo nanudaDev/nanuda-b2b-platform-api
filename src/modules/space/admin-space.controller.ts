@@ -1,4 +1,11 @@
-import { Controller, UseGuards, Get, Query } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Get,
+  Query,
+  ParseIntPipe,
+  Param,
+} from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthRolesGuard, CONST_ADMIN_USER, BaseController } from 'src/core';
 import { SpaceService } from './space.service';
@@ -29,5 +36,14 @@ export class AdminSpaceController extends BaseController {
       adminSpaceListDto,
       pagination,
     );
+  }
+
+  /**
+   * find one for admin
+   * @param spaceNo
+   */
+  @Get('/admin/space/:id([0-9]+)')
+  async findOne(@Param('id', ParseIntPipe) spaceNo: number): Promise<Space> {
+    return await this.spaceService.findOneForAdmin(spaceNo);
   }
 }

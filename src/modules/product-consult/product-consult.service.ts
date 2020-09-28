@@ -91,6 +91,7 @@ export class ProductConsultService extends BaseService {
   ): Promise<ProductConsult> {
     let consult = await this.productConsultRepo.findOne(productConsultNo);
     consult = consult.set(adminProductConsultUpdateDto);
+    consult = await this.productConsultRepo.save(consult);
     return consult;
   }
 }
