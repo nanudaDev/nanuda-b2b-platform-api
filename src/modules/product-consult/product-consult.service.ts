@@ -6,15 +6,17 @@ import {
 } from './dto';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
 import { ProductConsult } from './product-consult.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { ProductConsultModule } from './product-consult.module';
+import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 
 @Injectable()
 export class ProductConsultService extends BaseService {
   constructor(
     @InjectRepository(ProductConsult)
     private readonly productConsultRepo: Repository<ProductConsult>,
+    @InjectEntityManager() private readonly entityManager: EntityManager,
   ) {
     super();
   }
@@ -112,9 +114,29 @@ export class ProductConsultService extends BaseService {
     productConsultNo: number,
     adminProductConsultUpdateDto: AdminProductConsultUpdateDto,
   ): Promise<ProductConsult> {
-    let consult = await this.productConsultRepo.findOne(productConsultNo);
-    consult = consult.set(adminProductConsultUpdateDto);
-    consult = await this.productConsultRepo.save(consult);
+    const consult = await this.entityManager.transaction(
+      async entityManager => {
+        let consult = await entityManager
+          .getRepository(ProductConsult)
+          .findOne(productConsultNo);
+        if (!consult) {
+          throw new NotFoundException();
+        }
+        if (adminProductConsultUpdateDto.gender) {
+          let nanudaUser = await entityManager
+            .getRepository(NanudaUser)
+            .findOne(consult.nanudaUserNo);
+          if (!nanudaUser) {
+            throw new NotFoundException({ message: 'User not found' });
+          }
+          nanudaUser.gender = adminProductConsultUpdateDto.gender;
+          nanudaUser = await entityManager.save(nanudaUser);
+        }
+        consult = consult.set(adminProductConsultUpdateDto);
+        consult = await entityManager.save(consult);
+        return consult;
+      },
+    );
     return consult;
   }
 }
