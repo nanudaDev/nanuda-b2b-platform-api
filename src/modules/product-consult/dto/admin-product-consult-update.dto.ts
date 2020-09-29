@@ -3,7 +3,7 @@ import { ProductConsult } from '../product-consult.entity';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsEnum } from 'class-validator';
 import { Expose } from 'class-transformer';
-import { AVAILABLE_TIME, YN } from 'src/common';
+import { AVAILABLE_TIME } from 'src/common';
 
 export class AdminProductConsultUpdateDto extends BaseDto<ProductConsult> {
   @ApiPropertyOptional({ enum: PRODUCT_CONSULT })
@@ -16,12 +16,6 @@ export class AdminProductConsultUpdateDto extends BaseDto<ProductConsult> {
   @IsOptional()
   @Expose()
   pConsultManager?: number;
-
-  @ApiPropertyOptional({ enum: YN })
-  @IsOptional()
-  @IsEnum(YN)
-  @Expose()
-  changUpExpYn?: YN;
 
   @ApiPropertyOptional({ enum: AVAILABLE_TIME })
   @IsOptional()
