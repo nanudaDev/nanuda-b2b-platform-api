@@ -24,32 +24,28 @@ export class DeliverySpaceUpdateDto extends BaseDto<DeliverySpaceUpdateDto>
 
   @ApiPropertyOptional()
   @IsOptional()
-  @Type(() => Number)
   @Expose()
   size: number;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNumberString()
   @Expose()
-  deposit: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsNumberString()
-  @Expose()
-  monthlyUtilityFee?: string;
+  deposit: number;
 
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  monthlyRentFee?: string;
+  monthlyUtilityFee?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  monthlyRentFee?: number;
 
   @ApiPropertyOptional({ enum: YN })
   @IsOptional()
   @IsEnum(YN)
   @Expose()
-  @Default(YN.NO)
   showYn?: YN;
 
   @ApiPropertyOptional()

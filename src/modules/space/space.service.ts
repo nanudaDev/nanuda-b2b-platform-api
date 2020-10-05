@@ -77,4 +77,26 @@ export class SpaceService extends BaseService {
 
     return { items, totalCount };
   }
+
+  /**
+   * find one for space
+   * @param spaceNo
+   */
+  async findOneForAdmin(spaceNo: number): Promise<Space> {
+    const space = await this.spaceRepo
+      .createQueryBuilder('space')
+      .CustomLeftJoinAndSelect([
+        'amenities',
+        'deliverySpaceOptions',
+        'spaceType',
+        'nanudaUser',
+        'companyDistrictCategory',
+      ])
+      .leftJoinAndSelect('space.companyDistricts', 'companyDistricts')
+      .leftJoinAndSelect('companyDistricts.company', 'company')
+      .where('space.no = :no', { no: spaceNo })
+      .getOne();
+
+    return space;
+  }
 }

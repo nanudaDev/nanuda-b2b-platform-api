@@ -17,6 +17,9 @@ import { DeliverySpaceDeliveryOptionMapper } from '../delivery-space-delivery-op
 import { FileUploadModule } from '../file-upload/file-upload.module';
 import { DeliveryFounderConsultContractHistory } from '../delivery-founder-consult-contract-history/delivery-founder-consult-contract-history.entity';
 import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/delivery-space-brand-mapper.entity';
+import { NanudaDeliveryFounderConsultService } from './nanuda-delivery-founder-consult.service';
+import { NanudaDeliveryFounderConsultController } from './nanuda-delivery-founder-consult.controller';
+import { B2CNanudaSlackNotificationService } from 'src/core/utils/b2c-nanuda-slack-notification.service';
 
 @Module({
   imports: [
@@ -39,11 +42,14 @@ import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/deliver
   controllers: [
     AdminDeliveryFounderConsultController,
     DeliveryFounderConsultController,
+    NanudaDeliveryFounderConsultController,
   ],
   providers: [
     DeliveryFounderConsultService,
     NanudaSlackNotificationService,
+    B2CNanudaSlackNotificationService,
     DeliverySpaceService,
+    NanudaDeliveryFounderConsultService,
   ],
 })
 export class DeliveryFounderConsultModule {}

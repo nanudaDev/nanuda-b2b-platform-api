@@ -10,6 +10,8 @@ import { Admin } from '../admin';
 import { YN } from 'src/common';
 import { FileAttachmentDto } from '../file-upload/dto';
 
+// TODO: article category도 아마 추가할 수도 있음
+// 일단은 매체명 정도로
 @Entity({ name: 'ARTICLE' })
 export class Article extends BaseEntity<Article> {
   @PrimaryGeneratedColumn({
@@ -65,6 +67,14 @@ export class Article extends BaseEntity<Article> {
     default: YN.NO,
   })
   showYn: YN;
+
+  @Column({
+    type: 'char',
+    name: 'ABOUT_US_YN',
+    nullable: false,
+    default: YN.NO,
+  })
+  aboutUsYn: YN;
 
   @OneToOne(type => Admin)
   @JoinColumn({ name: 'ADMIN_NO' })

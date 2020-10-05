@@ -4,11 +4,6 @@ import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { DeliverySpace } from './delivery-space.entity';
 import { Repository, EntityManager, In } from 'typeorm';
 import { CompanyDistrict } from '../company-district/company-district.entity';
-import { DeliveryFounderConsultContract } from '../delivery-founder-consult-contract/delivery-founder-consult-contract.entity';
-import { DeliverySpaceAmenityMapper } from '../delivery-space-amenity-mapper/delivery-space-amenity-mapper.entity';
-import { DeliverySpaceDeliveryOptionMapper } from '../delivery-space-delivery-option-mapper/delivery-space-delivery-option-mapper.entity';
-import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/delivery-space-brand-mapper.entity';
-import { DeliveryFounderConsultContractHistory } from '../delivery-founder-consult-contract-history/delivery-founder-consult-contract-history.entity';
 import { DeliverySpaceListDto } from './dto';
 import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
 import { FavoriteSpaceMapper } from '../favorite-space-mapper/favorite-space-mapper.entity';
@@ -62,6 +57,9 @@ export class NanudaDeliverySpaceService extends BaseService {
         'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
         { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
       )
+      .andWhere('company.companyStatus = :companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
       .AndWhereLike(
         'amenities',
         'amenityName',
@@ -74,7 +72,7 @@ export class NanudaDeliverySpaceService extends BaseService {
         deliverySpaceListDto.deliverySpaceOptionName,
         deliverySpaceListDto.exclude('deliverySpaceOptions'),
       )
-      .AndWhereLike(
+      .AndWhereEqual(
         'deliverySpace',
         'monthlyRentFee',
         deliverySpaceListDto.monthlyRentFee,
@@ -205,5 +203,37 @@ export class NanudaDeliverySpaceService extends BaseService {
     consult.remainingCount = consult.quantity - consult.contracts.length;
     delete consult.contracts;
     return consult;
+  }
+
+  /**
+   * find relative spaces by deposit range
+   * @param deliverySpaceNo
+   * @param pagination
+   */
+  async findRelativeSpaces(
+    deliverySpaceNo: number,
+    pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<DeliverySpace>> {
+    const selectedDeliverySpace = await this.deliverySpaceRepo.findOne(
+      deliverySpaceNo,
+    );
+    console.log(typeof selectedDeliverySpace.deposit);
+    const qb = this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .CustomInnerJoinAndSelect(['companyDistrict'])
+      .andWhere(
+        'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
+        { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
+      )
+      .andWhere(
+        `deliverySpace.deposit BETWEEN ${selectedDeliverySpace.deposit} - 200 AND ${selectedDeliverySpace.deposit} + 200`,
+      )
+      .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+      .Paginate(pagination);
+
+    console.log(qb.getSql());
+    const [items, totalCount] = await qb.getManyAndCount();
+    return { items, totalCount };
   }
 }

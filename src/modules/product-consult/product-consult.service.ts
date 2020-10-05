@@ -30,7 +30,12 @@ export class ProductConsultService extends BaseService {
   ): Promise<PaginatedResponse<ProductConsult>> {
     const qb = this.productConsultRepo
       .createQueryBuilder('productConsult')
-      .CustomLeftJoinAndSelect(['admin'])
+      .CustomLeftJoinAndSelect([
+        'admin',
+        'nanudaUser',
+        'availableTime',
+        'spaceType',
+      ])
       .CustomInnerJoinAndSelect(['codeManagement', 'addressInfo'])
       .AndWhereLike(
         'productConsult',
@@ -43,6 +48,12 @@ export class ProductConsultService extends BaseService {
         'name',
         adminProductConsutListDto.adminName,
         adminProductConsutListDto.exclude('adminName'),
+      )
+      .AndWhereLike(
+        'nanudaUser',
+        'phone',
+        adminProductConsutListDto.nanudaUserPhone,
+        adminProductConsutListDto.exclude('nanudaUserPhone'),
       )
       .AndWhereEqual(
         'productConsult',
@@ -65,7 +76,13 @@ export class ProductConsultService extends BaseService {
     const consult = await this.productConsultRepo
       .createQueryBuilder('productConsult')
       .CustomInnerJoinAndSelect(['codeManagement'])
-      .CustomLeftJoinAndSelect(['admin', 'addressInfo'])
+      .CustomLeftJoinAndSelect([
+        'admin',
+        'addressInfo',
+        'nanudaUser',
+        'availableTime',
+        'spaceType',
+      ])
       .where('productConsult.no = :no', { no: productConsultNo })
       .getOne();
     if (!consult) {
@@ -85,6 +102,7 @@ export class ProductConsultService extends BaseService {
   ): Promise<ProductConsult> {
     let consult = await this.productConsultRepo.findOne(productConsultNo);
     consult = consult.set(adminProductConsultUpdateDto);
+    consult = await this.productConsultRepo.save(consult);
     return consult;
   }
 }

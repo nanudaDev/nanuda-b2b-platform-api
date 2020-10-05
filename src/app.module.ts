@@ -34,6 +34,9 @@ import {
   FavoriteSpaceMapperModule,
   NanudaKitchenMenuModule,
   MenuModule,
+  ArticleModule,
+  BestSpaceMapperModule,
+  SurveyQuesionAnswerMapperModule,
 } from './modules';
 import { AdminModule } from './modules/admin/admin.module';
 import { PaymentList } from './modules/payment-list/payment-list.entity';
@@ -90,6 +93,8 @@ const env = process.env;
     AuthModule,
     AdminModule,
     AmenityModule,
+    ArticleModule,
+    BestSpaceMapperModule,
     BrandModule,
     CodeManagementModule,
     CompanyModule,
@@ -116,6 +121,7 @@ const env = process.env;
     SearchModule,
     SmsAuthModule,
     SpaceTypeModule,
+    SurveyQuesionAnswerMapperModule,
   ],
   controllers: [AppController],
   providers: [

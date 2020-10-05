@@ -7,6 +7,7 @@ import {
   JoinColumn,
   ManyToMany,
   JoinTable,
+  OneToOne,
 } from 'typeorm';
 import { BaseEntity, SPACE } from 'src/core';
 import { YN } from 'src/common';
@@ -22,12 +23,14 @@ import { FileUpload } from '../file-upload/file-upload.entity';
 import { DeliveryFounderConsultContractHistory } from '../delivery-founder-consult-contract-history/delivery-founder-consult-contract-history.entity';
 import { Brand } from '../brand/brand.entity';
 import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
+import { BestSpaceMapper } from '../best-space/best-space.entity';
 
 @Entity({ name: 'B2B_DELIVERY_SPACE' })
 export class DeliverySpace extends BaseEntity<DeliverySpace> {
   @PrimaryGeneratedColumn({
     type: 'int',
     unsigned: true,
+    name: 'NO',
   })
   no: number;
 
@@ -82,20 +85,20 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
   })
   quantity: number;
 
-  @Column('varchar', {
+  @Column('int', {
     name: 'DEPOSIT',
   })
-  deposit?: string;
+  deposit?: number;
 
-  @Column('varchar', {
+  @Column('int', {
     name: 'MONTHLY_UTILITY_FEE',
   })
-  monthlyUtilityFee?: string;
+  monthlyUtilityFee?: number;
 
-  @Column('varchar', {
+  @Column('int', {
     name: 'MONTHLY_RENT_FEE',
   })
-  monthlyRentFee?: string;
+  monthlyRentFee?: number;
 
   @Column({
     type: 'text',
@@ -216,4 +219,8 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
     inverseJoinColumn: { name: 'NANUDA_USER_NO' },
   })
   favoritedUsers?: NanudaUser[];
+
+  @OneToOne(type => BestSpaceMapper)
+  @JoinColumn({ name: 'NO', referencedColumnName: 'spaceNo' })
+  isBested?: BestSpaceMapper;
 }
