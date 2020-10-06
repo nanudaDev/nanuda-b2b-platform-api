@@ -3,7 +3,7 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { BaseService, SPACE_TYPE, SPACE } from 'src/core';
+import { BaseService, SPACE_TYPE, SPACE, SPACE_PIC_STATUS } from 'src/core';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { DeliverySpace } from './delivery-space.entity';
 import { Repository, EntityManager } from 'typeorm';
@@ -305,6 +305,13 @@ export class DeliverySpaceService extends BaseService {
         newDeliverySpace.images = await this.fileUploadService.moveS3File(
           adminDeliverySpaceCreateDto.images,
         );
+        if (!newDeliverySpace.images) {
+          throw new BadRequestException({
+            message: 'Upload failed!',
+          });
+        }
+        // TODO: 정책 정해야함
+        newDeliverySpace.picStatus = SPACE_PIC_STATUS.INCOMPLETE;
       }
       newDeliverySpace = await entityManager.save(newDeliverySpace);
 
