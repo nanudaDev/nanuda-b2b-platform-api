@@ -75,28 +75,29 @@ export class NanudaCompanyDistrictService extends BaseService {
     const cities = await this.companyDistrictRepo
       .createQueryBuilder('companyDistrict')
       .CustomInnerJoinAndSelect(['deliverySpaces'])
+      .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
       .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
         companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
       })
       // .limit(2)
-      .select([
-        'companyDistrict.no',
-        'companyDistrict.region1DepthName',
-        'companyDistrict.address',
-        'companyDistrict.nameKr',
-        'companyDistrict.lat',
-        'companyDistrict.lon',
-        'deliverySpaces',
-      ])
       .getMany();
     // TODO: typeorm subquery로 해결
     cities.map(city => {
+      // spaces
       const filteredArray = city.deliverySpaces.filter(
         deliverySpace =>
-          deliverySpace.showYn === YN.YES && deliverySpace.delYn === YN.NO,
+          deliverySpace.showYn === YN.YES &&
+          deliverySpace.delYn === YN.NO &&
+          deliverySpace.quantity - deliverySpace.contracts.length > 0,
       );
       city.deliverySpaceCount = filteredArray.length;
-      delete city.deliverySpaces;
+      // delete if remaing count is 0
+      console.log(city.deliverySpaceCount);
+      // if (city.deliverySpaceCount === 0) {
+      //   const index = cities.indexOf(city);
+      //   cities.splice(index, 1);
+      // }
+      // delete city.deliverySpaces;
     });
     const filteredCities = cities.filter(city => city.deliverySpaceCount > 0);
     searchResults.cities = filteredCities;
@@ -112,6 +113,7 @@ export class NanudaCompanyDistrictService extends BaseService {
     // --data-urlencode "query=카카오프렌즈" \
     // -H "Authorization: KakaoAK {REST_API_KEY}"
     const searchResults = new SearchResults();
+    console.log(companyDistrictListDto);
     if (companyDistrictListDto.keyword) {
       let latLon = await Axios.get(
         'https://dapi.kakao.com/v2/local/search/address.json',
@@ -140,6 +142,7 @@ export class NanudaCompanyDistrictService extends BaseService {
       searchResults.lat = latLon.data.documents[0].y;
       searchResults.lon = latLon.data.documents[0].x;
     }
+    console.log(searchResults);
     return searchResults;
   }
 
