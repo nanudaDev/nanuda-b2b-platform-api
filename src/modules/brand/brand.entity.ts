@@ -23,6 +23,7 @@ import { Admin } from '../admin';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 import { Menu } from '../menu/menu.entity';
 import { CodeManagement } from '../code-management/code-management.entity';
+import { PaymentList } from '../payment-list/payment-list.entity';
 
 @Entity({ name: 'BRAND' })
 export class Brand extends BaseEntity<Brand> {
@@ -119,6 +120,7 @@ export class Brand extends BaseEntity<Brand> {
   })
   storeCount?: STORE_COUNT;
 
+  //TODO: kiosk mapper로 이도애야함
   @Column({
     type: 'int',
     name: 'KIOSK_NO',

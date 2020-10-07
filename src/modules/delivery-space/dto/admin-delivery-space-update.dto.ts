@@ -1,4 +1,4 @@
-import { BaseDto } from 'src/core';
+import { BaseDto, SPACE_PIC_STATUS } from 'src/core';
 import { DeliverySpace } from '../delivery-space.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
@@ -68,4 +68,10 @@ export class AdminDeliverySpaceUpdateDto extends DeliverySpaceUpdateDto {
   @Expose()
   @Default(YN.NO)
   isBestedShowYn?: YN;
+
+  @ApiPropertyOptional({ enum: SPACE_PIC_STATUS })
+  @IsOptional()
+  @IsEnum(SPACE_PIC_STATUS)
+  @Expose()
+  picStatus?: SPACE_PIC_STATUS;
 }
