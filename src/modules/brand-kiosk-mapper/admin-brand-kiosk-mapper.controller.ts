@@ -10,6 +10,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthRolesGuard, BaseController, CONST_ADMIN_USER } from 'src/core';
 import { BrandKioskMapper } from './brand-kiosk-mapper.entity';
 import { BrandKioskMapperService } from './brand-kiosk-mapper.service';
+import { AdminBrandKioskMapperDto } from './dto';
 
 @Controller()
 @ApiTags('ADMIN BRAND KIOSK MAPPER')
@@ -26,8 +27,12 @@ export class AdminBrandKioskMapperController extends BaseController {
    * get revenue for brand by districts
    * @param brandNo
    */
-  @Get('/admin/brand-revenue/:id([0-9]+)')
-  async brandRevenue(@Param('id', ParseIntPipe) brandNo: number) {
-    return await this.brandKioskMapperService.findRevenueForBrand(brandNo);
+  @Get('/admin/brand-revenue')
+  async brandRevenue(
+    @Query() adminBrandKioskMapperDto: AdminBrandKioskMapperDto,
+  ) {
+    return await this.brandKioskMapperService.findRevenueForBrand(
+      adminBrandKioskMapperDto,
+    );
   }
 }
