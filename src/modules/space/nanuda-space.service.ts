@@ -96,6 +96,55 @@ export class NanudaSpaceService extends BaseService {
     return searchResults;
   }
 
+  /**
+   * search
+   * @param companyDistrictListDto
+   */
+  async search(spaceListDto: SpaceListDto): Promise<SearchResults> {
+    const searchResults = new SearchResults();
+
+    // "https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000" \
+    // --data-urlencode "query=카카오프렌즈" \
+    // -H "Authorization: KakaoAK {REST_API_KEY}"
+    if (spaceListDto.keyword) {
+      let latLon = await Axios.get(
+        'https://dapi.kakao.com/v2/local/search/address.json',
+        {
+          params: { query: spaceListDto.keyword },
+          headers: {
+            Authorization: `KakaoAK ${process.env.KAKAO_API_KEY}`,
+            mode: 'cors',
+          },
+        },
+      );
+      if (latLon.data.documents && latLon.data.documents.length === 0) {
+        latLon = await Axios.get(
+          'https://dapi.kakao.com/v2/local/search/keyword.json',
+          {
+            params: { query: spaceListDto.keyword },
+            headers: {
+              Authorization: `KakaoAK ${process.env.KAKAO_API_KEY}`,
+              mode: 'cors',
+            },
+          },
+        );
+        searchResults.lat = latLon.data.documents[0].y;
+        searchResults.lon = latLon.data.documents[0].x;
+      }
+      searchResults.lat = latLon.data.documents[0].y;
+      searchResults.lon = latLon.data.documents[0].x;
+    }
+    const space = await this.spaceRepo
+      .createQueryBuilder('space')
+      .where('space.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('space.showYn = :showYn', { showYn: YN.YES })
+      // .limit(2)
+      .getMany();
+    // TODO: typeorm subquery로 해결
+    searchResults.cities = space;
+    return searchResults;
+  }
+
   //   remove duplicate
   private __remove_duplicate(array: any, key: string) {
     return [...new Map(array.map(item => [item[key], item])).values()];

@@ -29,4 +29,13 @@ export class NanudaSpaceController extends BaseController {
   async getCenter(@Query() spaceListDto: SpaceListDto): Promise<SearchResults> {
     return await this.nanudaSpaceService.getCenterForMap(spaceListDto);
   }
+
+  /**
+   * get space list
+   * @param spaceListDto
+   */
+  @Get('/nanuda/space/search')
+  async search(@Query() spaceListDto: SpaceListDto): Promise<SearchResults> {
+    return await this.nanudaSpaceService.search(spaceListDto);
+  }
 }
