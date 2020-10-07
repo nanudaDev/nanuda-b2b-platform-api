@@ -118,6 +118,11 @@ export class NanudaDeliverySpaceService extends BaseService {
           });
         item.consultCount = consults.length;
         item.remainingCount = item.quantity - item.contracts.length;
+        // splice and remove unwanted delivery spaces
+        if (item.remainingCount === 0) {
+          const index = items.indexOf(item);
+          items.splice(index, 1);
+        }
         delete item.contracts;
       }),
     );
@@ -153,7 +158,7 @@ export class NanudaDeliverySpaceService extends BaseService {
     nanudaUserNo?: number,
   ): Promise<DeliverySpace> {
     console.log(deliverySpaceNo);
-    const consult = await this.deliverySpaceRepo
+    const space = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
       .CustomLeftJoinAndSelect([
@@ -168,14 +173,14 @@ export class NanudaDeliverySpaceService extends BaseService {
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       .getOne();
-    if (!consult) {
+    if (!space) {
       throw new NotFoundException();
     }
     const likedCount = await this.entityManager
       .getRepository(FavoriteSpaceMapper)
       .find({ where: { deliverySpaceNo: deliverySpaceNo } });
 
-    consult.likedCount = likedCount.length;
+      space.likedCount = likedCount.length;
 
     const consults = await this.entityManager
       .getRepository(DeliveryFounderConsult)
@@ -186,7 +191,7 @@ export class NanudaDeliverySpaceService extends BaseService {
         },
       });
 
-    consult.consultCount = consults.length;
+      space.consultCount = consults.length;
     if (nanudaUserNo) {
       const liked = await this.entityManager
         .getRepository(FavoriteSpaceMapper)
@@ -195,14 +200,17 @@ export class NanudaDeliverySpaceService extends BaseService {
           deliverySpaceNo: deliverySpaceNo,
         });
       if (liked) {
-        consult.likedYn = true;
+        space.likedYn = true;
       } else {
-        consult.likedYn = false;
+        space.likedYn = false;
       }
     }
-    consult.remainingCount = consult.quantity - consult.contracts.length;
-    delete consult.contracts;
-    return consult;
+    space.remainingCount = space.quantity - space.contracts.length;
+    delete space.contracts;
+    if(space.remainingCount === 0) {
+      throw new NotFoundException({message: 'Full delivery space'})
+    }
+    return space;
   }
 
   /**

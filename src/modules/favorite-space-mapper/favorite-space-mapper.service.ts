@@ -85,16 +85,25 @@ export class FavoriteSpaceMapperService extends BaseService {
     nanudaFavoriteSpaceMapperDeleteDto: NanudaFavoriteSpaceMapperDeleteDto,
     nanudaUserNo,
   ) {
-    const qb = await this.favoriteSpaceMapperRepo
-      .createQueryBuilder()
-      .delete()
-      .from(FavoriteSpaceMapper)
-      .where('deliverySpaceNo IN (:...nos)', {
-        nos: nanudaFavoriteSpaceMapperDeleteDto.favoriteSpaceNos,
-      })
-      .andWhere('nanudaUserNo = :nanudaUserNo', { nanudaUserNo: nanudaUserNo })
-      .execute();
-    return qb.affected;
+    if (
+      nanudaFavoriteSpaceMapperDeleteDto.favoriteSpaceNos &&
+      nanudaFavoriteSpaceMapperDeleteDto.favoriteSpaceNos.length > 0
+    ) {
+      const qb = await this.favoriteSpaceMapperRepo
+        .createQueryBuilder()
+        .delete()
+        .from(FavoriteSpaceMapper)
+        .where('deliverySpaceNo IN (:...nos)', {
+          nos: nanudaFavoriteSpaceMapperDeleteDto.favoriteSpaceNos,
+        })
+        .andWhere('nanudaUserNo = :nanudaUserNo', {
+          nanudaUserNo: nanudaUserNo,
+        })
+        .execute();
+      return qb.affected;
+    } else {
+      throw new BadRequestException();
+    }
   }
 
   /**

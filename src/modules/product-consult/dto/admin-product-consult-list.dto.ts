@@ -1,9 +1,9 @@
-import { BaseDto, PRODUCT_CONSULT } from 'src/core';
+import { BaseDto, GENDER, PRODUCT_CONSULT } from 'src/core';
 import { ProductConsult } from '../product-consult.entity';
 import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsEnum } from 'class-validator';
 import { Expose } from 'class-transformer';
-import { ORDER_BY_VALUE, Default, AVAILABLE_TIME } from 'src/common';
+import { ORDER_BY_VALUE, Default, AVAILABLE_TIME, YN } from 'src/common';
 
 export class AdminProductConsultListDto
   extends BaseDto<AdminProductConsultListDto>
@@ -13,10 +13,21 @@ export class AdminProductConsultListDto
   @Expose()
   nanudaUserNo?: number;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  nanudaUserName?: string;
+
   @ApiProperty()
   @IsOptional()
   @Expose()
   nanudaUserPhone?: string;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @IsEnum(YN)
+  @Expose()
+  changUpExpYn?: YN;
 
   @ApiPropertyOptional({ enum: PRODUCT_CONSULT })
   @IsOptional()
@@ -38,6 +49,12 @@ export class AdminProductConsultListDto
   @IsOptional()
   @Expose()
   addressCode?: string;
+
+  @ApiPropertyOptional({ enum: GENDER })
+  @IsOptional()
+  @IsEnum(GENDER)
+  @Expose()
+  gender?: GENDER;
 
   @ApiPropertyOptional({ enum: AVAILABLE_TIME })
   @IsOptional()

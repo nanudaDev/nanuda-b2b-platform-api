@@ -7,6 +7,8 @@ import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 import { Admin } from '../admin';
 import { AdminSpaceController } from './admin-space.controller';
 import { SpaceService } from './space.service';
+import { NanudaSpaceController } from './nanuda-space.controller';
+import { NanudaSpaceService } from './nanuda-space.service';
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { SpaceService } from './space.service';
       Admin,
     ]),
   ],
-  controllers: [AdminSpaceController],
-  providers: [SpaceService],
+  controllers: [AdminSpaceController, NanudaSpaceController],
+  providers: [SpaceService, NanudaSpaceService],
 })
 export class SpaceModule {}

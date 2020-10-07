@@ -311,7 +311,7 @@ export class Space extends BaseEntity<Space> {
   @Column('varchar', {
     name: 'SIZE',
   })
-  size?: string;
+  size?: number;
 
   @Column('varchar', {
     name: 'SEAT',
