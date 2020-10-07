@@ -26,7 +26,7 @@ export class NanudaSpaceService extends BaseService {
    * @param spaceListDto
    */
   async spaceDropDown(spaceListDto: SpaceListDto) {
-    // const topResults: DropdownResults[] = [];
+    const topResults: DropdownResults[] = [];
     // const secondResults: DropdownResults[] = [];
     const dropdownSpace = await this.spaceRepo
       .createQueryBuilder('space')
@@ -41,8 +41,15 @@ export class NanudaSpaceService extends BaseService {
       .select(['space.no', 'space.sido', 'space.sigungu', 'space.bName2'])
       //   .groupBy('space.sido')
       .getMany();
-    const reduced = this.__remove_duplicate(dropdownSpace, 'sigungu');
-    return reduced;
+    const reduced: any = this.__remove_duplicate(dropdownSpace, 'sigungu');
+    reduced.map(reduce => {
+      const top = new DropdownResults();
+      top.no = reduce.no;
+      top.name = `${reduce.sido} ${reduce.sigungu}`;
+      top.district = true;
+      topResults.push(top);
+    });
+    return { topResults };
   }
 
   /**

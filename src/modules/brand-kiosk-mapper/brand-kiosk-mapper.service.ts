@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { YN } from 'src/common';
 import { BaseService } from 'src/core';
 import { EntityManager, Repository } from 'typeorm';
 import { PaymentList } from '../payment-list/payment-list.entity';
 import { BrandKioskMapper } from './brand-kiosk-mapper.entity';
+import { AdminBrandKioskMapperDto } from './dto';
 
 @Injectable()
 export class BrandKioskMapperService extends BaseService {
@@ -21,23 +23,37 @@ export class BrandKioskMapperService extends BaseService {
    * TODO: group by district and show revenue
    * @param brandNo
    */
-  async findRevenueForBrand(brandNo: number) {
+  async findRevenueForBrand(
+    adminBrandKioskMapperDto: AdminBrandKioskMapperDto,
+  ) {
+    if (!adminBrandKioskMapperDto.started) {
+      adminBrandKioskMapperDto.started = new Date();
+    }
     const qb = await this.brandKioskMapperRepo
       .createQueryBuilder('brandKioskMapper')
-      .where('brandKioskMapper.brandNo = :brandNo', { brandNo: brandNo })
+      .where('brandKioskMapper.brandNo = :brandNo', {
+        brandNo: adminBrandKioskMapperDto.brandNo,
+      })
       .select(['brandKioskMapper.kioskNo'])
       .getMany();
-
     const ids = [];
     qb.map(id => {
       ids.push(id.kioskNo);
     });
 
+    console.log(ids);
     const qb2 = await this.kitchenEntityManager
       .getRepository(PaymentList)
       .createQueryBuilder('paymentList')
       .CustomLeftJoinAndSelect(['nanudaKitchenMaster'])
+      .where('paymentList.cardCancelFl = :cardCancelFl', {
+        cardCancelFl: YN.NO,
+      })
       .IN('nanudaNo', ids)
+      .AndWhereBetweenStartAndEndDate(
+        adminBrandKioskMapperDto.started,
+        adminBrandKioskMapperDto.ended,
+      )
       .groupBy('paymentList.nanudaNo')
       .select('SUM(paymentList.totalAmount)', 'sum')
       .addSelect('paymentList.nanudaKitchenMaster', 'nanudaNo')
