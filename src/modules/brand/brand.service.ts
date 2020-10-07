@@ -26,8 +26,6 @@ export class BrandService extends BaseService {
     private readonly deliverySpaceBrandMapperRepo: Repository<
       DeliverySpaceBrandMapper
     >,
-    @InjectRepository(SpaceNanudaBrand)
-    private readonly spaceBrandMapperRepo: Repository<SpaceNanudaBrand>,
     @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly fileUploadService: FileUploadService,
   ) {
