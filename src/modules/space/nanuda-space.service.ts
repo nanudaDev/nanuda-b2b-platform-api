@@ -45,7 +45,7 @@ export class NanudaSpaceService extends BaseService {
     reduced.map(reduce => {
       const top = new DropdownResults();
       top.no = reduce.no;
-      top.name = `${reduce.sido}`;
+      top.name = `${reduce.sido} ${reduce.sigungu}`;
       top.district = true;
       topResults.push(top);
     });
@@ -53,7 +53,7 @@ export class NanudaSpaceService extends BaseService {
     reduced2.map(space => {
       const second = new DropdownResults();
       second.no = space.no;
-      second.name = `${space.sido} ${space.sigungu}`;
+      second.name = `${space.sido} ${space.sigungu} ${space.bName2}`;
       secondResults.push(second);
     });
     return { topResults, secondResults };
