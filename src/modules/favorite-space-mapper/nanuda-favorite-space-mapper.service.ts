@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { BaseService } from 'src/core';
+import { BaseService, SPACE_TYPE } from 'src/core';
 import {
   FavoriteSpaceMapperCreateDto,
   NanudaFavoriteSpaceMapperListDto,
@@ -9,7 +9,7 @@ import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { FavoriteSpaceMapper } from './favorite-space-mapper.entity';
 import { Repository, EntityManager } from 'typeorm';
-import { PaginatedRequest, PaginatedResponse } from 'src/common';
+import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
 
 @Injectable()
 export class FavoriteSpaceMapperService extends BaseService {
@@ -31,6 +31,7 @@ export class FavoriteSpaceMapperService extends BaseService {
     const check = await this.favoriteSpaceMapperRepo.findOne({
       deliverySpaceNo: favoriteSpaceMapperCreateDto.deliverySpaceNo,
       nanudaUserNo: favoriteSpaceMapperCreateDto.nanudaUserNo,
+      spaceTypeNo: favoriteSpaceMapperCreateDto.spaceType,
     });
     if (check) {
       throw new BadRequestException({ message: 'Already liked!' });
@@ -49,14 +50,18 @@ export class FavoriteSpaceMapperService extends BaseService {
    * delete from mapper
    * @param favoriteSpaceMapperNo
    */
-  async deleteFavorite(deliverySpaceNo: number, nanudaUserNo: number) {
+  async deleteFavorite(
+    deliverySpaceNo: number,
+    nanudaUserNo: number,
+    spaceTypeNo?: SPACE_TYPE,
+  ) {
     await this.entityManager.transaction(async entityManager => {
       console.log(deliverySpaceNo);
       const check = await this.favoriteSpaceMapperRepo.findOne({
         deliverySpaceNo: deliverySpaceNo,
         nanudaUserNo: nanudaUserNo,
+        spaceTypeNo: spaceTypeNo,
       });
-      console.log(check);
       if (!check) {
         throw new BadRequestException({ message: 'Nothing to delete!' });
       }
@@ -70,6 +75,7 @@ export class FavoriteSpaceMapperService extends BaseService {
         .andWhere('nanudaUserNo = :nanudaUserNo', {
           nanudaUserNo: nanudaUserNo,
         })
+        .andWhere('spaceTypeNo = :spaceTypeNo', { spaceTypeNo: spaceTypeNo })
         .execute();
 
       return true;
@@ -85,6 +91,7 @@ export class FavoriteSpaceMapperService extends BaseService {
     nanudaFavoriteSpaceMapperDeleteDto: NanudaFavoriteSpaceMapperDeleteDto,
     nanudaUserNo,
   ) {
+    // delete using primary key not delivery space
     if (
       nanudaFavoriteSpaceMapperDeleteDto.favoriteSpaceNos &&
       nanudaFavoriteSpaceMapperDeleteDto.favoriteSpaceNos.length > 0
@@ -93,7 +100,7 @@ export class FavoriteSpaceMapperService extends BaseService {
         .createQueryBuilder()
         .delete()
         .from(FavoriteSpaceMapper)
-        .where('deliverySpaceNo IN (:...nos)', {
+        .where('no IN (:...nos)', {
           nos: nanudaFavoriteSpaceMapperDeleteDto.favoriteSpaceNos,
         })
         .andWhere('nanudaUserNo = :nanudaUserNo', {
@@ -130,5 +137,24 @@ export class FavoriteSpaceMapperService extends BaseService {
 
     const [items, totalCount] = await qb.getManyAndCount();
     return { items, totalCount };
+  }
+
+  // 임시적으로 이렇게 해결하고 케이스2 네스트로 완전 이동해야함
+
+  /**
+   * check if restaurant kitchen is liked
+   * @param nanudaUserNo
+   * @param spaceNo
+   */
+  async checkForRestaurantKitchen(nanudaUserNo: number, spaceNo: number) {
+    const checkFavorite = await this.favoriteSpaceMapperRepo.findOne({
+      nanudaUserNo: nanudaUserNo,
+      deliverySpaceNo: spaceNo,
+    });
+    if (!checkFavorite) {
+      return YN.NO;
+    } else {
+      return YN.YES;
+    }
   }
 }

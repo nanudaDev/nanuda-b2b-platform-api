@@ -139,6 +139,7 @@ export class NanudaDeliverySpaceService extends BaseService {
             });
           if (liked) {
             item.likedYn = true;
+            item.favoriteSpaceNo = liked.no;
           } else {
             item.likedYn = false;
           }
@@ -180,7 +181,7 @@ export class NanudaDeliverySpaceService extends BaseService {
       .getRepository(FavoriteSpaceMapper)
       .find({ where: { deliverySpaceNo: deliverySpaceNo } });
 
-      space.likedCount = likedCount.length;
+    space.likedCount = likedCount.length;
 
     const consults = await this.entityManager
       .getRepository(DeliveryFounderConsult)
@@ -191,7 +192,7 @@ export class NanudaDeliverySpaceService extends BaseService {
         },
       });
 
-      space.consultCount = consults.length;
+    space.consultCount = consults.length;
     if (nanudaUserNo) {
       const liked = await this.entityManager
         .getRepository(FavoriteSpaceMapper)
@@ -201,14 +202,15 @@ export class NanudaDeliverySpaceService extends BaseService {
         });
       if (liked) {
         space.likedYn = true;
+        space.favoriteSpaceNo = liked.no;
       } else {
         space.likedYn = false;
       }
     }
     space.remainingCount = space.quantity - space.contracts.length;
     delete space.contracts;
-    if(space.remainingCount === 0) {
-      throw new NotFoundException({message: 'Full delivery space'})
+    if (space.remainingCount === 0) {
+      throw new NotFoundException({ message: 'Full delivery space' });
     }
     return space;
   }
