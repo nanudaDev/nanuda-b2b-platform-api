@@ -91,4 +91,17 @@ export class NanudaFavoriteSpaceMapperController extends BaseController {
       ),
     };
   }
+
+  /**
+   * check for restaurant space
+   * @param nanudaUserNo
+   * @param spaceNo
+   */
+  @Get('/nanuda/favorite-space/check-restauraunt-kitchen')
+  async checkForRestaurantKitchen(@Query() nanudaUserNo, @Query() spaceNo) {
+    return await this.favoriteSpaceMapperService.checkForRestaurantKitchen(
+      nanudaUserNo,
+      spaceNo,
+    );
+  }
 }
