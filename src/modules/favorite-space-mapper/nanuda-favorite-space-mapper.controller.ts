@@ -16,7 +16,7 @@ import {
   NanudaFavoriteSpaceMapperDeleteDto,
 } from './dto';
 import { FavoriteSpaceMapper } from './favorite-space-mapper.entity';
-import { FavoriteSpaceMapperService } from './favorite-space-mapper.service';
+import { FavoriteSpaceMapperService } from './nanuda-favorite-space-mapper.service';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
 
 @Controller()
@@ -53,7 +53,6 @@ export class NanudaFavoriteSpaceMapperController extends BaseController {
   async create(
     @Body() favoriteSpaceMapperCreateDto,
   ): Promise<FavoriteSpaceMapper> {
-    console.log(123);
     return await this.favoriteSpaceMapperService.create(
       favoriteSpaceMapperCreateDto,
     );
@@ -64,11 +63,16 @@ export class NanudaFavoriteSpaceMapperController extends BaseController {
    * @param favoriteSpaceMapperNo
    */
   @Delete('/nanuda/favorite-space')
-  async delete(@Query() deliverySpaceNo, @Query() nanudaUserNo) {
+  async delete(
+    @Query() deliverySpaceNo,
+    @Query() nanudaUserNo,
+    @Query() spaceTypeNo,
+  ) {
     return {
       isDeleted: await this.favoriteSpaceMapperService.deleteFavorite(
         deliverySpaceNo.deliverySpaceNo,
         nanudaUserNo.nanudaUserNo,
+        spaceTypeNo.spaceTypeNo,
       ),
     };
   }
@@ -80,7 +84,6 @@ export class NanudaFavoriteSpaceMapperController extends BaseController {
    */
   @Delete('/nanuda/favorite-space/multiple')
   async multipleDelete(@Body() deleteDto: NanudaFavoriteSpaceMapperDeleteDto) {
-    console.log(deleteDto);
     return {
       isDeletedCount: await this.favoriteSpaceMapperService.deleteMultiple(
         deleteDto,

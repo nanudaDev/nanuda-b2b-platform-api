@@ -90,4 +90,10 @@ export class AdminBrandUpdateDto extends BaseDto<AdminBrandUpdateDto>
   @IsOptional()
   @Expose()
   spaceTypeNo?: SPACE_TYPE;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  @IsArray()
+  brandKioskMapperNos?: number[];
 }
