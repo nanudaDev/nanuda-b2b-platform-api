@@ -146,10 +146,11 @@ export class FavoriteSpaceMapperService extends BaseService {
    * @param nanudaUserNo
    * @param spaceNo
    */
-  async checkForRestaurantKitchen(nanudaUserNo: number, spaceNo: number) {
+  async checkForRestaurantKitchen(favoriteQuery) {
     const checkFavorite = await this.favoriteSpaceMapperRepo.findOne({
-      nanudaUserNo: nanudaUserNo,
-      deliverySpaceNo: spaceNo,
+      nanudaUserNo: favoriteQuery.nanudaUserNo,
+      deliverySpaceNo: favoriteQuery.deliverySpaceNo,
+      spaceTypeNo: SPACE_TYPE.SPACE_SHARE,
     });
     if (!checkFavorite) {
       return YN.NO;
