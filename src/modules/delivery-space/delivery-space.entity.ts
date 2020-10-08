@@ -138,6 +138,8 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
 
   likedYn?: boolean;
 
+  favoriteSpaceNo?: number;
+
   consultCount?: number;
 
   @ManyToOne(

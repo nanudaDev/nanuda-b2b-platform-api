@@ -26,8 +26,8 @@ export class NanudaSpaceService extends BaseService {
    * @param spaceListDto
    */
   async spaceDropDown(spaceListDto: SpaceListDto) {
-    // const topResults: DropdownResults[] = [];
-    // const secondResults: DropdownResults[] = [];
+    const topResults: DropdownResults[] = [];
+    const secondResults: DropdownResults[] = [];
     const dropdownSpace = await this.spaceRepo
       .createQueryBuilder('space')
       .andWhere('space.delYn = :delYn', { delYn: YN.NO })
@@ -41,8 +41,22 @@ export class NanudaSpaceService extends BaseService {
       .select(['space.no', 'space.sido', 'space.sigungu', 'space.bName2'])
       //   .groupBy('space.sido')
       .getMany();
-    const reduced = this.__remove_duplicate(dropdownSpace, 'sigungu');
-    return reduced;
+    const reduced: any = this.__remove_duplicate(dropdownSpace, 'sido');
+    reduced.map(reduce => {
+      const top = new DropdownResults();
+      top.no = reduce.no;
+      top.name = `${reduce.sido} ${reduce.sigungu}`;
+      top.district = true;
+      topResults.push(top);
+    });
+    const reduced2: any = this.__remove_duplicate(dropdownSpace, 'sigungu');
+    reduced2.map(space => {
+      const second = new DropdownResults();
+      second.no = space.no;
+      second.name = `${space.sido} ${space.sigungu} ${space.bName2}`;
+      secondResults.push(second);
+    });
+    return { topResults, secondResults };
   }
 
   /**
@@ -79,6 +93,55 @@ export class NanudaSpaceService extends BaseService {
       searchResults.lat = latLon.data.documents[0].y;
       searchResults.lon = latLon.data.documents[0].x;
     }
+    return searchResults;
+  }
+
+  /**
+   * search
+   * @param companyDistrictListDto
+   */
+  async search(spaceListDto: SpaceListDto): Promise<SearchResults> {
+    const searchResults = new SearchResults();
+
+    // "https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000" \
+    // --data-urlencode "query=카카오프렌즈" \
+    // -H "Authorization: KakaoAK {REST_API_KEY}"
+    if (spaceListDto.keyword) {
+      let latLon = await Axios.get(
+        'https://dapi.kakao.com/v2/local/search/address.json',
+        {
+          params: { query: spaceListDto.keyword },
+          headers: {
+            Authorization: `KakaoAK ${process.env.KAKAO_API_KEY}`,
+            mode: 'cors',
+          },
+        },
+      );
+      if (latLon.data.documents && latLon.data.documents.length === 0) {
+        latLon = await Axios.get(
+          'https://dapi.kakao.com/v2/local/search/keyword.json',
+          {
+            params: { query: spaceListDto.keyword },
+            headers: {
+              Authorization: `KakaoAK ${process.env.KAKAO_API_KEY}`,
+              mode: 'cors',
+            },
+          },
+        );
+        searchResults.lat = latLon.data.documents[0].y;
+        searchResults.lon = latLon.data.documents[0].x;
+      }
+      searchResults.lat = latLon.data.documents[0].y;
+      searchResults.lon = latLon.data.documents[0].x;
+    }
+    const space = await this.spaceRepo
+      .createQueryBuilder('space')
+      .where('space.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('space.showYn = :showYn', { showYn: YN.YES })
+      // .limit(2)
+      .getMany();
+    // TODO: typeorm subquery로 해결
+    searchResults.cities = space;
     return searchResults;
   }
 

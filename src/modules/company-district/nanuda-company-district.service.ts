@@ -7,11 +7,12 @@ import { Repository } from 'typeorm';
 import { CompanyDistrictListDto } from './dto';
 import Axios from 'axios';
 import { YN } from 'src/common';
+import { Space } from '../space/space.entity';
 
 export class SearchResults {
   lat: string;
   lon: string;
-  cities?: CompanyDistrict[];
+  cities?: CompanyDistrict[] | Space[];
   regions?: CompanyDistrict[];
   districts?: CompanyDistrict[];
 }

@@ -17,6 +17,7 @@ import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
 import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/delivery-space-brand-mapper.entity';
 import { SpaceNanudaBrand } from '../space-nanuda-brand/space-nanuda-brand.entity';
 import { SpaceTypeBrandMapper } from '../space-type-brand-mapper/space-type-brand-mapper.entity';
+import { BrandKioskMapper } from '../brand-kiosk-mapper/brand-kiosk-mapper.entity';
 
 @Injectable()
 export class BrandService extends BaseService {
@@ -26,8 +27,6 @@ export class BrandService extends BaseService {
     private readonly deliverySpaceBrandMapperRepo: Repository<
       DeliverySpaceBrandMapper
     >,
-    @InjectRepository(SpaceNanudaBrand)
-    private readonly spaceBrandMapperRepo: Repository<SpaceNanudaBrand>,
     @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly fileUploadService: FileUploadService,
   ) {
@@ -77,7 +76,25 @@ export class BrandService extends BaseService {
         });
       }
     }
+
     brand = await this.brandRepo.save(brand);
+    if (
+      adminBrandCreateDto.brandKioskMapperNos &&
+      adminBrandCreateDto.brandKioskMapperNos.length > 0
+    ) {
+      await Promise.all(
+        adminBrandCreateDto.brandKioskMapperNos.map(
+          async brandKioskMapperNo => {
+            let brandKioskMapper = new BrandKioskMapper();
+            brandKioskMapper.brandNo = brand.no;
+            brandKioskMapper.kioskNo = brandKioskMapperNo;
+            await this.entityManager
+              .getRepository(BrandKioskMapper)
+              .save(brandKioskMapper);
+          },
+        ),
+      );
+    }
     return brand;
   }
 
@@ -217,6 +234,33 @@ export class BrandService extends BaseService {
         spaceTypeBrandMapper.brandNo = brand.no;
         spaceTypeBrandMapper.brandName = brand.nameKr;
         spaceTypeBrandMapper = await entityManager.save(spaceTypeBrandMapper);
+      }
+      if (
+        adminBrandUpdateDto.brandKioskMapperNos &&
+        adminBrandUpdateDto.brandKioskMapperNos.length > 0
+      ) {
+        // delete first
+        await this.entityManager
+          .getRepository(BrandKioskMapper)
+          .createQueryBuilder()
+          .delete()
+          .from(BrandKioskMapper)
+          .where('brandNo = :brandNo', { brandNo: brandNo })
+          .execute();
+
+        // create new mapper
+        await Promise.all(
+          adminBrandUpdateDto.brandKioskMapperNos.map(
+            async brandKioskMappNo => {
+              let brandKioskMapper = new BrandKioskMapper();
+              brandKioskMapper.brandNo = brandNo;
+              brandKioskMapper.kioskNo = brandKioskMappNo;
+              brandKioskMapper = await this.entityManager
+                .getRepository(BrandKioskMapper)
+                .save(brandKioskMapper);
+            },
+          ),
+        );
       }
       return brand;
     });
