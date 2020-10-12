@@ -42,24 +42,28 @@ export class BrandKioskMapperService extends BaseService {
     });
 
     console.log(ids);
-    const qb2 = await this.kitchenEntityManager
-      .getRepository(PaymentList)
-      .createQueryBuilder('paymentList')
-      .CustomLeftJoinAndSelect(['nanudaKitchenMaster'])
-      .where('paymentList.cardCancelFl = :cardCancelFl', {
-        cardCancelFl: YN.NO,
-      })
-      .IN('nanudaNo', ids)
-      .AndWhereBetweenStartAndEndDate(
-        adminBrandKioskMapperDto.started,
-        adminBrandKioskMapperDto.ended,
-      )
-      .groupBy('paymentList.nanudaNo')
-      .select('SUM(paymentList.totalAmount)', 'sum')
-      .addSelect('paymentList.nanudaKitchenMaster', 'nanudaNo')
-      .addSelect('nanudaKitchenMaster.nanudaName', 'nanudaName')
-      .getRawMany();
+    if (ids && ids.length > 0) {
+      const qb2 = await this.kitchenEntityManager
+        .getRepository(PaymentList)
+        .createQueryBuilder('paymentList')
+        .CustomLeftJoinAndSelect(['nanudaKitchenMaster'])
+        .where('paymentList.cardCancelFl = :cardCancelFl', {
+          cardCancelFl: YN.NO,
+        })
+        .IN('nanudaNo', ids)
+        .AndWhereBetweenStartAndEndDate(
+          adminBrandKioskMapperDto.started,
+          adminBrandKioskMapperDto.ended,
+        )
+        .groupBy('paymentList.nanudaNo')
+        .select('SUM(paymentList.totalAmount)', 'sum')
+        .addSelect('paymentList.nanudaKitchenMaster', 'nanudaNo')
+        .addSelect('nanudaKitchenMaster.nanudaName', 'nanudaName')
+        .getRawMany();
 
-    return qb2;
+      return qb2;
+    } else {
+      return null;
+    }
   }
 }
