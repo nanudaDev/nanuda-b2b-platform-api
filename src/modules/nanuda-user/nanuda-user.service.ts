@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BaseService } from 'src/core';
-import { AdminNanudaUserListDto } from './dto';
+import { AdminNanudaUserCreateDto, AdminNanudaUserListDto } from './dto';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -15,6 +15,23 @@ export class NanudaUserService extends BaseService {
     super();
   }
 
+  /**
+   * create for admin
+   * @param adminNanudaUserCreateDto
+   */
+  async createForAdmin(
+    adminNanudaUserCreateDto: AdminNanudaUserCreateDto,
+  ): Promise<NanudaUser> {
+    let nanudaUser = new NanudaUser(adminNanudaUserCreateDto);
+    nanudaUser = await this.nanudaUserRepo.save(nanudaUser);
+    return nanudaUser;
+  }
+
+  /**
+   * find all for admin
+   * @param adminNanudaUserListDto
+   * @param pagination
+   */
   async findAllForAdmin(
     adminNanudaUserListDto: AdminNanudaUserListDto,
     pagination?: PaginatedRequest,

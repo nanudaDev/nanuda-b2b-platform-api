@@ -129,6 +129,7 @@ export class FavoriteSpaceMapperService extends BaseService {
       .createQueryBuilder('favorite')
       .CustomInnerJoinAndSelect(['deliverySpace'])
       .innerJoinAndSelect('deliverySpace.companyDistrict', 'companyDistrict')
+      .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('favorite.nanudaUserNo = :no', {
         no: nanudaUserNo,
       })
@@ -146,15 +147,34 @@ export class FavoriteSpaceMapperService extends BaseService {
    * @param nanudaUserNo
    * @param spaceNo
    */
-  async checkForRestaurantKitchen(nanudaUserNo: number, spaceNo: number) {
+  async checkForRestaurantKitchen(favoriteQuery) {
     const checkFavorite = await this.favoriteSpaceMapperRepo.findOne({
-      nanudaUserNo: nanudaUserNo,
-      deliverySpaceNo: spaceNo,
+      nanudaUserNo: favoriteQuery.nanudaUserNo,
+      deliverySpaceNo: favoriteQuery.deliverySpaceNo,
+      spaceTypeNo: SPACE_TYPE.SPACE_SHARE,
     });
     if (!checkFavorite) {
       return YN.NO;
     } else {
       return YN.YES;
     }
+  }
+
+  /**
+   * get count for restaurant kitchen
+   * @param favoriteQuery
+   */
+  async checkCountForRestaurantKitchen(favoriteQuery) {
+    console.log(favoriteQuery);
+    const checkFavorite = await this.favoriteSpaceMapperRepo
+      .createQueryBuilder('favoriteSpace')
+      .where('favoriteSpace.deliverySpaceNo = :deliverySpaceNo', {
+        deliverySpaceNo: favoriteQuery.deliverySpaceNo,
+      })
+      .andWhere('favoriteSpace.spaceTypeNo = :spaceTypeNo', {
+        spaceTypeNo: SPACE_TYPE.SPACE_SHARE,
+      })
+      .getCount();
+    return checkFavorite;
   }
 }
