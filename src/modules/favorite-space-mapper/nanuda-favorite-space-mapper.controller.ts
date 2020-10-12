@@ -105,4 +105,15 @@ export class NanudaFavoriteSpaceMapperController extends BaseController {
       ),
     };
   }
+
+  /**
+   * get count
+   * @param favoriteQuery
+   */
+  @Get('/nanuda/favorite-space/check-count-restaurant-kitchen')
+  async checkCountForRestaurantKitchen(@Query() favoriteQuery) {
+    return await this.favoriteSpaceMapperService.checkCountForRestaurantKitchen(
+      favoriteQuery,
+    );
+  }
 }

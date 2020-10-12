@@ -129,6 +129,7 @@ export class FavoriteSpaceMapperService extends BaseService {
       .createQueryBuilder('favorite')
       .CustomInnerJoinAndSelect(['deliverySpace'])
       .innerJoinAndSelect('deliverySpace.companyDistrict', 'companyDistrict')
+      .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('favorite.nanudaUserNo = :no', {
         no: nanudaUserNo,
       })
@@ -157,5 +158,23 @@ export class FavoriteSpaceMapperService extends BaseService {
     } else {
       return YN.YES;
     }
+  }
+
+  /**
+   * get count for restaurant kitchen
+   * @param favoriteQuery
+   */
+  async checkCountForRestaurantKitchen(favoriteQuery) {
+    console.log(favoriteQuery);
+    const checkFavorite = await this.favoriteSpaceMapperRepo
+      .createQueryBuilder('favoriteSpace')
+      .where('favoriteSpace.deliverySpaceNo = :deliverySpaceNo', {
+        deliverySpaceNo: favoriteQuery.deliverySpaceNo,
+      })
+      .andWhere('favoriteSpace.spaceTypeNo = :spaceTypeNo', {
+        spaceTypeNo: SPACE_TYPE.SPACE_SHARE,
+      })
+      .getCount();
+    return checkFavorite;
   }
 }
