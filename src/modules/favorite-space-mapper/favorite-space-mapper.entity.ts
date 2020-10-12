@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
+import { Space } from '../space/space.entity';
 
 @Entity({ name: 'B2B_FAVORITE_SPACE_MAPPER' })
 export class FavoriteSpaceMapper extends BaseMapperEntity<FavoriteSpaceMapper> {
@@ -45,4 +46,8 @@ export class FavoriteSpaceMapper extends BaseMapperEntity<FavoriteSpaceMapper> {
   @OneToOne(type => DeliverySpace)
   @JoinColumn({ name: 'REFERENCE_NO' })
   deliverySpace?: DeliverySpace;
+
+  @OneToOne(type => Space)
+  @JoinColumn({ name: 'REFERENCE_NO' })
+  space?: Space;
 }

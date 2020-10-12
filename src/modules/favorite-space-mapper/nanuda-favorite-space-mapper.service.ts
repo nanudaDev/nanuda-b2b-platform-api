@@ -119,7 +119,7 @@ export class FavoriteSpaceMapperService extends BaseService {
    * @param nanudaFavoriteSpaceMapperListDto
    * @param pagination
    */
-  async findFavoritedSpace(
+  async findFavoritedDeliverySpace(
     nanudaFavoriteSpaceMapperListDto: NanudaFavoriteSpaceMapperListDto,
     pagination?: PaginatedRequest,
   ): Promise<PaginatedResponse<FavoriteSpaceMapper>> {
@@ -132,6 +132,41 @@ export class FavoriteSpaceMapperService extends BaseService {
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('favorite.nanudaUserNo = :no', {
         no: nanudaUserNo,
+      })
+      .andWhere('favorite.spaceTypeNo = :spaceTypeNo', {
+        spaceTypeNo: SPACE_TYPE.ONLY_DELIVERY,
+      })
+      .WhereAndOrder(nanudaFavoriteSpaceMapperListDto)
+      .Paginate(pagination);
+
+    const [items, totalCount] = await qb.getManyAndCount();
+    return { items, totalCount };
+  }
+
+  /**
+   * 식당형 공간 찜
+   * @param nanudaFavoriteSpaceMapperListDto
+   * @param pagination
+   */
+  async findFavoriteRestaurantSpace(
+    nanudaFavoriteSpaceMapperListDto: NanudaFavoriteSpaceMapperListDto,
+    pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<FavoriteSpaceMapper>> {
+    const nanudaUserNo = nanudaFavoriteSpaceMapperListDto.nanudaUserNo;
+    delete nanudaFavoriteSpaceMapperListDto.nanudaUserNo;
+
+    const qb = this.favoriteSpaceMapperRepo
+      .createQueryBuilder('favorite')
+      .CustomInnerJoinAndSelect(['space'])
+      .leftJoinAndSelect('space.fileManagements', 'fileManagements')
+      .where('favorite.nanudaUserNo = :no', {
+        no: nanudaUserNo,
+      })
+      .andWhere('fileManagements.targetTable = :targetTable', {
+        targetTable: 'SPACE',
+      })
+      .andWhere('favorite.spaceTypeNo = :spaceTypeNo', {
+        spaceTypeNo: SPACE_TYPE.SPACE_SHARE,
       })
       .WhereAndOrder(nanudaFavoriteSpaceMapperListDto)
       .Paginate(pagination);
