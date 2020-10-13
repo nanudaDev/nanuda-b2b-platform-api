@@ -601,6 +601,11 @@ export class DeliverySpaceService extends BaseService {
     return { items, totalCount };
   }
 
+  /**
+   * find one for company user
+   * @param deliverySpaceNo
+   * @param companyNo
+   */
   async findOneForCompanyUser(
     deliverySpaceNo: number,
     companyNo: number,

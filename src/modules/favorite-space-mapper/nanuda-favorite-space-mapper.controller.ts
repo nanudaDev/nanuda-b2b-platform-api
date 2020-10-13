@@ -29,16 +29,32 @@ export class NanudaFavoriteSpaceMapperController extends BaseController {
   }
 
   /**
-   * find favorite space
+   * find favorite space delivery
    * @param nanudaFavoriteSpaceMapperListDto
    * @param pagination
    */
-  @Get('/nanuda/my-favorite')
-  async findMyFavorite(
+  @Get('/nanuda/my-favorite-delivery')
+  async findMyFavoriteDelivery(
     @Query() nanudaFavoriteSpaceMapperListDto: NanudaFavoriteSpaceMapperListDto,
     @Query() pagination?: PaginatedRequest,
   ) {
-    return await this.favoriteSpaceMapperService.findFavoritedSpace(
+    return await this.favoriteSpaceMapperService.findFavoritedDeliverySpace(
+      nanudaFavoriteSpaceMapperListDto,
+      pagination,
+    );
+  }
+
+  /**
+   * find favorite space restaurant
+   * @param nanudaFavoriteSpaceMapperListDto
+   * @param pagination
+   */
+  @Get('/nanuda/my-favorite-restaurant')
+  async findMyFavoriteRestaurant(
+    @Query() nanudaFavoriteSpaceMapperListDto: NanudaFavoriteSpaceMapperListDto,
+    @Query() pagination?: PaginatedRequest,
+  ) {
+    return await this.favoriteSpaceMapperService.findFavoriteRestaurantSpace(
       nanudaFavoriteSpaceMapperListDto,
       pagination,
     );
