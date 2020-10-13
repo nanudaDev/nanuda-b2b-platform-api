@@ -4,6 +4,7 @@ export * from './admin';
 export * from './article/article.module';
 export * from './best-space/best-space.module';
 export * from './brand/brand.module';
+export * from './brand-kiosk-mapper/brand-kiosk-mapper.module';
 export * from './company-district/company-disctrict.module';
 export * from './company-user/company-user.module';
 export * from './code-management/code-management.module';

@@ -9,7 +9,7 @@ import {
   JoinTable,
   OneToOne,
 } from 'typeorm';
-import { BaseEntity, SPACE } from 'src/core';
+import { BaseEntity, SPACE, SPACE_PIC_STATUS } from 'src/core';
 import { YN } from 'src/common';
 import { FounderConsult } from '../founder-consult/founder-consult.entity';
 import { DeliveryFounderConsult } from '../delivery-founder-consult/delivery-founder-consult.entity';
@@ -122,6 +122,14 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
   })
   delYn?: YN;
 
+  @Column({
+    type: 'varchar',
+    name: 'PIC_STATUS',
+    default: SPACE_PIC_STATUS.EMPTY,
+    nullable: false,
+  })
+  picStatus: SPACE_PIC_STATUS;
+
   // no database
   remainingCount?: number;
 
@@ -129,6 +137,8 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
   likedCount?: number;
 
   likedYn?: boolean;
+
+  favoriteSpaceNo?: number;
 
   consultCount?: number;
 

@@ -21,6 +21,7 @@ import { SpaceType } from '../space-type/space-type.entity';
 import { FounderConsult } from '../founder-consult/founder-consult.entity';
 import { CodeManagement } from '../code-management/code-management.entity';
 import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
+import { FileManagement } from '../file-management/file-management.entity';
 
 @Entity({ name: 'SPACE' })
 export class Space extends BaseEntity<Space> {
@@ -311,7 +312,7 @@ export class Space extends BaseEntity<Space> {
   @Column('varchar', {
     name: 'SIZE',
   })
-  size?: string;
+  size?: number;
 
   @Column('varchar', {
     name: 'SEAT',
@@ -486,4 +487,10 @@ export class Space extends BaseEntity<Space> {
     nullable: true,
   })
   companyDistrictCategoryNo?: number;
+
+  @OneToMany(
+    type => FileManagement,
+    fileManagement => fileManagement.space,
+  )
+  fileManagements?: FileManagement[];
 }

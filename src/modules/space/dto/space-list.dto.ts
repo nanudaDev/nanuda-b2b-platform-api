@@ -45,6 +45,11 @@ export class SpaceListDto extends BaseDto<SpaceListDto>
   @Default(ORDER_BY_VALUE.DESC)
   orderByNo?: ORDER_BY_VALUE;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  keyword?: string;
+
   //   fixed values
   @Default(YN.YES)
   showYn?: YN;

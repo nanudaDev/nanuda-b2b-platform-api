@@ -85,4 +85,10 @@ export class AdminBrandCreateDto extends BaseDto<AdminBrandCreateDto>
   @IsArray()
   @ValidateNested({ each: true })
   mainMenuImage?: FileAttachmentDto[];
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  @IsArray()
+  brandKioskMapperNos?: number[];
 }

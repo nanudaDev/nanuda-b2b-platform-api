@@ -16,7 +16,7 @@ import {
   NanudaFavoriteSpaceMapperDeleteDto,
 } from './dto';
 import { FavoriteSpaceMapper } from './favorite-space-mapper.entity';
-import { FavoriteSpaceMapperService } from './favorite-space-mapper.service';
+import { FavoriteSpaceMapperService } from './nanuda-favorite-space-mapper.service';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
 
 @Controller()
@@ -29,16 +29,32 @@ export class NanudaFavoriteSpaceMapperController extends BaseController {
   }
 
   /**
-   * find favorite space
+   * find favorite space delivery
    * @param nanudaFavoriteSpaceMapperListDto
    * @param pagination
    */
-  @Get('/nanuda/my-favorite')
-  async findMyFavorite(
+  @Get('/nanuda/my-favorite-delivery')
+  async findMyFavoriteDelivery(
     @Query() nanudaFavoriteSpaceMapperListDto: NanudaFavoriteSpaceMapperListDto,
     @Query() pagination?: PaginatedRequest,
   ) {
-    return await this.favoriteSpaceMapperService.findFavoritedSpace(
+    return await this.favoriteSpaceMapperService.findFavoritedDeliverySpace(
+      nanudaFavoriteSpaceMapperListDto,
+      pagination,
+    );
+  }
+
+  /**
+   * find favorite space restaurant
+   * @param nanudaFavoriteSpaceMapperListDto
+   * @param pagination
+   */
+  @Get('/nanuda/my-favorite-restaurant')
+  async findMyFavoriteRestaurant(
+    @Query() nanudaFavoriteSpaceMapperListDto: NanudaFavoriteSpaceMapperListDto,
+    @Query() pagination?: PaginatedRequest,
+  ) {
+    return await this.favoriteSpaceMapperService.findFavoriteRestaurantSpace(
       nanudaFavoriteSpaceMapperListDto,
       pagination,
     );
@@ -53,7 +69,6 @@ export class NanudaFavoriteSpaceMapperController extends BaseController {
   async create(
     @Body() favoriteSpaceMapperCreateDto,
   ): Promise<FavoriteSpaceMapper> {
-    console.log(123);
     return await this.favoriteSpaceMapperService.create(
       favoriteSpaceMapperCreateDto,
     );
@@ -64,11 +79,16 @@ export class NanudaFavoriteSpaceMapperController extends BaseController {
    * @param favoriteSpaceMapperNo
    */
   @Delete('/nanuda/favorite-space')
-  async delete(@Query() deliverySpaceNo, @Query() nanudaUserNo) {
+  async delete(
+    @Query() deliverySpaceNo,
+    @Query() nanudaUserNo,
+    @Query() spaceTypeNo,
+  ) {
     return {
       isDeleted: await this.favoriteSpaceMapperService.deleteFavorite(
         deliverySpaceNo.deliverySpaceNo,
         nanudaUserNo.nanudaUserNo,
+        spaceTypeNo.spaceTypeNo,
       ),
     };
   }
@@ -80,12 +100,36 @@ export class NanudaFavoriteSpaceMapperController extends BaseController {
    */
   @Delete('/nanuda/favorite-space/multiple')
   async multipleDelete(@Body() deleteDto: NanudaFavoriteSpaceMapperDeleteDto) {
-    console.log(deleteDto);
     return {
       isDeletedCount: await this.favoriteSpaceMapperService.deleteMultiple(
         deleteDto,
         deleteDto.nanudaUserNo,
       ),
     };
+  }
+
+  /**
+   * check for restaurant space
+   * @param nanudaUserNo
+   * @param spaceNo
+   */
+  @Get('/nanuda/favorite-space/check-restauraunt-kitchen')
+  async checkForRestaurantKitchen(@Query() favoriteQuery) {
+    return {
+      isLiked: await this.favoriteSpaceMapperService.checkForRestaurantKitchen(
+        favoriteQuery,
+      ),
+    };
+  }
+
+  /**
+   * get count
+   * @param favoriteQuery
+   */
+  @Get('/nanuda/favorite-space/check-count-restaurant-kitchen')
+  async checkCountForRestaurantKitchen(@Query() favoriteQuery) {
+    return await this.favoriteSpaceMapperService.checkCountForRestaurantKitchen(
+      favoriteQuery,
+    );
   }
 }

@@ -182,6 +182,13 @@ export enum SPACE_CONTRACT {
 }
 export const CONST_SPACE_CONTRACT  = Object.values(SPACE_CONTRACT);
 
+export enum SPACE_PIC_STATUS {
+ 'COMPLETE' = 'COMPLETE', 
+ 'EMPTY' = 'EMPTY', 
+ 'INCOMPLETE' = 'INCOMPLETE', 
+}
+export const CONST_SPACE_PIC_STATUS  = Object.values(SPACE_PIC_STATUS);
+
 export enum STORE_COUNT {
  'FIFTY_TO_HUNDRED' = 'FIFTY_TO_HUNDRED', 
  'OVER_HUNDRED' = 'OVER_HUNDRED', 
