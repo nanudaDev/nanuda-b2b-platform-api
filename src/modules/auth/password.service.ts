@@ -27,6 +27,6 @@ export class PasswordService extends BaseService {
    * @param password
    */
   async hashPassword(password: string) {
-    return hash(password, bcryptSaltRounds);
+    return await hash(password, bcryptSaltRounds);
   }
 }
