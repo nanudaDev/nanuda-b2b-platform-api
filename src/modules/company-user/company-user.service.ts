@@ -598,7 +598,6 @@ export class CompanyUserService extends BaseService {
    * @param phone
    */
   async findByPhone(phone: CompanyUserPhoneDto): Promise<CompanyUser> {
-    console.log(123);
     const user = await this.companyUserRepo.findOne({ phone: phone.phone });
     if (!user) {
       throw new NotFoundException();

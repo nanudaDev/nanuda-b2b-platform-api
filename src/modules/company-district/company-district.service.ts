@@ -426,6 +426,11 @@ export class CompanyDistrictService extends BaseService {
     return companyDistrict;
   }
 
+  /**
+   * refuse updates
+   * @param companyDistrictNo
+   * @param adminCompanyDistrictRefusalDto
+   */
   async refuseUpdate(
     companyDistrictNo: number,
     adminCompanyDistrictRefusalDto: AdminCompanyDistrictUpdateRefusalDto,
@@ -483,7 +488,7 @@ export class CompanyDistrictService extends BaseService {
   }
 
   /**
-   * up
+   * update for company user
    * @param companyDistrictNo
    * @param companyDistrictUpdateDto
    */
@@ -567,22 +572,6 @@ export class CompanyDistrictService extends BaseService {
     return true;
   }
 
-  private async __find_one_company_district_update_history(
-    companyUserNo: number,
-    status?: APPROVAL_STATUS,
-  ): Promise<CompanyDistrictUpdateHistory> {
-    const history = await this.companyDistrictUpdateHistoryRepo.findOne({
-      where: {
-        companyDistrictNo: companyUserNo,
-        companyDistrictStatus: status,
-      },
-      order: {
-        no: ORDER_BY_VALUE.DESC,
-      },
-    });
-    return history;
-  }
-
   /**
    * create vicinity info
    * @param companyDistrictNo
@@ -601,6 +590,9 @@ export class CompanyDistrictService extends BaseService {
     );
   }
 
+  /**
+   * create update history
+   */
   async createUpdateHistory() {
     const districts = await this.entityManager.transaction(
       async entityManager => {
@@ -635,13 +627,29 @@ export class CompanyDistrictService extends BaseService {
     return newCompanyUpdateHistory;
   }
 
-  private __get_lat_long(address: string) {
-    console.log('started');
-    const test = new daum();
-    const geo = test.maps.services.Geocoder();
-    const callback = (res, status) => {
-      console.log(res);
-    };
-    return callback;
+  // private __get_lat_long(address: string) {
+  //   console.log('started');
+  //   const test = new daum();
+  //   const geo = test.maps.services.Geocoder();
+  //   const callback = (res, status) => {
+  //     console.log(res);
+  //   };
+  //   return callback;
+  // }
+
+  private async __find_one_company_district_update_history(
+    companyUserNo: number,
+    status?: APPROVAL_STATUS,
+  ): Promise<CompanyDistrictUpdateHistory> {
+    const history = await this.companyDistrictUpdateHistoryRepo.findOne({
+      where: {
+        companyDistrictNo: companyUserNo,
+        companyDistrictStatus: status,
+      },
+      order: {
+        no: ORDER_BY_VALUE.DESC,
+      },
+    });
+    return history;
   }
 }
