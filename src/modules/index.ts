@@ -8,6 +8,7 @@ export * from './brand-kiosk-mapper/brand-kiosk-mapper.module';
 export * from './company-district/company-disctrict.module';
 export * from './company-user/company-user.module';
 export * from './code-management/code-management.module';
+export * from './credential/credential.module';
 export * from './dashboard/dashboard.module';
 export * from './delivery-space/delivery-space.module';
 export * from './delivery-space-option/delivery-space-option.module';
