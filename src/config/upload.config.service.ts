@@ -67,7 +67,7 @@ export class UploadConfigService {
     },
     [UPLOAD_TYPE.DELIVERY_SPACE]: {
       path: 'delivery-space',
-      sizeLimit: 1500 * 1024 * 10,
+      sizeLimit: 2500 * 1024 * 10,
       fileType: FileType.IMAGE,
     },
     [UPLOAD_TYPE.COMPANY_DISTRICT]: {
