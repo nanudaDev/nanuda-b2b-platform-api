@@ -70,14 +70,14 @@ export class DeliveryFounderConsultService extends BaseService {
     const qb = this.deliveryFounderConsultRepo
       .createQueryBuilder('deliveryConsult')
       .CustomLeftJoinAndSelect([
-        'deliverySpaces',
+        'deliverySpace',
         'codeManagement',
         'availableTime',
         'nanudaUser',
         'admin',
       ])
-      .leftJoinAndSelect('deliverySpaces.companyDistrict', 'companyDistrict')
-      .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
+      .leftJoinAndSelect('deliverySpace.companyDistrict', 'companyDistrict')
+      .leftJoinAndSelect('deliverySpace.contracts', 'contracts')
       .leftJoinAndSelect('companyDistrict.company', 'company')
       .leftJoinAndSelect('nanudaUser.genderInfo', 'genderInfo')
       .AndWhereLike(
@@ -141,7 +141,7 @@ export class DeliveryFounderConsultService extends BaseService {
         adminDeliveryFounderConsultListDto.exclude('companyNo'),
       )
       .AndWhereEqual(
-        'deliverySpaces',
+        'deliverySpace',
         'no',
         adminDeliveryFounderConsultListDto.deliverySpaceNo,
         adminDeliveryFounderConsultListDto.exclude('deliverySpaceNo'),
@@ -197,14 +197,14 @@ export class DeliveryFounderConsultService extends BaseService {
     const qb = this.deliveryFounderConsultRepo
       .createQueryBuilder('deliveryConsult')
       .CustomLeftJoinAndSelect([
-        'deliverySpaces',
+        'deliverySpace',
         'codeManagement',
         'availableTime',
         'nanudaUser',
         'admin',
       ])
-      .leftJoinAndSelect('deliverySpaces.companyDistrict', 'companyDistrict')
-      .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
+      .leftJoinAndSelect('deliverySpace.companyDistrict', 'companyDistrict')
+      .leftJoinAndSelect('deliverySpace.contracts', 'contracts')
       .leftJoinAndSelect('companyDistrict.company', 'company')
       .leftJoinAndSelect('nanudaUser.genderInfo', 'genderInfo')
       .AndWhereLike(
@@ -268,7 +268,7 @@ export class DeliveryFounderConsultService extends BaseService {
         adminDeliveryFounderConsultListDto.exclude('companyNo'),
       )
       .AndWhereEqual(
-        'deliverySpaces',
+        'deliverySpace',
         'no',
         adminDeliveryFounderConsultListDto.deliverySpaceNo,
         adminDeliveryFounderConsultListDto.exclude('deliverySpaceNo'),
@@ -300,7 +300,7 @@ export class DeliveryFounderConsultService extends BaseService {
     const consult = await this.deliveryFounderConsultRepo
       .createQueryBuilder('deliveryConsult')
       // .CustomInnerJoinAndSelect([
-      //   'deliverySpaces',
+      //   'deliverySpace',
       //   'codeManagement',
       //   'availableTime',
       //   'companyDecisionStatusCode',
@@ -309,17 +309,17 @@ export class DeliveryFounderConsultService extends BaseService {
         'nanudaUser',
         'admin',
         'companyUser',
-        'deliverySpaces',
+        'deliverySpace',
         'codeManagement',
         'availableTime',
         'companyDecisionStatusCode',
       ])
-      .leftJoinAndSelect('deliverySpaces.companyDistrict', 'companyDistrict')
-      .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
+      .leftJoinAndSelect('deliverySpace.companyDistrict', 'companyDistrict')
+      .leftJoinAndSelect('deliverySpace.contracts', 'contracts')
       .leftJoinAndSelect('companyDistrict.company', 'company')
-      .leftJoinAndSelect('deliverySpaces.amenities', 'amenities')
+      .leftJoinAndSelect('deliverySpace.amenities', 'amenities')
       .leftJoinAndSelect(
-        'deliverySpaces.deliverySpaceOptions',
+        'deliverySpace.deliverySpaceOptions',
         'deliverySpaceOptions',
       )
       .leftJoinAndSelect('company.codeManagement', 'companyStatus')
@@ -343,9 +343,9 @@ export class DeliveryFounderConsultService extends BaseService {
       async entityManager => {
         let deliveryFounderConsult = await this.deliveryFounderConsultRepo
           .createQueryBuilder('deliveryConsult')
-          .CustomInnerJoinAndSelect(['deliverySpaces'])
+          .CustomInnerJoinAndSelect(['deliverySpace'])
           .innerJoinAndSelect(
-            'deliverySpaces.companyDistrict',
+            'deliverySpace.companyDistrict',
             'companyDistrict',
           )
           .where('deliveryConsult.no = :no', { no: deliveryFounderConsultNo })
@@ -398,6 +398,19 @@ export class DeliveryFounderConsultService extends BaseService {
         ) {
           let contract = await this.__create_contract(deliveryFounderConsult);
           contract = await entityManager.save(contract);
+          await this.nanudaSlackNotificationService.completeContractNotification(
+            await entityManager
+              .getRepository(DeliveryFounderConsultContract)
+              .createQueryBuilder('contract')
+              .CustomInnerJoinAndSelect(['nanudaUser', 'deliverySpace'])
+              .innerJoinAndSelect(
+                'deliverySpace.companyDistrict',
+                'companyDistrict',
+              )
+              .innerJoinAndSelect('companyDistrict.company', 'company')
+              .where('contract.no = :no', { no: contract.no })
+              .getOne(),
+          );
         }
         return deliveryFounderConsult;
       },
@@ -475,16 +488,16 @@ export class DeliveryFounderConsultService extends BaseService {
     const qb = this.deliveryFounderConsultRepo
       .createQueryBuilder('deliveryConsult')
       .CustomInnerJoinAndSelect([
-        'deliverySpaces',
+        'deliverySpace',
         'codeManagement',
         'availableTime',
         'companyDecisionStatusCode',
       ])
-      .innerJoinAndSelect('deliverySpaces.companyDistrict', 'companyDistrict')
+      .innerJoinAndSelect('deliverySpace.companyDistrict', 'companyDistrict')
       .innerJoin('deliveryConsult.nanudaUser', 'nanudaUser')
       .leftJoinAndSelect('nanudaUser.genderInfo', 'genderInfo')
       .innerJoinAndSelect('companyDistrict.company', 'company')
-      .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
+      .leftJoinAndSelect('deliverySpace.contracts', 'contracts')
       .addSelect(['nanudaUser.name', 'nanudaUser.gender'])
       .where('company.no = :no', { no: companyNo })
       .AndWhereLike(
@@ -506,7 +519,7 @@ export class DeliveryFounderConsultService extends BaseService {
         deliveryFounderConsultListDto.exclude('companyDistrictNameEng'),
       )
       .AndWhereEqual(
-        'deliverySpaces',
+        'deliverySpace',
         'no',
         deliveryFounderConsultListDto.deliverySpaceNo,
         deliveryFounderConsultListDto.exclude('deliverySpaceNo'),
@@ -558,17 +571,17 @@ export class DeliveryFounderConsultService extends BaseService {
     const qb = await this.deliveryFounderConsultRepo
       .createQueryBuilder('deliveryConsult')
       .CustomInnerJoinAndSelect([
-        'deliverySpaces',
+        'deliverySpace',
         'codeManagement',
         'availableTime',
         'companyDecisionStatusCode',
       ])
       .CustomLeftJoinAndSelect(['companyUser'])
-      .leftJoinAndSelect('deliverySpaces.companyDistrict', 'companyDistrict')
-      .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
-      .leftJoinAndSelect('deliverySpaces.amenities', 'amenities')
+      .leftJoinAndSelect('deliverySpace.companyDistrict', 'companyDistrict')
+      .leftJoinAndSelect('deliverySpace.contracts', 'contracts')
+      .leftJoinAndSelect('deliverySpace.amenities', 'amenities')
       .leftJoinAndSelect(
-        'deliverySpaces.deliverySpaceOptions',
+        'deliverySpace.deliverySpaceOptions',
         'deliverySpaceOptions',
       )
       .leftJoinAndSelect('companyDistrict.company', 'company')
@@ -607,17 +620,17 @@ export class DeliveryFounderConsultService extends BaseService {
       return await this.deliveryFounderConsultRepo
         .createQueryBuilder('deliveryConsult')
         .CustomInnerJoinAndSelect([
-          'deliverySpaces',
+          'deliverySpace',
           'codeManagement',
           'availableTime',
           'companyDecisionStatusCode',
         ])
         .CustomLeftJoinAndSelect(['companyUser'])
-        .innerJoinAndSelect('deliverySpaces.companyDistrict', 'companyDistrict')
-        .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
-        .leftJoinAndSelect('deliverySpaces.amenities', 'amenities')
+        .innerJoinAndSelect('deliverySpace.companyDistrict', 'companyDistrict')
+        .leftJoinAndSelect('deliverySpace.contracts', 'contracts')
+        .leftJoinAndSelect('deliverySpace.amenities', 'amenities')
         .leftJoinAndSelect(
-          'deliverySpaces.deliverySpaceOptions',
+          'deliverySpace.deliverySpaceOptions',
           'deliverySpaceOptions',
         )
         .innerJoinAndSelect('companyDistrict.company', 'company')
@@ -645,12 +658,12 @@ export class DeliveryFounderConsultService extends BaseService {
       async entityManager => {
         let qb = await this.deliveryFounderConsultRepo
           .createQueryBuilder('deliveryConsult')
-          .CustomLeftJoinAndSelect(['deliverySpaces'])
+          .CustomLeftJoinAndSelect(['deliverySpace'])
           .innerJoinAndSelect(
-            'deliverySpaces.companyDistrict',
+            'deliverySpace.companyDistrict',
             'companyDistrict',
           )
-          .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
+          .leftJoinAndSelect('deliverySpace.contracts', 'contracts')
           .innerJoinAndSelect('companyDistrict.company', 'company')
           .where('deliveryConsult.no = :no', { no: deliveryFounderConsultNo })
           .andWhere('company.no = :companyNo', { companyNo: companyNo })
@@ -664,9 +677,7 @@ export class DeliveryFounderConsultService extends BaseService {
           deliveryFounderConsultUpdateDto.companyDecisionStatus ===
           B2B_FOUNDER_CONSULT.B2B_F_CONTRACT_COMPLETE
         ) {
-          if (
-            qb.deliverySpaces.contracts.length === qb.deliverySpaces.quantity
-          ) {
+          if (qb.deliverySpace.contracts.length === qb.deliverySpace.quantity) {
             throw new BadRequestException({
               message: '남은 공실이 없어 계약 할 수가 없습니다.',
               error: 400,
@@ -674,15 +685,28 @@ export class DeliveryFounderConsultService extends BaseService {
           }
           let contract = await this.__create_contract(qb);
           contract = await entityManager.save(contract);
+          await this.nanudaSlackNotificationService.completeContractNotification(
+            await entityManager
+              .getRepository(DeliveryFounderConsultContract)
+              .createQueryBuilder('contract')
+              .CustomInnerJoinAndSelect(['nanudaUser', 'deliverySpace'])
+              .innerJoinAndSelect(
+                'deliverySpace.companyDistrict',
+                'companyDistrict',
+              )
+              .innerJoinAndSelect('companyDistrict.company', 'company')
+              .where('contract.no = :no', { no: contract.no })
+              .getOne(),
+          );
         }
         qb = await this.deliveryFounderConsultRepo
           .createQueryBuilder('deliveryConsult')
           .CustomLeftJoinAndSelect([
-            'deliverySpaces',
+            'deliverySpace',
             'companyDecisionStatusCode',
           ])
           .innerJoinAndSelect(
-            'deliverySpaces.companyDistrict',
+            'deliverySpace.companyDistrict',
             'companyDistrict',
           )
           .innerJoinAndSelect('companyDistrict.company', 'company')
@@ -711,9 +735,9 @@ export class DeliveryFounderConsultService extends BaseService {
       async entityManager => {
         let deliveryFounderConsult = await this.deliveryFounderConsultRepo
           .createQueryBuilder('deliveryConsult')
-          .CustomInnerJoinAndSelect(['deliverySpaces'])
+          .CustomInnerJoinAndSelect(['deliverySpace'])
           .innerJoinAndSelect(
-            'deliverySpaces.companyDistrict',
+            'deliverySpace.companyDistrict',
             'companyDistrict',
           )
           .where('deliveryConsult.no = :no', { no: deliveryFounderConsultNo })
@@ -732,7 +756,7 @@ export class DeliveryFounderConsultService extends BaseService {
         );
         if (!companyNo) {
           companyNo =
-            deliveryFounderConsult.deliverySpaces.companyDistrict.companyNo;
+            deliveryFounderConsult.deliverySpace.companyDistrict.companyNo;
         }
         // place in contract
         const space = await this.deliverySpaceService.findOneForCompanyUser(
@@ -759,9 +783,9 @@ export class DeliveryFounderConsultService extends BaseService {
     contract.deliveryFounderConsultNo = founderConsult.no;
     contract.deliverySpaceNo = founderConsult.deliverySpaceNo;
     contract.companyDistrictNo =
-      founderConsult.deliverySpaces.companyDistrict.no;
+      founderConsult.deliverySpace.companyDistrict.no;
     contract.companyNo =
-      founderConsult.deliverySpaces.companyDistrict.company.no;
+      founderConsult.deliverySpace.companyDistrict.company.no;
     contract.nanudaUserNo = founderConsult.nanudaUserNo;
     return contract;
   }

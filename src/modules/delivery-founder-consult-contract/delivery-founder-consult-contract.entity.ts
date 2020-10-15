@@ -9,6 +9,7 @@ import {
 import { BaseDto, BaseEntity } from 'src/core';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
+import { Company } from '../company/company.entity';
 
 @Entity({ name: 'B2B_DELIVERY_FOUNDER_CONSULT_CONTRACT' })
 export class DeliveryFounderConsultContract extends BaseEntity<
@@ -66,4 +67,8 @@ export class DeliveryFounderConsultContract extends BaseEntity<
   )
   @JoinColumn({ name: 'NANUDA_USER_NO' })
   nanudaUser?: NanudaUser;
+
+  @ManyToOne(type => Company)
+  @JoinColumn({ name: 'COMPANY_NO' })
+  company?: Company;
 }

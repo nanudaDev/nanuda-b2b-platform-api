@@ -40,6 +40,12 @@ export class Admin extends BaseUser {
   })
   authCode: ADMIN_USER;
 
+  @Column({
+    type: 'datetime',
+    name: 'LAST_LOGIN_AT',
+  })
+  lastLoginAt?: Date;
+
   // @OneToMany(
   //   type => Brand,
   //   brand => brand.admin,
