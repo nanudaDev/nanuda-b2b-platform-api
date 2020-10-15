@@ -76,6 +76,12 @@ export class AuthService extends BaseService {
     }
     const token = await this.sign(loggedInAdmin, {}, adminLoginDto.rememberMe);
 
+    await this.adminRepo
+      .createQueryBuilder('admin')
+      .update()
+      .set({ lastLoginAt: new Date() })
+      .where('no = :no', { no: admin.no })
+      .execute();
     return token;
   }
 

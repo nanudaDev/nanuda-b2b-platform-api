@@ -106,7 +106,7 @@ export class ProductConsult extends BaseEntity<ProductConsult> {
 
   @OneToOne(type => AddressInfo)
   @JoinColumn({ name: 'ADDRESS_CODE', referencedColumnName: 'addressCode' })
-  addressInfo?: AddressInfo;
+  addressInfo?: Promise<AddressInfo>;
 
   // 가능한 시간
   @OneToOne(type => CodeManagement)
