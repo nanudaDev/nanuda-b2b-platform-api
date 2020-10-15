@@ -37,6 +37,7 @@
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
     "crypto-js": "^3.1.9-1",
+    "cryptr": "^6.0.2",
     "csurf": "^1.11.0",
     "daum-map-api": "^1.0.2",
     "debug": "^4.1.1",

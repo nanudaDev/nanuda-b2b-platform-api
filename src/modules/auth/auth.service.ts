@@ -127,6 +127,10 @@ export class AuthService extends BaseService {
     return token;
   }
 
+  /**
+   * find user by phone number
+   * @param companyUserPhoneDto
+   */
   async findByPhone(companyUserPhoneDto: CompanyUserPhoneDto) {
     const user = await this.companyUserRepo
       .createQueryBuilder('companyUser')
@@ -141,6 +145,10 @@ export class AuthService extends BaseService {
     return { user, token };
   }
 
+  /**
+   * find user by id
+   * @param companyUserNo
+   */
   async findById(companyUserNo: number) {
     const user = await this.companyUserRepo
       .createQueryBuilder('companyUser')
@@ -227,6 +235,11 @@ export class AuthService extends BaseService {
     }
   }
 
+  /**
+   * validate password
+   * @param companyUserNo
+   * @param companyUserPasswordUpdateDto
+   */
   async validatePasswordForCompanyUser(
     companyUserNo: number,
     companyUserPasswordUpdateDto: CompanyUserPasswordUpdateDto,
