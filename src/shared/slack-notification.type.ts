@@ -4,6 +4,7 @@ export enum SLACK_NOTIFICATION_PROPERTY {
   inquirySystem = '나누다 플랫폼 시스템 문의',
   newInquiry = '나누다 플랫폼 문의',
   inquiryReply = '나누다 플랫폼 문의 답변',
+  contractComplete = '나누다 플랫폼 계약 완료',
 }
 
 export enum B2C_SLACK_NOTIFICATION_PROPERTY {

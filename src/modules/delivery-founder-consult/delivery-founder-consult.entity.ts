@@ -155,7 +155,7 @@ export class DeliveryFounderConsult extends BaseEntity<DeliveryFounderConsult> {
 
   @OneToOne(type => DeliverySpace)
   @JoinColumn({ name: 'DELIVERY_SPACE_NO' })
-  deliverySpaces?: DeliverySpace;
+  deliverySpace?: DeliverySpace;
 
   @OneToOne(type => CodeManagement)
   @JoinColumn({ name: 'STATUS', referencedColumnName: 'key' })
@@ -179,5 +179,5 @@ export class DeliveryFounderConsult extends BaseEntity<DeliveryFounderConsult> {
 
   @OneToOne(type => CompanyUser)
   @JoinColumn({ name: 'COMPANY_USER_NO' })
-  companyUser?: CompanyUser;
+  companyUser?: Promise<CompanyUser>;
 }

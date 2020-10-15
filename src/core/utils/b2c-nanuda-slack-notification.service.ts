@@ -41,7 +41,7 @@ export class B2CNanudaSlackNotificationService extends BaseService {
           fields: [
             {
               title: `${B2C_SLACK_NOTIFICATION_PROPERTY.founderConsultUsername}`,
-              value: `${deliveryFounderConsult.nanudaUser.name}님이 ${deliveryFounderConsult.deliverySpaces.companyDistrict.company.nameKr} 업체의 ${deliveryFounderConsult.deliverySpaces.typeName}에 신청을 했습니다.`,
+              value: `${deliveryFounderConsult.nanudaUser.name}님이 ${deliveryFounderConsult.deliverySpace.companyDistrict.company.nameKr} 업체의 ${deliveryFounderConsult.deliverySpace.typeName}에 신청을 했습니다.`,
               short: false,
             },
           ],
