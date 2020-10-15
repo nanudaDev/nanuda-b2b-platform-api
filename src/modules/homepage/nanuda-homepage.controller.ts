@@ -6,17 +6,15 @@ import { NanudaHomepageService } from './nanuda-homepage.service';
 @Controller()
 @ApiTags('NANUDA HOMEPAGE')
 export class NanudaHomepageController extends BaseController {
-    constructor(
-        private readonly nanudaHomepageService: NanudaHomepageService
-    ) {
-        super()
-    }
+  constructor(private readonly nanudaHomepageService: NanudaHomepageService) {
+    super();
+  }
 
-    /**
-     * best both delivery and restaurant space 
-     */
-    @Get('/nanuda/homepage/best-space')
-    async findAll() {
-        return await this.nanudaHomepageService.findBestSpaces()
-    }
+  /**
+   * best both delivery and restaurant space
+   */
+  @Get('/nanuda/homepage/best-space')
+  async findAll() {
+    return await this.nanudaHomepageService.findBestSpaces();
+  }
 }

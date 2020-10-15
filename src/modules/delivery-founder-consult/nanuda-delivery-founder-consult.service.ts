@@ -36,11 +36,11 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
     newConsult = await this.deliveryFounderConsultRepo
       .createQueryBuilder('deliveryFounderConsult')
       .CustomInnerJoinAndSelect([
-        'deliverySpaces',
+        'deliverySpace',
         'availableTime',
         'nanudaUser',
       ])
-      .leftJoinAndSelect('deliverySpaces.companyDistrict', 'companyDistrict')
+      .leftJoinAndSelect('deliverySpace.companyDistrict', 'companyDistrict')
       .leftJoinAndSelect('companyDistrict.company', 'company')
       .where('deliveryFounderConsult.no = :no', { no: newConsult.no })
       .getOne();
@@ -62,7 +62,7 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
   ): Promise<DeliveryFounderConsult> {
     const consult = await this.deliveryFounderConsultRepo
       .createQueryBuilder('deliveryFounderConsult')
-      .CustomInnerJoinAndSelect(['deliverySpaces', 'availableTime'])
+      .CustomInnerJoinAndSelect(['deliverySpace', 'availableTime'])
       .where('deliveryFounderConsult.no = :no', {
         no: deliveryFounderConsultNo,
       })
@@ -85,8 +85,8 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
   ): Promise<PaginatedResponse<DeliveryFounderConsult>> {
     const qb = this.deliveryFounderConsultRepo
       .createQueryBuilder('deliveryFounderConsult')
-      .CustomInnerJoinAndSelect(['deliverySpaces'])
-      .innerJoinAndSelect('deliverySpaces.companyDistrict', 'companyDistrict')
+      .CustomInnerJoinAndSelect(['deliverySpace'])
+      .innerJoinAndSelect('deliverySpace.companyDistrict', 'companyDistrict')
       .AndWhereLike(
         'deliveryFounderConsult',
         'hopeFoodCategory',
