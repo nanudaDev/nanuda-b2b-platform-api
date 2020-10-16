@@ -10,6 +10,7 @@ import { Inquiry } from 'src/modules/inquiry/inquiry.entity';
 import { ENVIRONMENT } from 'src/config';
 import { DeliveryFounderConsult } from 'src/modules/delivery-founder-consult/delivery-founder-consult.entity';
 import { DeliverySpace } from 'src/modules/delivery-space/delivery-space.entity';
+import { DeliveryFounderConsultContract } from 'src/modules/delivery-founder-consult-contract/delivery-founder-consult-contract.entity';
 
 @Injectable()
 export class NanudaSlackNotificationService extends BaseService {
@@ -38,7 +39,7 @@ export class NanudaSlackNotificationService extends BaseService {
           fields: [
             {
               title: `${SLACK_NOTIFICATION_PROPERTY.founderConsultUsername}`,
-              value: `${founderConsult.deliverySpaces.companyDistrict.company.nameKr}에서 방문자 신청 ID ${founderConsult.no} 상태값을 ${founderConsult.companyDecisionStatusCode.value}로 변경했습니다.`,
+              value: `${founderConsult.deliverySpace.companyDistrict.company.nameKr}에서 방문자 신청 ID ${founderConsult.no} 상태값을 ${founderConsult.companyDecisionStatusCode.value}로 변경했습니다.`,
               short: false,
             },
           ],
@@ -248,6 +249,38 @@ export class NanudaSlackNotificationService extends BaseService {
               type: 'button',
               url: `${process.env.ADMIN_BASEURL}company/delivery-space/${deliverySpace.no}`,
               style: 'primary',
+            },
+          ],
+        },
+      ],
+    };
+    this.__send_slack(message);
+  }
+
+  /**
+   * send complete contract notification
+   * @param contract
+   */
+  async completeContractNotification(contract: DeliveryFounderConsultContract) {
+    const message = {
+      username: SLACK_NOTIFICATION_PROPERTY.contractComplete,
+      text: `${contract.nanudaUser.name}님이 ${contract.deliverySpace.companyDistrict.company.nameKr}와 계약 완료했습니다.`,
+      attachments: [
+        {
+          color: '#009900',
+          actions: [
+            {
+              name: 'slack action button',
+              text: '계약 상세보기',
+              type: 'button',
+              url: `${process.env.ADMIN_BASEURL}delivery-founder-consult-contract-detail/${contract.no}`,
+              style: 'primary',
+            },
+          ],
+          fields: [
+            {
+              value: `${contract.nanudaUser.name}님이 ${contract.deliverySpace.companyDistrict.company.nameKr} ${contract.deliverySpace.companyDistrict.nameKr}에 ${contract.deliverySpace.typeName}공간에 계약 되셨습니다.`,
+              short: false,
             },
           ],
         },

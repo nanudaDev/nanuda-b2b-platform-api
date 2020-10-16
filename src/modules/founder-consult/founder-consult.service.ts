@@ -107,6 +107,12 @@ export class FounderConsultService extends BaseService {
         adminFounderConsultListDto.exclude('adminUserName'),
       )
       .AndWhereEqual(
+        'admin',
+        'no',
+        adminFounderConsultListDto.adminNo,
+        adminFounderConsultListDto.exclude('adminNo'),
+      )
+      .AndWhereEqual(
         'company',
         'no',
         adminFounderConsultListDto.companyNo,

@@ -141,7 +141,7 @@ export class Company extends BaseEntity<Company> {
     type => CompanyUser,
     companyUser => companyUser.company,
   )
-  companyUsers?: CompanyUser[];
+  companyUsers?: Promise<CompanyUser[]>;
 
   @OneToMany(
     type => CompanyDistrict,

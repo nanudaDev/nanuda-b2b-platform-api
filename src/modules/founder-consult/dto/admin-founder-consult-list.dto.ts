@@ -77,7 +77,7 @@ export class AdminFounderConsultListDto
   @IsEnum(SPACE_TYPE)
   @IsOptional()
   @Expose()
-  spaceTypeNo?: number;
+  spaceTypeNo?: SPACE_TYPE;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -88,6 +88,11 @@ export class AdminFounderConsultListDto
   @IsOptional()
   @Expose()
   adminUserName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  adminNo?: number;
 
   @ApiPropertyOptional()
   @IsOptional()

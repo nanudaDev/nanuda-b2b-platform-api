@@ -188,7 +188,7 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
 
   @OneToMany(
     type => DeliveryFounderConsult,
-    deliveryFounderConsult => deliveryFounderConsult.deliverySpaces,
+    deliveryFounderConsult => deliveryFounderConsult.deliverySpace,
   )
   deliveryFounderConsults?: DeliveryFounderConsult[];
 
