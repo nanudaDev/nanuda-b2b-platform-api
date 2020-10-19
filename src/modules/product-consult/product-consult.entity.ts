@@ -89,6 +89,18 @@ export class ProductConsult extends BaseEntity<ProductConsult> {
   })
   spaceTypeNo?: SPACE_TYPE;
 
+  @Column({
+    type: 'varchar',
+    name: 'NON_USER_NAME',
+  })
+  nonUserName?: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'NON_USER_PHONE',
+  })
+  nonUserPhone?: string;
+
   @ManyToOne(
     type => NanudaUser,
     nanudaUser => nanudaUser.productConsults,

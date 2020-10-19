@@ -481,8 +481,9 @@ export class DeliverySpaceService extends BaseService {
             ...adminDeliverySpaceUpdateDto.newImages,
           ];
         }
-        deliverySpace = deliverySpace.set(adminDeliverySpaceUpdateDto);
         deliverySpace.adminNo = adminNo;
+        deliverySpace = deliverySpace.set(adminDeliverySpaceUpdateDto);
+
         if (adminDeliverySpaceUpdateDto.isBestedYn === YN.YES) {
           // check if bested already
           const check = await entityManager

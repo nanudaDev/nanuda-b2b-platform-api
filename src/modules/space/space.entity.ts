@@ -417,6 +417,18 @@ export class Space extends BaseEntity<Space> {
   })
   vicinityInfo?: object;
 
+  @Column({
+    type: 'varchar',
+    name: 'NON_USER_NAME',
+  })
+  nonUserName?: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'NON_USER_PHONE',
+  })
+  nonUserPhone?: string;
+
   @OneToOne(type => SpaceType)
   @JoinColumn({ name: 'SPACE_TYPE_NO' })
   spaceType?: SpaceType;
