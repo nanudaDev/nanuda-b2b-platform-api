@@ -75,33 +75,28 @@ export class NanudaCompanyDistrictService extends BaseService {
     }
     const cities = await this.companyDistrictRepo
       .createQueryBuilder('companyDistrict')
-      .CustomInnerJoinAndSelect(['deliverySpaces'])
+      .CustomLeftJoinAndSelect(['deliverySpaces'])
       .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
       .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
         companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
       })
-      // .limit(2)
+      .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
       .getMany();
     // TODO: typeorm subquery로 해결
     cities.map(city => {
-      // spaces
-      const filteredArray = city.deliverySpaces.filter(
-        deliverySpace =>
-          deliverySpace.showYn === YN.YES &&
-          deliverySpace.delYn === YN.NO &&
-          deliverySpace.quantity - deliverySpace.contracts.length > 0,
-      );
-      city.deliverySpaceCount = filteredArray.length;
-      // delete if remaing count is 0
-      console.log(city.deliverySpaceCount);
-      // if (city.deliverySpaceCount === 0) {
-      //   const index = cities.indexOf(city);
-      //   cities.splice(index, 1);
-      // }
-      // delete city.deliverySpaces;
+      city.deliverySpaces.map(deliverySpace => {
+        if (deliverySpace.quantity - deliverySpace.contracts.length < 1) {
+          const index = city.deliverySpaces.indexOf(deliverySpace);
+          city.deliverySpaces.splice(index, 1);
+        }
+      });
+      if (city.deliverySpaces.length < 1) {
+        const index = cities.indexOf(city);
+        cities.splice(index, 1);
+      }
     });
-    const filteredCities = cities.filter(city => city.deliverySpaceCount > 0);
-    searchResults.cities = filteredCities;
+    searchResults.cities = cities;
     return searchResults;
   }
 
