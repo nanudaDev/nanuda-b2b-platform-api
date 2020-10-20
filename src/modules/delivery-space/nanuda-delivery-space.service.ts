@@ -246,4 +246,6 @@ export class NanudaDeliverySpaceService extends BaseService {
     const [items, totalCount] = await qb.getManyAndCount();
     return { items, totalCount };
   }
+
+  // TODO: 마감 임박 엔드포인트 필요
 }
