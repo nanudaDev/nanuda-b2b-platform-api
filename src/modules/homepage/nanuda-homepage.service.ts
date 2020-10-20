@@ -12,6 +12,9 @@ class BestSpaceEntity {
   name: string;
   spaceNo: number;
   address: string;
+  region1DepthName: string;
+  region2DepthName: string;
+  region3DepthName: string;
   images: any;
   deposit: string | number;
   monthlyRent: string | number;
@@ -57,6 +60,9 @@ export class NanudaHomepageService extends BaseService {
         bestSpace.spaceNo = space.space.no;
         bestSpace.address = space.space.address;
         bestSpace.deposit = space.space.deposit;
+        bestSpace.region1DepthName = space.space.sido;
+        bestSpace.region2DepthName = space.space.sigungu;
+        bestSpace.region3DepthName = space.space.bName2;
         bestSpace.monthlyRent = space.space.monthlyRent;
         bestSpace.size = space.space.size;
         bestSpace.spaceTypeNo = SPACE_TYPE.SPACE_SHARE;
@@ -95,6 +101,12 @@ export class NanudaHomepageService extends BaseService {
         bestSpace.address = deliverySpace.deliverySpace.companyDistrict.address;
         bestSpace.deposit = deliverySpace.deliverySpace.deposit;
         bestSpace.monthlyRent = deliverySpace.deliverySpace.monthlyRentFee;
+        bestSpace.region1DepthName =
+          deliverySpace.deliverySpace.companyDistrict.region1DepthName;
+        bestSpace.region2DepthName =
+          deliverySpace.deliverySpace.companyDistrict.region2DepthName;
+        bestSpace.region3DepthName =
+          deliverySpace.deliverySpace.companyDistrict.region3DepthName;
         bestSpace.size = deliverySpace.deliverySpace.size;
         bestSpace.spaceTypeNo = SPACE_TYPE.ONLY_DELIVERY;
         bestSpace.images = `${deliverySpace.deliverySpace.images[0].endpoint}`;
@@ -141,6 +153,9 @@ export class NanudaHomepageService extends BaseService {
         bestSpace.spaceNo = space.space.no;
         bestSpace.address = space.space.address;
         bestSpace.deposit = space.space.deposit;
+        bestSpace.region1DepthName = space.space.sido;
+        bestSpace.region2DepthName = space.space.sigungu;
+        bestSpace.region3DepthName = space.space.bName2;
         bestSpace.monthlyRent = space.space.monthlyRent;
         bestSpace.size = space.space.size;
         bestSpace.spaceTypeNo = SPACE_TYPE.SPACE_SHARE;
@@ -187,6 +202,12 @@ export class NanudaHomepageService extends BaseService {
         bestSpace.address = deliverySpace.deliverySpace.companyDistrict.address;
         bestSpace.deposit = deliverySpace.deliverySpace.deposit;
         bestSpace.monthlyRent = deliverySpace.deliverySpace.monthlyRentFee;
+        bestSpace.region1DepthName =
+          deliverySpace.deliverySpace.companyDistrict.region1DepthName;
+        bestSpace.region2DepthName =
+          deliverySpace.deliverySpace.companyDistrict.region2DepthName;
+        bestSpace.region3DepthName =
+          deliverySpace.deliverySpace.companyDistrict.region3DepthName;
         bestSpace.size = deliverySpace.deliverySpace.size;
         bestSpace.spaceTypeNo = SPACE_TYPE.ONLY_DELIVERY;
         bestSpace.images = `${deliverySpace.deliverySpace.images[0].endpoint}`;

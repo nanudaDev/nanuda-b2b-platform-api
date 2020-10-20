@@ -18,6 +18,11 @@ export class AdminDeliveryFounderConsultUpdateDto
   @Expose()
   spaceConsultManager?: number;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  spaceConsultEtc: string;
+
   @ApiPropertyOptional({ enum: FOUNDER_CONSULT })
   @IsOptional()
   @Expose()
