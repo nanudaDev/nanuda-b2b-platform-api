@@ -5,7 +5,8 @@ import { IsOptional, IsEnum } from 'class-validator';
 import { Expose } from 'class-transformer';
 import { AVAILABLE_TIME, YN } from 'src/common';
 
-export class AdminProductConsultUpdateDto extends BaseDto<ProductConsult> {
+export class AdminProductConsultUpdateDto extends BaseDto<ProductConsult>
+  implements Partial<ProductConsult> {
   @ApiPropertyOptional({ enum: PRODUCT_CONSULT })
   @IsOptional()
   @Expose()
@@ -16,6 +17,11 @@ export class AdminProductConsultUpdateDto extends BaseDto<ProductConsult> {
   @IsOptional()
   @Expose()
   pConsultManager?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  pConsultEtc?: string;
 
   @ApiPropertyOptional({ enum: AVAILABLE_TIME })
   @IsOptional()
