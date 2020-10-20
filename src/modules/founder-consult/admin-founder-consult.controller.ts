@@ -11,7 +11,12 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { BaseController, AuthRolesGuard, CONST_ADMIN_USER } from 'src/core';
+import {
+  BaseController,
+  AuthRolesGuard,
+  CONST_ADMIN_USER,
+  SPACE_TYPE,
+} from 'src/core';
 import {
   AdminFounderConsultListDto,
   AdminFounderConsultUpdateDto,
@@ -19,6 +24,7 @@ import {
 import { PaginatedRequest, PaginatedResponse, UserInfo } from 'src/common';
 import { FounderConsult } from './founder-consult.entity';
 import { FounderConsultService } from './founder-consult.service';
+import { Admin } from '../admin';
 
 @Controller()
 @ApiTags('ADMIN FOUNDER CONSULT')
@@ -55,6 +61,26 @@ export class AdminFounderConsultController extends BaseController {
   ): Promise<FounderConsult> {
     return await this.founderConsultService.findOneForAdmin(founderConsultNo);
   }
+
+  /**
+   * find my consult
+   * @param admin
+   * @param pagination
+   */
+  @Get('/admin/my-founder-consults')
+  async findMyConsults(
+    @UserInfo() admin: Admin,
+    @Query() pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<FounderConsult>> {
+    const founderConsultDto = new AdminFounderConsultListDto();
+    founderConsultDto.adminNo = admin.no;
+    founderConsultDto.spaceTypeNo = SPACE_TYPE.SPACE_SHARE;
+    return await this.founderConsultService.findAllForAdmin(
+      founderConsultDto,
+      pagination,
+    );
+  }
+
   /**
    * update founder consult
    * @param founderConsultNo
