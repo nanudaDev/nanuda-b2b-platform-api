@@ -59,7 +59,6 @@ export class AdminDeliverySpaceUpdateDto extends DeliverySpaceUpdateDto {
   @IsOptional()
   @IsEnum(YN)
   @Expose()
-  @Default(YN.NO)
   isBestedYn?: YN;
 
   @ApiPropertyOptional({ enum: YN })
