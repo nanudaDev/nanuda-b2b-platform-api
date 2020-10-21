@@ -1,15 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
 import { BaseService } from 'src/core';
 import { Repository } from 'typeorm';
-import { AdminPopupListDto } from './dto';
+import { FileUploadService } from '../file-upload/file-upload.service';
+import { AdminPopupCreateDto, AdminPopupListDto } from './dto';
 import { Popup } from './popup.entity';
 
 @Injectable()
 export class PopupService extends BaseService {
   constructor(
     @InjectRepository(Popup) private readonly popupRepo: Repository<Popup>,
+    private readonly fileUploadService: FileUploadService,
   ) {
     super();
   }
@@ -49,5 +51,38 @@ export class PopupService extends BaseService {
     const [items, totalCount] = await qb.getManyAndCount();
 
     return { items, totalCount };
+  }
+
+  /**
+   * find one for admin
+   * @param popupNo
+   */
+  async findOne(popupNo: number): Promise<Popup> {
+    const popup = await this.popupRepo
+      .createQueryBuilder('popup')
+      .where('popup.no = :no', { no: popupNo })
+      .getOne();
+
+    return popup;
+  }
+
+  /**
+   * create new popup
+   * @param adminPopupCreateDto
+   */
+  async createForAdmin(
+    adminPopupCreateDto: AdminPopupCreateDto,
+  ): Promise<Popup> {
+    let newPopup = new Popup(adminPopupCreateDto);
+    if (newPopup.images && newPopup.images.length > 0) {
+      newPopup.images = await this.fileUploadService.moveS3File(
+        newPopup.images,
+      );
+      if (!newPopup.images) {
+        throw new BadRequestException({ message: 'Upload failed!' });
+      }
+    }
+    newPopup = await this.popupRepo.save(newPopup);
+    return newPopup;
   }
 }

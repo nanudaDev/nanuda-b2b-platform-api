@@ -227,10 +227,10 @@ export class NanudaDeliverySpaceService extends BaseService {
     const selectedDeliverySpace = await this.deliverySpaceRepo.findOne(
       deliverySpaceNo,
     );
-    console.log(typeof selectedDeliverySpace.deposit);
     const qb = this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
+      .innerJoinAndSelect('companyDistrict.company', 'company')
       .andWhere(
         'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
         { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
@@ -242,7 +242,6 @@ export class NanudaDeliverySpaceService extends BaseService {
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .Paginate(pagination);
 
-    console.log(qb.getSql());
     const [items, totalCount] = await qb.getManyAndCount();
     return { items, totalCount };
   }
