@@ -31,7 +31,7 @@ export class NanudaHomepageService extends BaseService {
   }
 
   async findBestSpaces() {
-    const response = [];
+    let response = [];
     const bestRestaurantKitchen = await this.entityManager
       .getRepository(BestSpaceMapper)
       .createQueryBuilder('bestSpace')
@@ -117,6 +117,7 @@ export class NanudaHomepageService extends BaseService {
 
     // sort by primary key
     response.sort((a, b) => (a.no < b.no ? 1 : -1));
+    response = response.slice(0, 6);
     return response;
   }
 
@@ -134,6 +135,7 @@ export class NanudaHomepageService extends BaseService {
       })
       .andWhere('space.showYn = :showYn', { showYn: YN.YES })
       .andWhere('space.delYn = :delYn', { delYn: YN.NO })
+      .limit(6)
       .getMany();
 
     await Promise.all(
@@ -191,6 +193,7 @@ export class NanudaHomepageService extends BaseService {
       )
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .limit(6)
       .getMany();
 
     await Promise.all(
