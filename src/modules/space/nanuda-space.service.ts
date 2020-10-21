@@ -145,6 +145,36 @@ export class NanudaSpaceService extends BaseService {
     return searchResults;
   }
 
+  /**
+   * find relative space
+   * @param spaceNo
+   * @param pagination
+   */
+  async findRelativeSpaces(
+    spaceNo: number,
+    pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<Space>> {
+    const selectedSpace = await this.spaceRepo.findOne(spaceNo);
+
+    const qb = this.spaceRepo
+      .createQueryBuilder('space')
+      .CustomLeftJoinAndSelect(['fileManagements'])
+      .where('space.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('space.showYn = :showYn', { showYn: YN.YES })
+      .andWhere(
+        `space.deposit BETWEEN ${selectedSpace.deposit} - 200 AND ${selectedSpace.deposit} + 200`,
+      )
+      .andWhere('fileManagements.targetTable = :targetTable', {
+        targetTable: 'SPACE',
+      })
+      .Paginate(pagination);
+
+    let [items, totalCount] = await qb.getManyAndCount();
+    // const index = items.indexOf(selectedSpace);
+
+    return { items, totalCount };
+  }
+
   //   remove duplicate
   private __remove_duplicate(array: any, key: string) {
     return [...new Map(array.map(item => [item[key], item])).values()];
