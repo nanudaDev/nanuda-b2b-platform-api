@@ -240,9 +240,18 @@ export class NanudaDeliverySpaceService extends BaseService {
       )
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+      .limit(5)
       .Paginate(pagination);
 
-    const [items, totalCount] = await qb.getManyAndCount();
+    let [items, totalCount] = await qb.getManyAndCount();
+
+    items.map(item => {
+      if (item.no === selectedDeliverySpace.no) {
+        const index = items.indexOf(item);
+        items.splice(index, 1);
+        totalCount - 1;
+      }
+    });
     return { items, totalCount };
   }
 

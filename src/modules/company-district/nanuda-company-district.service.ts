@@ -138,7 +138,6 @@ export class NanudaCompanyDistrictService extends BaseService {
       searchResults.lat = latLon.data.documents[0].y;
       searchResults.lon = latLon.data.documents[0].x;
     }
-    console.log(searchResults);
     return searchResults;
   }
 
