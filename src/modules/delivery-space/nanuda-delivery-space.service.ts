@@ -261,5 +261,22 @@ export class NanudaDeliverySpaceService extends BaseService {
     return { items, totalCount };
   }
 
+  /**
+   * get count for delivery space
+   */
+  async deliverySpaceCount() {
+    const qb = this.deliverySpaceRepo
+    .createQueryBuilder('deliverySpace')
+    .CustomInnerJoinAndSelect(['companyDistrict'])
+    .innerJoinAndSelect('companyDistrict.company', 'company')
+    .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {companyDistrictStatus: APPROVAL_STATUS.APPROVAL})
+    .andWhere('company.companyStatus = :companyStatus', {companyStatus: APPROVAL_STATUS.APPROVAL})
+    .andWhere('deliverySpace.showYn = :showYn', {showYn: YN.YES})
+    .andWhere('deliverySpace.delYn = :delYn', {delYn: YN.NO})
+    .getCount()
+
+    return await qb
+  }
+
   // TODO: 마감 임박 엔드포인트 필요
 }

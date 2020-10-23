@@ -42,6 +42,14 @@ export class NanudaSpaceController extends BaseController {
   }
 
   /**
+   * get count
+   */
+  @Get('/nanuda/space/count')
+  async spaceCount() {
+    return await this.nanudaSpaceService.spaceCount();
+  }
+
+  /**
    * find similar
    * @param spaceNo
    * @param pagination

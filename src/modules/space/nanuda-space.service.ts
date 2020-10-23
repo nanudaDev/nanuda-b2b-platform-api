@@ -181,6 +181,16 @@ export class NanudaSpaceService extends BaseService {
     return { items, totalCount };
   }
 
+  async spaceCount() {
+    const qb = this.spaceRepo
+      .createQueryBuilder('space')
+      .where('space.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('space.showYn = :showYn', { showYn: YN.YES })
+      .getCount();
+
+    return await qb;
+  }
+
   //   remove duplicate
   private __remove_duplicate(array: any, key: string) {
     return [...new Map(array.map(item => [item[key], item])).values()];
