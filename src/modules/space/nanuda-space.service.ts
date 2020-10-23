@@ -162,16 +162,22 @@ export class NanudaSpaceService extends BaseService {
       .where('space.delYn = :delYn', { delYn: YN.NO })
       .andWhere('space.showYn = :showYn', { showYn: YN.YES })
       .andWhere(
-        `space.deposit BETWEEN ${selectedSpace.deposit} - 200 AND ${selectedSpace.deposit} + 200`,
+        `space.monthlyFee BETWEEN ${selectedSpace.monthlyFee} - 50 AND ${selectedSpace.monthlyFee} + 50`,
       )
       .andWhere('fileManagements.targetTable = :targetTable', {
         targetTable: 'SPACE',
       })
+      .limit(5)
       .Paginate(pagination);
 
     let [items, totalCount] = await qb.getManyAndCount();
-    // const index = items.indexOf(selectedSpace);
-
+    items.map(item => {
+      if (item.no === selectedSpace.no) {
+        const index = items.indexOf(item);
+        items.splice(index, 1);
+        totalCount - 1;
+      }
+    });
     return { items, totalCount };
   }
 

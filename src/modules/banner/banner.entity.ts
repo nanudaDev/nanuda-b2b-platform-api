@@ -1,4 +1,4 @@
-import { BaseEntity, LINK_TYPE } from 'src/core';
+import { BANNER_TYPE, BaseEntity, LINK_TYPE } from 'src/core';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -38,7 +38,7 @@ export class Banner extends BaseEntity<Banner> {
     name: 'BANNER_TYPE',
     type: 'varchar',
   })
-  bannerType?: string;
+  bannerType?: BANNER_TYPE;
 
   @Column({
     name: 'LINK_TYPE',
