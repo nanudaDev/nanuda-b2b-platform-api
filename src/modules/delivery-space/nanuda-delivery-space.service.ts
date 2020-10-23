@@ -230,6 +230,7 @@ export class NanudaDeliverySpaceService extends BaseService {
     const qb = this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
+      .CustomLeftJoinAndSelect(['contracts'])
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .andWhere(
         'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
@@ -240,10 +241,41 @@ export class NanudaDeliverySpaceService extends BaseService {
       )
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+      .limit(5)
       .Paginate(pagination);
 
-    const [items, totalCount] = await qb.getManyAndCount();
+    let [items, totalCount] = await qb.getManyAndCount();
+
+    items.map(item => {
+      if (item.no === selectedDeliverySpace.no) {
+        const index = items.indexOf(item);
+        items.splice(index, 1);
+        totalCount - 1;
+      }
+      if (item.quantity - item.contracts.length < 1) {
+        const index = items.indexOf(item);
+        items.splice(index, 1);
+        totalCount - 1;
+      }
+    });
     return { items, totalCount };
+  }
+
+  /**
+   * get count for delivery space
+   */
+  async deliverySpaceCount() {
+    const qb = this.deliverySpaceRepo
+    .createQueryBuilder('deliverySpace')
+    .CustomInnerJoinAndSelect(['companyDistrict'])
+    .innerJoinAndSelect('companyDistrict.company', 'company')
+    .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {companyDistrictStatus: APPROVAL_STATUS.APPROVAL})
+    .andWhere('company.companyStatus = :companyStatus', {companyStatus: APPROVAL_STATUS.APPROVAL})
+    .andWhere('deliverySpace.showYn = :showYn', {showYn: YN.YES})
+    .andWhere('deliverySpace.delYn = :delYn', {delYn: YN.NO})
+    .getCount()
+
+    return await qb
   }
 
   // TODO: 마감 임박 엔드포인트 필요

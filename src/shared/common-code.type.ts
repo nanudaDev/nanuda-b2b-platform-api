@@ -36,6 +36,12 @@ export enum B2B_FOUNDER_CONSULT {
 }
 export const CONST_B2B_FOUNDER_CONSULT  = Object.values(B2B_FOUNDER_CONSULT);
 
+export enum BANNER_TYPE {
+ 'FOUNDER' = 'FOUNDER', 
+ 'SPACE' = 'SPACE', 
+}
+export const CONST_BANNER_TYPE  = Object.values(BANNER_TYPE);
+
 export enum BRAND {
  'COST_OVER_THOUSAND' = 'COST_OVER_THOUSAND', 
  'COST_UNDER_THOUSAND' = 'COST_UNDER_THOUSAND', 

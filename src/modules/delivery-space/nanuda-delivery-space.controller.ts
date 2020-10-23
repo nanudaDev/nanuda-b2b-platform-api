@@ -67,4 +67,12 @@ export class NanudaDeliverySpaceController extends BaseController {
       pagination,
     );
   }
+
+  /**
+   * get count
+   */
+  @Get('/nanuda/delivery-space/count')
+  async deliverySpaceCount() {
+    return await this.nanudaDeliverySpaceService.deliverySpaceCount()
+  }
 }

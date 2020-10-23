@@ -96,7 +96,7 @@ export class NanudaHomepageService extends BaseService {
       bestDeliverySpace.map(async deliverySpace => {
         let bestSpace = new BestSpaceEntity();
         bestSpace.no = deliverySpace.no;
-        bestSpace.name = `${deliverySpace.deliverySpace.companyDistrict.company.nameKr} ${deliverySpace.deliverySpace.companyDistrict.nameKr} ${deliverySpace.deliverySpace.size}평 ${deliverySpace.deliverySpace.typeName}`;
+        bestSpace.name = `${deliverySpace.deliverySpace.companyDistrict.company.nameKr} ${deliverySpace.deliverySpace.companyDistrict.nameKr} ${deliverySpace.deliverySpace.size}평`;
         bestSpace.spaceNo = deliverySpace.deliverySpace.no;
         bestSpace.address = deliverySpace.deliverySpace.companyDistrict.address;
         bestSpace.deposit = deliverySpace.deliverySpace.deposit;
@@ -200,7 +200,7 @@ export class NanudaHomepageService extends BaseService {
       bestDeliverySpace.map(async deliverySpace => {
         let bestSpace = new BestSpaceEntity();
         bestSpace.no = deliverySpace.no;
-        bestSpace.name = `${deliverySpace.deliverySpace.companyDistrict.company.nameKr} ${deliverySpace.deliverySpace.companyDistrict.nameKr} ${deliverySpace.deliverySpace.size}평 ${deliverySpace.deliverySpace.typeName}`;
+        bestSpace.name = `${deliverySpace.deliverySpace.companyDistrict.company.nameKr} ${deliverySpace.deliverySpace.companyDistrict.nameKr} ${deliverySpace.deliverySpace.size}평`;
         bestSpace.spaceNo = deliverySpace.deliverySpace.no;
         bestSpace.address = deliverySpace.deliverySpace.companyDistrict.address;
         bestSpace.deposit = deliverySpace.deliverySpace.deposit;
