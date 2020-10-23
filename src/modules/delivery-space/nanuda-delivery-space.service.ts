@@ -230,6 +230,7 @@ export class NanudaDeliverySpaceService extends BaseService {
     const qb = this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
+      .CustomLeftJoinAndSelect(['contracts'])
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .andWhere(
         'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
@@ -247,6 +248,11 @@ export class NanudaDeliverySpaceService extends BaseService {
 
     items.map(item => {
       if (item.no === selectedDeliverySpace.no) {
+        const index = items.indexOf(item);
+        items.splice(index, 1);
+        totalCount - 1;
+      }
+      if (item.quantity - item.contracts.length < 1) {
         const index = items.indexOf(item);
         items.splice(index, 1);
         totalCount - 1;
