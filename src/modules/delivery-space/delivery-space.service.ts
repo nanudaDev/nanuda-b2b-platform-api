@@ -412,6 +412,18 @@ export class DeliverySpaceService extends BaseService {
         })
         .execute();
 
+      // best space mapper
+      await entityManager
+        .getRepository(BestSpaceMapper)
+        .createQueryBuilder()
+        .delete()
+        .from(BestSpaceMapper)
+        .where('spaceNo = :spaceNo', { spaceNo: deliverySpaceNo })
+        .andWhere('spaceTypeNo = :spaceTypeNo', {
+          spaceTypeNo: SPACE_TYPE.ONLY_DELIVERY,
+        })
+        .execute();
+
       await this.deliverySpaceRepo
         .createQueryBuilder('deliverySpaceNo')
         .delete()
