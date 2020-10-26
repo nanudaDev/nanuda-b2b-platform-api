@@ -56,7 +56,7 @@ export class NanudaHomepageService extends BaseService {
 
         let bestSpace = new BestSpaceEntity();
         bestSpace.no = space.no;
-        bestSpace.name = space.space.name;
+        bestSpace.name = space.space.showName;
         bestSpace.spaceNo = space.space.no;
         bestSpace.address = space.space.address;
         bestSpace.deposit = space.space.deposit;
@@ -151,7 +151,7 @@ export class NanudaHomepageService extends BaseService {
 
         let bestSpace = new BestSpaceEntity();
         bestSpace.no = space.no;
-        bestSpace.name = space.space.name;
+        bestSpace.name = space.space.showName;
         bestSpace.spaceNo = space.space.no;
         bestSpace.address = space.space.address;
         bestSpace.deposit = space.space.deposit;
