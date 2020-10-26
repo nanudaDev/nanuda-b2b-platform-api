@@ -65,6 +65,7 @@ export class AdminDeliverySpaceUpdateDto extends DeliverySpaceUpdateDto {
   @IsOptional()
   @IsEnum(YN)
   @Expose()
+  @Default(YN.NO)
   isBestedShowYn?: YN;
 
   @ApiPropertyOptional({ enum: SPACE_PIC_STATUS })

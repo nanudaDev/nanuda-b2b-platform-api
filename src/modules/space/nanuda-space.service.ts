@@ -145,6 +145,52 @@ export class NanudaSpaceService extends BaseService {
     return searchResults;
   }
 
+  /**
+   * find relative space
+   * @param spaceNo
+   * @param pagination
+   */
+  async findRelativeSpaces(
+    spaceNo: number,
+    pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<Space>> {
+    const selectedSpace = await this.spaceRepo.findOne(spaceNo);
+
+    const qb = this.spaceRepo
+      .createQueryBuilder('space')
+      .CustomLeftJoinAndSelect(['fileManagements'])
+      .where('space.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('space.showYn = :showYn', { showYn: YN.YES })
+      .andWhere(
+        `space.monthlyFee BETWEEN ${selectedSpace.monthlyFee} - 50 AND ${selectedSpace.monthlyFee} + 50`,
+      )
+      .andWhere('fileManagements.targetTable = :targetTable', {
+        targetTable: 'SPACE',
+      })
+      .limit(5)
+      .Paginate(pagination);
+
+    let [items, totalCount] = await qb.getManyAndCount();
+    items.map(item => {
+      if (item.no === selectedSpace.no) {
+        const index = items.indexOf(item);
+        items.splice(index, 1);
+        totalCount - 1;
+      }
+    });
+    return { items, totalCount };
+  }
+
+  async spaceCount() {
+    const qb = this.spaceRepo
+      .createQueryBuilder('space')
+      .where('space.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('space.showYn = :showYn', { showYn: YN.YES })
+      .getCount();
+
+    return await qb;
+  }
+
   //   remove duplicate
   private __remove_duplicate(array: any, key: string) {
     return [...new Map(array.map(item => [item[key], item])).values()];

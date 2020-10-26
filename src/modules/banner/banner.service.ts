@@ -131,6 +131,12 @@ export class BannerService extends BaseService {
     return banner;
   }
 
+  /**
+   * update for admin
+   * @param bannerNo 
+   * @param adminNo 
+   * @param adminBannerUpdateDto 
+   */
   async updateBanner(
     bannerNo: number,
     adminNo: number,

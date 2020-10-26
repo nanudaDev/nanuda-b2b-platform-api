@@ -23,11 +23,10 @@ export class AdminProductConsultUpdateDto extends BaseDto<ProductConsult>
   @Expose()
   pConsultEtc?: string;
 
-  @ApiPropertyOptional({ enum: AVAILABLE_TIME })
+  @ApiPropertyOptional()
   @IsOptional()
-  @IsEnum(AVAILABLE_TIME)
   @Expose()
-  hopeTime?: AVAILABLE_TIME;
+  hopeTime?: string;
 
   @ApiPropertyOptional({ enum: YN })
   @IsOptional()

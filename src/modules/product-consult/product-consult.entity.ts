@@ -67,7 +67,7 @@ export class ProductConsult extends BaseEntity<ProductConsult> {
     nullable: true,
     name: 'HOPE_TIME',
   })
-  hopeTime?: AVAILABLE_TIME;
+  hopeTime?: string;
 
   @Column('char', {
     length: 1,
