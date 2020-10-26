@@ -53,6 +53,11 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  monthlyUtilityFee?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   deposit?: number;
 
   @ApiPropertyOptional()
@@ -91,4 +96,16 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @Default(ORDER_BY_VALUE.DESC)
   @Expose()
   orderByNo?: ORDER_BY_VALUE;
+
+  @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
+  @IsOptional()
+  @IsEnum(ORDER_BY_VALUE)
+  @Expose()
+  orderByMonthlyRentFee?: ORDER_BY_VALUE;
+
+  @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
+  @IsOptional()
+  @IsEnum(ORDER_BY_VALUE)
+  @Expose()
+  orderByDeposit?: ORDER_BY_VALUE;
 }

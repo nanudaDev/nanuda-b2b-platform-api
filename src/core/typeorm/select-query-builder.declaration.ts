@@ -96,6 +96,7 @@ declare module 'typeorm/query-builder/SelectQueryBuilder' {
       value: any,
       excludedRequestDto: any,
     ): SelectQueryBuilder<Entity>;
+
     /**
      * WhereAndOrder 보다 앞에 사용해야한다.
      *
@@ -212,6 +213,22 @@ declare module 'typeorm/query-builder/SelectQueryBuilder' {
       this: SelectQueryBuilder<Entity>,
       no: number,
     ): SelectQueryBuilder<Entity>;
+
+    /**
+     * less than certain number
+     * @param this
+     * @param alias
+     * @param property
+     * @param value
+     * @param excludedRequestDto
+     */
+    AndWhereLessThan(
+      this: SelectQueryBuilder<Entity>,
+      alias: string,
+      property: string,
+      value?: any,
+      excludedRequestDto?: any,
+    ): SelectQueryBuilder<Entity>;
   }
 }
 
@@ -325,6 +342,28 @@ SelectQueryBuilder.prototype.AndWherePrevious = function<Entity>(
   no: number,
 ): SelectQueryBuilder<Entity> {
   this.andWhere(`${this.alias}.NO < :no ORDER BY NO DESC LIMIT 1`, { no: no });
+  return this;
+};
+
+/**
+ * less than
+ */
+SelectQueryBuilder.prototype.AndWhereLessThan = function<Entity>(
+  this: SelectQueryBuilder<Entity>,
+  alias: string,
+  property: string,
+  value: any,
+  excludedRequestDto?: any,
+): SelectQueryBuilder<Entity> {
+  if (value !== undefined) {
+    console.log(`${ALIAS_DELIMETER}`);
+    this.andWhere(
+      `${alias}.${property} <= :${alias}${ALIAS_DELIMETER}${property}`,
+      {
+        [`${alias}${ALIAS_DELIMETER}${property}`]: value,
+      },
+    );
+  }
   return this;
 };
 

@@ -1,7 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional } from 'class-validator';
+import { IsEnum, IsOptional } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 import { DeliverySpaceListDto } from './delivery-space-list.dto';
+import { YN } from 'src/common';
 
 export class AdminDeliverySpaceListDto extends DeliverySpaceListDto {
   @ApiPropertyOptional()
@@ -18,4 +19,10 @@ export class AdminDeliverySpaceListDto extends DeliverySpaceListDto {
   @IsOptional()
   @Expose()
   brandName?: string;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @IsEnum(YN)
+  @Expose()
+  isBestedShowYn?: YN;
 }
