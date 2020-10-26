@@ -63,7 +63,7 @@ export class NanudaHomepageService extends BaseService {
         bestSpace.region1DepthName = space.space.sido;
         bestSpace.region2DepthName = space.space.sigungu;
         bestSpace.region3DepthName = space.space.bName2;
-        bestSpace.monthlyRent = space.space.monthlyRent;
+        bestSpace.monthlyRent = space.space.rentalFee;
         bestSpace.size = space.space.size;
         bestSpace.spaceTypeNo = SPACE_TYPE.SPACE_SHARE;
         bestSpace.images = `${process.env.EXPRESS_API_URL}/${image[0].filePath}`;
@@ -158,7 +158,7 @@ export class NanudaHomepageService extends BaseService {
         bestSpace.region1DepthName = space.space.sido;
         bestSpace.region2DepthName = space.space.sigungu;
         bestSpace.region3DepthName = space.space.bName2;
-        bestSpace.monthlyRent = space.space.monthlyRent;
+        bestSpace.monthlyRent = space.space.rentalFee;
         bestSpace.size = space.space.size;
         bestSpace.spaceTypeNo = SPACE_TYPE.SPACE_SHARE;
         bestSpace.images = `${process.env.EXPRESS_API_URL}/${image[0].filePath}`;
