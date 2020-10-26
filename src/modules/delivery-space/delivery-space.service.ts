@@ -244,6 +244,18 @@ export class DeliverySpaceService extends BaseService {
         'deliverySpace',
         'monthlyRentFee',
         adminDeliverySpaceListDto.monthlyRentFee,
+        adminDeliverySpaceListDto.exclude('monthlyRentFee'),
+      )
+      .AndWhereLessThan(
+        'deliverySpace',
+        'deposit',
+        adminDeliverySpaceListDto.deposit,
+        adminDeliverySpaceListDto.exclude('deposit'),
+      )
+      .AndWhereLessThan(
+        'deliverySpace',
+        'monthlyUtilityFee',
+        adminDeliverySpaceListDto.monthlyUtilityFee,
         adminDeliverySpaceListDto.exclude('monthlyUtilityFee'),
       )
       .AndWhereEqual(
