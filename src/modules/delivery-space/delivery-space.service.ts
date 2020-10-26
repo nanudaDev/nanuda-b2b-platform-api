@@ -188,9 +188,10 @@ export class DeliverySpaceService extends BaseService {
    * @param pagination
    */
   async findAllForAdmin(
-    adminDeiverySpaceListDto: AdminDeliverySpaceListDto,
+    adminDeliverySpaceListDto: AdminDeliverySpaceListDto,
     pagination?: PaginatedRequest,
   ): Promise<PaginatedResponse<DeliverySpace>> {
+    console.log(adminDeliverySpaceListDto);
     const qb = this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
@@ -205,68 +206,74 @@ export class DeliverySpaceService extends BaseService {
       .AndWhereLike(
         'company',
         'nameKr',
-        adminDeiverySpaceListDto.companyName,
-        adminDeiverySpaceListDto.exclude('companyName'),
+        adminDeliverySpaceListDto.companyName,
+        adminDeliverySpaceListDto.exclude('companyName'),
       )
       .AndWhereLike(
         'companyDistrict',
         'nameKr',
-        adminDeiverySpaceListDto.companyDistrictName,
-        adminDeiverySpaceListDto.exclude('companyDistrictName'),
+        adminDeliverySpaceListDto.companyDistrictName,
+        adminDeliverySpaceListDto.exclude('companyDistrictName'),
       )
       .AndWhereLike(
         'deliverySpace',
         'typeName',
-        adminDeiverySpaceListDto.typeName,
-        adminDeiverySpaceListDto.exclude('typeName'),
+        adminDeliverySpaceListDto.typeName,
+        adminDeliverySpaceListDto.exclude('typeName'),
       )
       .AndWhereLike(
         'deliverySpace',
         'buildingName',
-        adminDeiverySpaceListDto.buildingName,
-        adminDeiverySpaceListDto.exclude('buildingName'),
+        adminDeliverySpaceListDto.buildingName,
+        adminDeliverySpaceListDto.exclude('buildingName'),
       )
       .AndWhereLike(
         'amenities',
         'amenityName',
-        adminDeiverySpaceListDto.amenityName,
-        adminDeiverySpaceListDto.exclude('amenityName'),
+        adminDeliverySpaceListDto.amenityName,
+        adminDeliverySpaceListDto.exclude('amenityName'),
       )
       .AndWhereLike(
         'deliverySpaceOptions',
         'deliverySpaceOptionName',
-        adminDeiverySpaceListDto.deliverySpaceOptionName,
-        adminDeiverySpaceListDto.exclude('deliverySpaceOptions'),
+        adminDeliverySpaceListDto.deliverySpaceOptionName,
+        adminDeliverySpaceListDto.exclude('deliverySpaceOptions'),
       )
       //   .AndWhereLike('deliverySpace', 'size', adminDeiverySpaceListDto.size, adminDeiverySpaceListDto.exclude('size'))
-      .AndWhereEqual(
+      .AndWhereLessThan(
         'deliverySpace',
         'monthlyRentFee',
-        adminDeiverySpaceListDto.monthlyRentFee,
-        adminDeiverySpaceListDto.exclude('monthlyRentFee'),
+        adminDeliverySpaceListDto.monthlyRentFee,
+        adminDeliverySpaceListDto.exclude('monthlyUtilityFee'),
+      )
+      .AndWhereEqual(
+        'isBested',
+        'showYn',
+        adminDeliverySpaceListDto.isBestedShowYn,
+        adminDeliverySpaceListDto.exclude('isBestedShowYn'),
       )
       .AndWhereLike(
         'brands',
         'name',
-        adminDeiverySpaceListDto.brandName,
-        adminDeiverySpaceListDto.exclude('brandName'),
+        adminDeliverySpaceListDto.brandName,
+        adminDeliverySpaceListDto.exclude('brandName'),
       )
       .AndWhereEqual(
         'company',
         'no',
-        adminDeiverySpaceListDto.companyNo,
-        adminDeiverySpaceListDto.exclude('companyNo'),
+        adminDeliverySpaceListDto.companyNo,
+        adminDeliverySpaceListDto.exclude('companyNo'),
       )
       .AndWhereEqual(
         'companyDistrict',
         'no',
-        adminDeiverySpaceListDto.companyDistrictNo,
-        adminDeiverySpaceListDto.exclude('companyDistrictNo'),
+        adminDeliverySpaceListDto.companyDistrictNo,
+        adminDeliverySpaceListDto.exclude('companyDistrictNo'),
       )
       // .andWhere('images.uploadType = :uploadType', {
       //   uploadType: UPLOAD_TYPE.DELIVERY_SPACE,
       // })
-      .WhereAndOrder(adminDeiverySpaceListDto)
+      .WhereAndOrder(adminDeliverySpaceListDto)
       .Paginate(pagination);
 
     const [items, totalCount] = await qb.getManyAndCount();
@@ -646,9 +653,6 @@ export class DeliverySpaceService extends BaseService {
         deliverySpaceListDto.companyDistrictNo,
         deliverySpaceListDto.exclude('companyDistrictNo'),
       )
-      // .andWhere('images.uploadType = :uploadType', {
-      //   uploadType: UPLOAD_TYPE.DELIVERY_SPACE,
-      // })
       .WhereAndOrder(deliverySpaceListDto)
       .Paginate(pagination);
 
