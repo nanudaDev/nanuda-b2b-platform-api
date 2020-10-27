@@ -12,6 +12,12 @@ export class AdminBrandListDto extends BrandListDto {
   @Expose()
   delYn?: YN;
 
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @IsEnum(YN)
+  @Expose()
+  isRecommendedYn?: YN;
+
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
