@@ -2,6 +2,7 @@ export * from './auth/auth.module';
 export * from './company/company.module';
 export * from './admin';
 export * from './article/article.module';
+export * from './banner/banner.module';
 export * from './best-space/best-space.module';
 export * from './brand/brand.module';
 export * from './brand-kiosk-mapper/brand-kiosk-mapper.module';

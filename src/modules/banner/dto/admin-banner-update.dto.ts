@@ -1,7 +1,13 @@
 import { BaseDto, LINK_TYPE } from 'src/core';
 import { Banner } from '../banner.entity';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsArray, ValidateNested, IsEnum } from 'class-validator';
+import {
+  IsOptional,
+  IsArray,
+  ValidateNested,
+  IsEnum,
+  IsUrl,
+} from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';
 import { Default } from 'src/common';
@@ -45,6 +51,12 @@ export class AdminBannerUpdateDto extends BaseDto<AdminBannerUpdateDto>
   @Expose()
   @Default(LINK_TYPE.INTERNAL)
   linkType?: LINK_TYPE;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  @IsUrl()
+  url?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

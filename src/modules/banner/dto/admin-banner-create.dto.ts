@@ -8,6 +8,7 @@ import {
   ValidateNested,
   IsEnum,
   IsDate,
+  IsUrl,
 } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 import { YN, Default } from 'src/common';
@@ -31,6 +32,12 @@ export class AdminBannerCreateDto extends BaseDto<AdminBannerCreateDto>
   @IsOptional()
   @Expose()
   desc?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  @IsUrl()
+  url?: string;
 
   @ApiPropertyOptional({ type: [FileAttachmentDto] })
   @IsOptional()

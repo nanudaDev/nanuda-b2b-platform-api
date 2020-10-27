@@ -110,6 +110,18 @@ export class BannerService extends BaseService {
         adminBannerListDto.adminPhone,
         adminBannerListDto.exclude('adminPhone'),
       )
+      .AndWhereLike(
+        'banner',
+        'title',
+        adminBannerListDto.title,
+        adminBannerListDto.exclude('title'),
+      )
+      .AndWhereLike(
+        'banner',
+        'url',
+        adminBannerListDto.url,
+        adminBannerListDto.exclude('url'),
+      )
       .WhereAndOrder(adminBannerListDto)
       .Paginate(pagination);
 
@@ -133,9 +145,9 @@ export class BannerService extends BaseService {
 
   /**
    * update for admin
-   * @param bannerNo 
-   * @param adminNo 
-   * @param adminBannerUpdateDto 
+   * @param bannerNo
+   * @param adminNo
+   * @param adminBannerUpdateDto
    */
   async updateBanner(
     bannerNo: number,
