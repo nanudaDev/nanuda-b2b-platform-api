@@ -49,6 +49,13 @@ export class Banner extends BaseEntity<Banner> {
   linkType: LINK_TYPE;
 
   @Column({
+    type: 'varchar',
+    name: 'URL',
+    nullable: true,
+  })
+  url?: string;
+
+  @Column({
     type: 'json',
     name: 'IMAGE',
   })
