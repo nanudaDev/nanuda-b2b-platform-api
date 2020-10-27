@@ -87,6 +87,14 @@ export class Brand extends BaseEntity<Brand> {
   categoryNo: number;
 
   @Column('char', {
+    name: 'IS_RECOMMENDED_YN',
+    length: 1,
+    default: YN.NO,
+    nullable: false,
+  })
+  isRecommendedYn: YN;
+
+  @Column('char', {
     length: 1,
     name: 'SHOW_YN',
     nullable: false,

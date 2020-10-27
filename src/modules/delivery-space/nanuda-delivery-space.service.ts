@@ -158,7 +158,6 @@ export class NanudaDeliverySpaceService extends BaseService {
     deliverySpaceNo: number,
     nanudaUserNo?: number,
   ): Promise<DeliverySpace> {
-    console.log(deliverySpaceNo);
     const space = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
@@ -166,18 +165,24 @@ export class NanudaDeliverySpaceService extends BaseService {
         'amenities',
         'deliverySpaceOptions',
         'contracts',
-        'brands',
       ])
       .leftJoinAndSelect('companyDistrict.amenities', 'commonAmenities')
+      .leftJoinAndSelect('deliverySpace.brands', 'brands')
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('deliverySpace.no = :no', { no: deliverySpaceNo })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
-      .andWhere('brands.showYn = :showYn', { showYn: YN.YES })
       .getOne();
     if (!space) {
       throw new NotFoundException();
     }
+    // filter out brands
+    space.brands.map(brand => {
+      const index = space.brands.indexOf(brand);
+      if (brand.showYn === YN.NO) {
+        space.brands.splice(index, 1);
+      }
+    });
     const likedCount = await this.entityManager
       .getRepository(FavoriteSpaceMapper)
       .find({ where: { deliverySpaceNo: deliverySpaceNo } });

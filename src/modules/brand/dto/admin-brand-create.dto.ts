@@ -67,6 +67,13 @@ export class AdminBrandCreateDto extends BaseDto<AdminBrandCreateDto>
   @ApiPropertyOptional({ enum: YN })
   @IsOptional()
   @IsEnum(YN)
+  @Default(YN.NO)
+  @Expose()
+  isRecommendedYn?: YN;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @IsEnum(YN)
   @Expose()
   delYn?: YN;
 
