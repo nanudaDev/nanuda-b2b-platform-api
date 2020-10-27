@@ -37,15 +37,8 @@ export class ProductConsultService extends BaseService {
         'nanudaUser',
         'availableTime',
         'spaceType',
-        'addressInfo',
       ])
       .CustomInnerJoinAndSelect(['codeManagement'])
-      .AndWhereLike(
-        'productConsult',
-        'addressCode',
-        adminProductConsutListDto.addressCode,
-        adminProductConsutListDto.exclude('addressCode'),
-      )
       .AndWhereLike(
         'admin',
         'name',
