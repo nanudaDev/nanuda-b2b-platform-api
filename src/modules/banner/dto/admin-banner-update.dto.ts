@@ -1,4 +1,4 @@
-import { BaseDto, LINK_TYPE } from 'src/core';
+import { BANNER_TYPE, BaseDto, LINK_TYPE } from 'src/core';
 import { Banner } from '../banner.entity';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
@@ -51,6 +51,12 @@ export class AdminBannerUpdateDto extends BaseDto<AdminBannerUpdateDto>
   @Expose()
   @Default(LINK_TYPE.INTERNAL)
   linkType?: LINK_TYPE;
+
+  @ApiPropertyOptional({ enum: BANNER_TYPE })
+  @IsOptional()
+  @Expose()
+  @IsEnum(BANNER_TYPE)
+  bannerType?: BANNER_TYPE;
 
   @ApiPropertyOptional()
   @IsOptional()
