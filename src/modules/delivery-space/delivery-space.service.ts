@@ -25,6 +25,9 @@ import { DeliveryFounderConsultContractHistory } from '../delivery-founder-consu
 import { NanudaSlackNotificationService } from 'src/core/utils';
 import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/delivery-space-brand-mapper.entity';
 import { BestSpaceMapper } from '../best-space/best-space.entity';
+import { DeliverySpaceOption } from '../delivery-space-option/delivery-space-option.entity';
+import { Amenity } from '../amenity/amenity.entity';
+import { DeliverySpaceOptionSpaceMapper } from '../delivery-space-option-space-mapper/delivery-space-option-space-mapper.entity';
 
 @Injectable()
 export class DeliverySpaceService extends BaseService {
@@ -185,9 +188,10 @@ export class DeliverySpaceService extends BaseService {
    * @param pagination
    */
   async findAllForAdmin(
-    adminDeiverySpaceListDto: AdminDeliverySpaceListDto,
+    adminDeliverySpaceListDto: AdminDeliverySpaceListDto,
     pagination?: PaginatedRequest,
   ): Promise<PaginatedResponse<DeliverySpace>> {
+    console.log(adminDeliverySpaceListDto);
     const qb = this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
@@ -202,68 +206,86 @@ export class DeliverySpaceService extends BaseService {
       .AndWhereLike(
         'company',
         'nameKr',
-        adminDeiverySpaceListDto.companyName,
-        adminDeiverySpaceListDto.exclude('companyName'),
+        adminDeliverySpaceListDto.companyName,
+        adminDeliverySpaceListDto.exclude('companyName'),
       )
       .AndWhereLike(
         'companyDistrict',
         'nameKr',
-        adminDeiverySpaceListDto.companyDistrictName,
-        adminDeiverySpaceListDto.exclude('companyDistrictName'),
+        adminDeliverySpaceListDto.companyDistrictName,
+        adminDeliverySpaceListDto.exclude('companyDistrictName'),
       )
       .AndWhereLike(
         'deliverySpace',
         'typeName',
-        adminDeiverySpaceListDto.typeName,
-        adminDeiverySpaceListDto.exclude('typeName'),
+        adminDeliverySpaceListDto.typeName,
+        adminDeliverySpaceListDto.exclude('typeName'),
       )
       .AndWhereLike(
         'deliverySpace',
         'buildingName',
-        adminDeiverySpaceListDto.buildingName,
-        adminDeiverySpaceListDto.exclude('buildingName'),
+        adminDeliverySpaceListDto.buildingName,
+        adminDeliverySpaceListDto.exclude('buildingName'),
       )
       .AndWhereLike(
         'amenities',
         'amenityName',
-        adminDeiverySpaceListDto.amenityName,
-        adminDeiverySpaceListDto.exclude('amenityName'),
+        adminDeliverySpaceListDto.amenityName,
+        adminDeliverySpaceListDto.exclude('amenityName'),
       )
       .AndWhereLike(
         'deliverySpaceOptions',
         'deliverySpaceOptionName',
-        adminDeiverySpaceListDto.deliverySpaceOptionName,
-        adminDeiverySpaceListDto.exclude('deliverySpaceOptions'),
+        adminDeliverySpaceListDto.deliverySpaceOptionName,
+        adminDeliverySpaceListDto.exclude('deliverySpaceOptions'),
       )
       //   .AndWhereLike('deliverySpace', 'size', adminDeiverySpaceListDto.size, adminDeiverySpaceListDto.exclude('size'))
-      .AndWhereEqual(
+      .AndWhereLessThan(
         'deliverySpace',
         'monthlyRentFee',
-        adminDeiverySpaceListDto.monthlyRentFee,
-        adminDeiverySpaceListDto.exclude('monthlyRentFee'),
+        adminDeliverySpaceListDto.monthlyRentFee,
+        adminDeliverySpaceListDto.exclude('monthlyRentFee'),
+      )
+      .AndWhereLessThan(
+        'deliverySpace',
+        'deposit',
+        adminDeliverySpaceListDto.deposit,
+        adminDeliverySpaceListDto.exclude('deposit'),
+      )
+      .AndWhereLessThan(
+        'deliverySpace',
+        'monthlyUtilityFee',
+        adminDeliverySpaceListDto.monthlyUtilityFee,
+        adminDeliverySpaceListDto.exclude('monthlyUtilityFee'),
+      )
+      .AndWhereEqual(
+        'isBested',
+        'showYn',
+        adminDeliverySpaceListDto.isBestedShowYn,
+        adminDeliverySpaceListDto.exclude('isBestedShowYn'),
       )
       .AndWhereLike(
         'brands',
         'name',
-        adminDeiverySpaceListDto.brandName,
-        adminDeiverySpaceListDto.exclude('brandName'),
+        adminDeliverySpaceListDto.brandName,
+        adminDeliverySpaceListDto.exclude('brandName'),
       )
       .AndWhereEqual(
         'company',
         'no',
-        adminDeiverySpaceListDto.companyNo,
-        adminDeiverySpaceListDto.exclude('companyNo'),
+        adminDeliverySpaceListDto.companyNo,
+        adminDeliverySpaceListDto.exclude('companyNo'),
       )
       .AndWhereEqual(
         'companyDistrict',
         'no',
-        adminDeiverySpaceListDto.companyDistrictNo,
-        adminDeiverySpaceListDto.exclude('companyDistrictNo'),
+        adminDeliverySpaceListDto.companyDistrictNo,
+        adminDeliverySpaceListDto.exclude('companyDistrictNo'),
       )
       // .andWhere('images.uploadType = :uploadType', {
       //   uploadType: UPLOAD_TYPE.DELIVERY_SPACE,
       // })
-      .WhereAndOrder(adminDeiverySpaceListDto)
+      .WhereAndOrder(adminDeliverySpaceListDto)
       .Paginate(pagination);
 
     const [items, totalCount] = await qb.getManyAndCount();
@@ -377,6 +399,57 @@ export class DeliverySpaceService extends BaseService {
       return newDeliverySpace;
     });
     return space;
+  }
+
+  /**
+   * hard delete
+   * @param deliverySpaceNo
+   */
+  async hardDeleteDeliverySpace(deliverySpaceNo: number) {
+    const deliverySpace = await this.deliverySpaceRepo.findOne(deliverySpaceNo);
+    if (!deliverySpace) {
+      throw new BadRequestException({ message: '존재하지 않는 공간입니다.' });
+    }
+    await this.entityManager.transaction(async entityManager => {
+      await entityManager
+        .getRepository(DeliverySpaceOptionSpaceMapper)
+        .createQueryBuilder()
+        .delete()
+        .from(DeliverySpaceOptionSpaceMapper)
+        .where('spaceNo = :deliverySpaceNo', {
+          deliverySpaceNo: deliverySpaceNo,
+        })
+        .execute();
+
+      await entityManager
+        .getRepository(DeliverySpaceAmenityMapper)
+        .createQueryBuilder()
+        .delete()
+        .from(DeliverySpaceAmenityMapper)
+        .where('deliverySpaceNo = :deliverySpaceNo', {
+          deliverySpaceNo: deliverySpaceNo,
+        })
+        .execute();
+
+      // best space mapper
+      await entityManager
+        .getRepository(BestSpaceMapper)
+        .createQueryBuilder()
+        .delete()
+        .from(BestSpaceMapper)
+        .where('spaceNo = :spaceNo', { spaceNo: deliverySpaceNo })
+        .andWhere('spaceTypeNo = :spaceTypeNo', {
+          spaceTypeNo: SPACE_TYPE.ONLY_DELIVERY,
+        })
+        .execute();
+
+      await this.deliverySpaceRepo
+        .createQueryBuilder('deliverySpaceNo')
+        .delete()
+        .from(DeliverySpace)
+        .where('no = :no', { no: deliverySpaceNo })
+        .execute();
+    });
   }
 
   /**
@@ -592,9 +665,6 @@ export class DeliverySpaceService extends BaseService {
         deliverySpaceListDto.companyDistrictNo,
         deliverySpaceListDto.exclude('companyDistrictNo'),
       )
-      // .andWhere('images.uploadType = :uploadType', {
-      //   uploadType: UPLOAD_TYPE.DELIVERY_SPACE,
-      // })
       .WhereAndOrder(deliverySpaceListDto)
       .Paginate(pagination);
 
@@ -694,6 +764,12 @@ export class DeliverySpaceService extends BaseService {
           }),
         );
       }
+      newDeliverySpace = await this.deliverySpaceRepo
+        .createQueryBuilder('deliverySpace')
+        .CustomInnerJoinAndSelect(['companyDistrict'])
+        .innerJoinAndSelect('companyDistrict.company', 'company')
+        .where('deliverySpace.no = :no', { no: newDeliverySpace.no })
+        .getOne();
       // send slack information
       await this.nanudaSlackNotificationService.deliverySpaceAddNotification(
         newDeliverySpace,

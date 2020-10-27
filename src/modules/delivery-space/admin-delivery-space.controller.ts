@@ -8,6 +8,7 @@ import {
   Body,
   Query,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthRolesGuard, CONST_ADMIN_USER, BaseController } from 'src/core';
@@ -138,6 +139,16 @@ export class AdminDeliverySpaceController extends BaseController {
     @Param('id', ParseIntPipe) deliverySpaceNo: number,
   ): Promise<number> {
     return await this.deliverySpaceService.findPreviousForAdmin(
+      deliverySpaceNo,
+    );
+  }
+
+  /**
+   * hard delete for admin
+   */
+  @Delete('/admin/delivery-space/:id([0-9]+)/hard-delete')
+  async hardDelete(@Param('id', ParseIntPipe) deliverySpaceNo: number) {
+    return await this.deliverySpaceService.hardDeleteDeliverySpace(
       deliverySpaceNo,
     );
   }

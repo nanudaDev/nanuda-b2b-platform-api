@@ -162,7 +162,7 @@ export class NanudaSpaceService extends BaseService {
       .where('space.delYn = :delYn', { delYn: YN.NO })
       .andWhere('space.showYn = :showYn', { showYn: YN.YES })
       .andWhere(
-        `space.monthlyFee BETWEEN ${selectedSpace.monthlyFee} - 50 AND ${selectedSpace.monthlyFee} + 50`,
+        `space.monthlyFee BETWEEN ${selectedSpace.rentalFee} - 50 AND ${selectedSpace.rentalFee} + 50`,
       )
       .andWhere('fileManagements.targetTable = :targetTable', {
         targetTable: 'SPACE',

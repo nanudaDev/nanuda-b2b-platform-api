@@ -56,14 +56,14 @@ export class NanudaHomepageService extends BaseService {
 
         let bestSpace = new BestSpaceEntity();
         bestSpace.no = space.no;
-        bestSpace.name = space.space.name;
+        bestSpace.name = space.space.showName;
         bestSpace.spaceNo = space.space.no;
         bestSpace.address = space.space.address;
         bestSpace.deposit = space.space.deposit;
         bestSpace.region1DepthName = space.space.sido;
         bestSpace.region2DepthName = space.space.sigungu;
         bestSpace.region3DepthName = space.space.bName2;
-        bestSpace.monthlyRent = space.space.monthlyRent;
+        bestSpace.monthlyRent = space.space.rentalFee;
         bestSpace.size = space.space.size;
         bestSpace.spaceTypeNo = SPACE_TYPE.SPACE_SHARE;
         bestSpace.images = `${process.env.EXPRESS_API_URL}/${image[0].filePath}`;
@@ -151,14 +151,14 @@ export class NanudaHomepageService extends BaseService {
 
         let bestSpace = new BestSpaceEntity();
         bestSpace.no = space.no;
-        bestSpace.name = space.space.name;
+        bestSpace.name = space.space.showName;
         bestSpace.spaceNo = space.space.no;
         bestSpace.address = space.space.address;
         bestSpace.deposit = space.space.deposit;
         bestSpace.region1DepthName = space.space.sido;
         bestSpace.region2DepthName = space.space.sigungu;
         bestSpace.region3DepthName = space.space.bName2;
-        bestSpace.monthlyRent = space.space.monthlyRent;
+        bestSpace.monthlyRent = space.space.rentalFee;
         bestSpace.size = space.space.size;
         bestSpace.spaceTypeNo = SPACE_TYPE.SPACE_SHARE;
         bestSpace.images = `${process.env.EXPRESS_API_URL}/${image[0].filePath}`;

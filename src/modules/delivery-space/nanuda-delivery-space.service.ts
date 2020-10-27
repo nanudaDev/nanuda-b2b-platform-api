@@ -173,6 +173,7 @@ export class NanudaDeliverySpaceService extends BaseService {
       .where('deliverySpace.no = :no', { no: deliverySpaceNo })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('brands.showYn = :showYn', { showYn: YN.YES })
       .getOne();
     if (!space) {
       throw new NotFoundException();
@@ -266,16 +267,20 @@ export class NanudaDeliverySpaceService extends BaseService {
    */
   async deliverySpaceCount() {
     const qb = this.deliverySpaceRepo
-    .createQueryBuilder('deliverySpace')
-    .CustomInnerJoinAndSelect(['companyDistrict'])
-    .innerJoinAndSelect('companyDistrict.company', 'company')
-    .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {companyDistrictStatus: APPROVAL_STATUS.APPROVAL})
-    .andWhere('company.companyStatus = :companyStatus', {companyStatus: APPROVAL_STATUS.APPROVAL})
-    .andWhere('deliverySpace.showYn = :showYn', {showYn: YN.YES})
-    .andWhere('deliverySpace.delYn = :delYn', {delYn: YN.NO})
-    .getCount()
+      .createQueryBuilder('deliverySpace')
+      .CustomInnerJoinAndSelect(['companyDistrict'])
+      .innerJoinAndSelect('companyDistrict.company', 'company')
+      .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
+        companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere('company.companyStatus = :companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .getCount();
 
-    return await qb
+    return await qb;
   }
 
   // TODO: 마감 임박 엔드포인트 필요
