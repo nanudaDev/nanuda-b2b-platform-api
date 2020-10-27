@@ -1,5 +1,5 @@
 import { Banner } from '../banner.entity';
-import { BaseDto, LINK_TYPE } from 'src/core';
+import { BANNER_TYPE, BaseDto, LINK_TYPE } from 'src/core';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsNotEmpty,
@@ -8,6 +8,7 @@ import {
   ValidateNested,
   IsEnum,
   IsDate,
+  IsUrl,
 } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 import { YN, Default } from 'src/common';
@@ -32,6 +33,12 @@ export class AdminBannerCreateDto extends BaseDto<AdminBannerCreateDto>
   @Expose()
   desc?: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  @IsUrl()
+  url?: string;
+
   @ApiPropertyOptional({ type: [FileAttachmentDto] })
   @IsOptional()
   @IsArray()
@@ -54,6 +61,12 @@ export class AdminBannerCreateDto extends BaseDto<AdminBannerCreateDto>
   @Expose()
   @Default(LINK_TYPE.INTERNAL)
   linkType?: LINK_TYPE;
+
+  @ApiPropertyOptional({ enum: BANNER_TYPE })
+  @IsOptional()
+  @Expose()
+  @IsEnum(BANNER_TYPE)
+  bannerType?: BANNER_TYPE;
 
   @ApiPropertyOptional()
   @IsOptional()

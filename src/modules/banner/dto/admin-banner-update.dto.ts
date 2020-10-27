@@ -1,10 +1,16 @@
-import { BaseDto, LINK_TYPE } from 'src/core';
+import { BANNER_TYPE, BaseDto, LINK_TYPE } from 'src/core';
 import { Banner } from '../banner.entity';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsArray, ValidateNested, IsEnum } from 'class-validator';
+import {
+  IsOptional,
+  IsArray,
+  ValidateNested,
+  IsEnum,
+  IsUrl,
+} from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';
-import { Default } from 'src/common';
+import { Default, YN } from 'src/common';
 
 export class AdminBannerUpdateDto extends BaseDto<AdminBannerUpdateDto>
   implements Partial<Banner> {
@@ -45,6 +51,30 @@ export class AdminBannerUpdateDto extends BaseDto<AdminBannerUpdateDto>
   @Expose()
   @Default(LINK_TYPE.INTERNAL)
   linkType?: LINK_TYPE;
+
+  @ApiPropertyOptional({ enum: BANNER_TYPE })
+  @IsOptional()
+  @Expose()
+  @IsEnum(BANNER_TYPE)
+  bannerType?: BANNER_TYPE;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  @IsUrl()
+  url?: string;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @Expose()
+  @IsEnum(YN)
+  showYn?: YN;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @Expose()
+  @IsEnum(YN)
+  delYn?: YN;
 
   @ApiPropertyOptional()
   @IsOptional()

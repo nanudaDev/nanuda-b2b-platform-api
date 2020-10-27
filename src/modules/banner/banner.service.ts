@@ -91,6 +91,7 @@ export class BannerService extends BaseService {
   ): Promise<PaginatedResponse<Banner>> {
     const qb = this.bannerRepo
       .createQueryBuilder('banner')
+      .CustomInnerJoinAndSelect(['codeManagement'])
       .CustomLeftJoinAndSelect(['admin'])
       .AndWhereLike(
         'admin',
@@ -110,6 +111,18 @@ export class BannerService extends BaseService {
         adminBannerListDto.adminPhone,
         adminBannerListDto.exclude('adminPhone'),
       )
+      .AndWhereLike(
+        'banner',
+        'title',
+        adminBannerListDto.title,
+        adminBannerListDto.exclude('title'),
+      )
+      .AndWhereLike(
+        'banner',
+        'url',
+        adminBannerListDto.url,
+        adminBannerListDto.exclude('url'),
+      )
       .WhereAndOrder(adminBannerListDto)
       .Paginate(pagination);
 
@@ -124,6 +137,7 @@ export class BannerService extends BaseService {
   async findOneForAdmin(bannerNo: number): Promise<Banner> {
     const banner = await this.bannerRepo
       .createQueryBuilder('banner')
+      .CustomInnerJoinAndSelect(['codeManagement'])
       .CustomLeftJoinAndSelect(['admin'])
       .where('banner.no = :no', { no: bannerNo })
       .getOne();
@@ -133,9 +147,9 @@ export class BannerService extends BaseService {
 
   /**
    * update for admin
-   * @param bannerNo 
-   * @param adminNo 
-   * @param adminBannerUpdateDto 
+   * @param bannerNo
+   * @param adminNo
+   * @param adminBannerUpdateDto
    */
   async updateBanner(
     bannerNo: number,

@@ -101,7 +101,6 @@ export class CredentialService extends BaseService {
    */
   async decipher(credentialNo: number): Promise<string> {
     const credential = await this.credentialRepo.findOne(credentialNo);
-    console.log(credential);
     const decipher = this.__decipher_password(credential.password);
     return decipher;
   }
@@ -112,7 +111,7 @@ export class CredentialService extends BaseService {
    */
   async deleteCredential(credentialNo: number) {
     return await this.credentialRepo
-      .createQueryBuilder('credential')
+      .createQueryBuilder()
       .delete()
       .from(Credential)
       .where('no = :no', { no: credentialNo })
