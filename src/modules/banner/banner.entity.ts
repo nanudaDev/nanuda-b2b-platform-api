@@ -5,10 +5,12 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { FileAttachmentDto } from '../file-upload/dto';
 import { YN } from 'src/common';
 import { Admin } from '../admin';
+import { CodeManagement } from '../code-management/code-management.entity';
 
 @Entity({ name: 'BANNER' })
 export class Banner extends BaseEntity<Banner> {
@@ -96,4 +98,8 @@ export class Banner extends BaseEntity<Banner> {
   @ManyToOne(type => Admin)
   @JoinColumn({ name: 'ADMIN_NO' })
   admin?: Admin;
+
+  @OneToOne(type => CodeManagement)
+  @JoinColumn({ name: 'BANNER_TYPE', referencedColumnName: 'key' })
+  codeManagement?: CodeManagement;
 }

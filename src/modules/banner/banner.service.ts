@@ -91,6 +91,7 @@ export class BannerService extends BaseService {
   ): Promise<PaginatedResponse<Banner>> {
     const qb = this.bannerRepo
       .createQueryBuilder('banner')
+      .CustomInnerJoinAndSelect(['codeManagement'])
       .CustomLeftJoinAndSelect(['admin'])
       .AndWhereLike(
         'admin',
@@ -136,6 +137,7 @@ export class BannerService extends BaseService {
   async findOneForAdmin(bannerNo: number): Promise<Banner> {
     const banner = await this.bannerRepo
       .createQueryBuilder('banner')
+      .CustomInnerJoinAndSelect(['codeManagement'])
       .CustomLeftJoinAndSelect(['admin'])
       .where('banner.no = :no', { no: bannerNo })
       .getOne();
