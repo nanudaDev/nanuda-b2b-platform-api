@@ -37,8 +37,8 @@ export enum B2B_FOUNDER_CONSULT {
 export const CONST_B2B_FOUNDER_CONSULT  = Object.values(B2B_FOUNDER_CONSULT);
 
 export enum BANNER_TYPE {
- 'FOUNDER' = 'FOUNDER', 
- 'SPACE' = 'SPACE', 
+ 'FOUNDER_BANNER' = 'FOUNDER_BANNER', 
+ 'SPACE_BANNER' = 'SPACE_BANNER', 
 }
 export const CONST_BANNER_TYPE  = Object.values(BANNER_TYPE);
 
