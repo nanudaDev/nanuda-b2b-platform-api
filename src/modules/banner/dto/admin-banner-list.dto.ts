@@ -51,7 +51,6 @@ export class AdminBannerListDto extends BaseDto<AdminBannerListDto>
   @ApiPropertyOptional({ enum: YN })
   @IsOptional()
   @Expose()
-  @Default(YN.NO)
   @IsEnum(YN)
   showYn?: YN;
 

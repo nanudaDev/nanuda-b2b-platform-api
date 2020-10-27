@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';
-import { Default } from 'src/common';
+import { Default, YN } from 'src/common';
 
 export class AdminBannerUpdateDto extends BaseDto<AdminBannerUpdateDto>
   implements Partial<Banner> {
@@ -57,6 +57,18 @@ export class AdminBannerUpdateDto extends BaseDto<AdminBannerUpdateDto>
   @Expose()
   @IsUrl()
   url?: string;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @Expose()
+  @IsEnum(YN)
+  showYn?: YN;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @Expose()
+  @IsEnum(YN)
+  delYn?: YN;
 
   @ApiPropertyOptional()
   @IsOptional()
