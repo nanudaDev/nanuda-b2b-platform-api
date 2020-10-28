@@ -39,6 +39,12 @@ export class AdminBrandUpdateDto extends BaseDto<AdminBrandUpdateDto>
   @IsOptional()
   @IsEnum(YN)
   @Expose()
+  isRecommendedYn?: YN;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @IsEnum(YN)
+  @Expose()
   showYn?: YN;
 
   @ApiPropertyOptional({ enum: YN })

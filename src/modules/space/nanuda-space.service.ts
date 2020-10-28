@@ -31,7 +31,7 @@ export class NanudaSpaceService extends BaseService {
     const dropdownSpace = await this.spaceRepo
       .createQueryBuilder('space')
       .andWhere('space.delYn = :delYn', { delYn: YN.NO })
-      .andWhere('space.showYn = :delYn', { showYn: YN.YES })
+      .andWhere('space.showYn = :showYn', { showYn: YN.YES })
       .andWhere(
         'space.sido like :keyword or space.sigungu like :keyword or space.bName2 like :keyword',
         {
