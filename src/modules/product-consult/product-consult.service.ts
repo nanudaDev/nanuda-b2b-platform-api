@@ -87,6 +87,7 @@ export class ProductConsultService extends BaseService {
       .CustomInnerJoinAndSelect(['codeManagement'])
       .CustomLeftJoinAndSelect([
         'admin',
+        'brand',
         'addressInfo',
         'nanudaUser',
         'availableTime',
@@ -147,6 +148,20 @@ export class ProductConsultService extends BaseService {
       .update(ProductConsult)
       .set({ status: adminProductConsultUpdateStatusDto.status })
       .whereInIds(adminProductConsultUpdateStatusDto.productConsultNos)
+      .execute();
+  }
+
+  /**
+   * assign yourself for manager
+   * @param adminNo
+   * @param productConsultNo
+   */
+  async assignAdmin(adminNo: number, productConsultNo: number) {
+    await this.productConsultRepo
+      .createQueryBuilder()
+      .update(ProductConsult)
+      .set({ pConsultManager: adminNo })
+      .where('no = :no', { no: productConsultNo })
       .execute();
   }
 }

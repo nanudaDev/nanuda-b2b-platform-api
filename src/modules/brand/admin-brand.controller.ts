@@ -62,6 +62,14 @@ export class AdminBrandController extends BaseController {
   }
 
   /**
+   * find nanuda brand
+   */
+  @Get('/admin/brand/recommended')
+  async findNanudaBrand() {
+    return await this.brandService.findNanudaBrand();
+  }
+
+  /**
    * create for admin
    * @param admin
    * @param adminBrandCreateDto
