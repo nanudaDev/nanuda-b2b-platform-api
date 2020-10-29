@@ -14,6 +14,7 @@ import { ProductConsultService } from './product-consult.service';
 import {
   AdminProductConsultListDto,
   AdminProductConsultUpdateDto,
+  AdminProductConsultUpdateStatusDto,
 } from './dto';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
 import { ProductConsult } from './product-consult.entity';
@@ -67,6 +68,20 @@ export class AdminProductConsultController extends BaseController {
     return await this.productConsultService.updateForAdmin(
       productConsultNo,
       adminProductConsultUpdateDto,
+    );
+  }
+
+  /**
+   * update status by ids
+   * @param adminProductConsultUpdateStatusDto
+   */
+  @Patch('/admin/product-consult/update-statuses')
+  async updateStatus(
+    @Body()
+    adminProductConsultUpdateStatusDto: AdminProductConsultUpdateStatusDto,
+  ) {
+    return await this.productConsultService.updateStatusByNos(
+      adminProductConsultUpdateStatusDto,
     );
   }
 }
