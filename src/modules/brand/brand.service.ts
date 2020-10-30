@@ -157,6 +157,12 @@ export class BrandService extends BaseService {
         adminBrandListDto.exclude('nameEng'),
       )
       .AndWhereLike(
+        'brand',
+        'urlPath',
+        adminBrandListDto.urlPath,
+        adminBrandListDto.exclude('urlPath'),
+      )
+      .AndWhereLike(
         'category',
         'nameKr',
         adminBrandListDto.categoryName,

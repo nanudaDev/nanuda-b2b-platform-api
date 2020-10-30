@@ -92,6 +92,11 @@ export class AdminBrandUpdateDto extends BaseDto<AdminBrandUpdateDto>
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  urlPath?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   kioskNo?: number;
 
   @ApiPropertyOptional({ enum: DIFFICULTY })

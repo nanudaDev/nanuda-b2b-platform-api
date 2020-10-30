@@ -42,6 +42,11 @@ export class AdminBrandCreateDto extends BaseDto<AdminBrandCreateDto>
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  urlPath?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   kioskNo?: number;
 
   @ApiPropertyOptional({ enum: STORE_COUNT })
