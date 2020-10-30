@@ -140,6 +140,16 @@ export class MenuService extends BaseService {
       .getOne();
 
     menu = menu.set(adminMenuUpdateDto);
+    // images
+    if (adminMenuUpdateDto.images && adminMenuUpdateDto.images.length > 0) {
+      adminMenuUpdateDto.images = await this.fileUploadService.moveS3File(
+        adminMenuUpdateDto.images,
+      );
+      if (!adminMenuUpdateDto.images) {
+        throw new BadRequestException({ message: 'Menu image upload failed!' });
+      }
+    }
+    menu.images = adminMenuUpdateDto.images;
     menu = await this.menuRepo.save(menu);
 
     return menu;

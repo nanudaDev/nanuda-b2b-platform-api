@@ -77,6 +77,34 @@ export class BrandService extends BaseService {
       }
     }
 
+    if (
+      adminBrandCreateDto.mainBanner &&
+      adminBrandCreateDto.mainBanner.length > 0
+    ) {
+      adminBrandCreateDto.mainBanner = await this.fileUploadService.moveS3File(
+        adminBrandCreateDto.mainBanner,
+      );
+      if (!adminBrandCreateDto.mainBanner) {
+        throw new BadRequestException({
+          message: 'Upload Failed! (main banner image)',
+        });
+      }
+    }
+
+    if (
+      adminBrandCreateDto.sideBanner &&
+      adminBrandCreateDto.sideBanner.length > 0
+    ) {
+      adminBrandCreateDto.sideBanner = await this.fileUploadService.moveS3File(
+        adminBrandCreateDto.sideBanner,
+      );
+      if (!adminBrandCreateDto.sideBanner) {
+        throw new BadRequestException({
+          message: 'Upload Failed! (side banner image)',
+        });
+      }
+    }
+
     brand = await this.brandRepo.save(brand);
     if (
       adminBrandCreateDto.brandKioskMapperNos &&
@@ -199,6 +227,7 @@ export class BrandService extends BaseService {
     adminBrandUpdateDto: AdminBrandUpdateDto,
     adminNo: number,
   ): Promise<Brand> {
+    console.log(adminBrandUpdateDto);
     const brand = await this.entityManager.transaction(async entityManager => {
       let brand = await this.brandRepo.findOne(brandNo);
       if (adminBrandUpdateDto.logo && adminBrandUpdateDto.logo.length > 0) {
@@ -222,6 +251,35 @@ export class BrandService extends BaseService {
           });
         }
       }
+
+      if (
+        adminBrandUpdateDto.mainBanner &&
+        adminBrandUpdateDto.mainBanner.length > 0
+      ) {
+        adminBrandUpdateDto.mainBanner = await this.fileUploadService.moveS3File(
+          adminBrandUpdateDto.mainBanner,
+        );
+        if (!adminBrandUpdateDto.mainBanner) {
+          throw new BadRequestException({
+            message: 'Upload Failed! (main banner image)',
+          });
+        }
+      }
+
+      if (
+        adminBrandUpdateDto.sideBanner &&
+        adminBrandUpdateDto.sideBanner.length > 0
+      ) {
+        adminBrandUpdateDto.sideBanner = await this.fileUploadService.moveS3File(
+          adminBrandUpdateDto.sideBanner,
+        );
+        if (!adminBrandUpdateDto.sideBanner) {
+          throw new BadRequestException({
+            message: 'Upload Failed! (side banner image)',
+          });
+        }
+      }
+
       brand = brand.set(adminBrandUpdateDto);
       brand.adminNo = adminNo;
       brand = await entityManager.save(brand);
@@ -297,7 +355,19 @@ export class BrandService extends BaseService {
     });
   }
 
+  /**
+   * find all
+   */
   async findAll() {
     return await this.brandRepo.find({ where: { showYn: YN.YES } });
+  }
+
+  /**
+   * find nanuda brand
+   */
+  async findNanudaBrand() {
+    return await this.brandRepo.find({
+      where: { delYn: YN.NO, isRecommendedYn: YN.YES },
+    });
   }
 }
