@@ -3,6 +3,7 @@ import { BaseService } from 'src/core';
 import {
   AdminProductConsultListDto,
   AdminProductConsultUpdateDto,
+  AdminProductConsultUpdateStatusDto,
 } from './dto';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
 import { ProductConsult } from './product-consult.entity';
@@ -86,6 +87,7 @@ export class ProductConsultService extends BaseService {
       .CustomInnerJoinAndSelect(['codeManagement'])
       .CustomLeftJoinAndSelect([
         'admin',
+        'brand',
         'addressInfo',
         'nanudaUser',
         'availableTime',
@@ -132,5 +134,34 @@ export class ProductConsultService extends BaseService {
       },
     );
     return consult;
+  }
+
+  /**
+   * update by ids
+   * @param adminProductConsultUpdateStatusDto
+   */
+  async updateStatusByNos(
+    adminProductConsultUpdateStatusDto: AdminProductConsultUpdateStatusDto,
+  ) {
+    await this.productConsultRepo
+      .createQueryBuilder()
+      .update(ProductConsult)
+      .set({ status: adminProductConsultUpdateStatusDto.status })
+      .whereInIds(adminProductConsultUpdateStatusDto.productConsultNos)
+      .execute();
+  }
+
+  /**
+   * assign yourself for manager
+   * @param adminNo
+   * @param productConsultNo
+   */
+  async assignAdmin(adminNo: number, productConsultNo: number) {
+    await this.productConsultRepo
+      .createQueryBuilder()
+      .update(ProductConsult)
+      .set({ pConsultManager: adminNo })
+      .where('no = :no', { no: productConsultNo })
+      .execute();
   }
 }

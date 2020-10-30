@@ -23,10 +23,11 @@ export class AdminProductConsultUpdateDto extends BaseDto<ProductConsult>
   @Expose()
   pConsultEtc?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ enum: AVAILABLE_TIME })
   @IsOptional()
   @Expose()
-  hopeTime?: string;
+  @IsEnum(AVAILABLE_TIME)
+  hopeTime?: AVAILABLE_TIME;
 
   @ApiPropertyOptional({ enum: YN })
   @IsOptional()
@@ -44,4 +45,19 @@ export class AdminProductConsultUpdateDto extends BaseDto<ProductConsult>
   @IsOptional()
   @Expose()
   confirmDate?: Date;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  nonUserName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  nonUserPhone?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  brandNo?: number;
 }

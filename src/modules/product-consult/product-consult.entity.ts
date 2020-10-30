@@ -15,6 +15,7 @@ import { Admin } from '../admin';
 import { CodeManagement } from '../code-management/code-management.entity';
 import { AddressInfo } from '../address-info/address-info.entity';
 import { SpaceType } from '../space-type/space-type.entity';
+import { Brand } from '../brand/brand.entity';
 
 @Entity({ name: 'PRODUCT_CONSULT' })
 export class ProductConsult extends BaseEntity<ProductConsult> {
@@ -67,7 +68,7 @@ export class ProductConsult extends BaseEntity<ProductConsult> {
     nullable: true,
     name: 'HOPE_TIME',
   })
-  hopeTime?: string;
+  hopeTime?: AVAILABLE_TIME;
 
   @Column('char', {
     length: 1,
@@ -101,6 +102,12 @@ export class ProductConsult extends BaseEntity<ProductConsult> {
   })
   nonUserPhone?: string;
 
+  @Column({
+    type: 'int',
+    name: 'BRAND_NO',
+  })
+  brandNo?: number;
+
   @ManyToOne(
     type => NanudaUser,
     nanudaUser => nanudaUser.productConsults,
@@ -124,6 +131,11 @@ export class ProductConsult extends BaseEntity<ProductConsult> {
   @OneToOne(type => CodeManagement)
   @JoinColumn({ name: 'HOPE_TIME', referencedColumnName: 'key' })
   availableTime?: CodeManagement;
+
+  // 브랜드
+  @OneToOne(type => Brand)
+  @JoinColumn({ name: 'BRAND_NO' })
+  brand?: Brand;
 
   @OneToOne(type => SpaceType)
   @JoinColumn({ name: 'SPACE_TYPE_NO' })

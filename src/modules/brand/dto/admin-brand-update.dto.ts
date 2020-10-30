@@ -61,6 +61,22 @@ export class AdminBrandUpdateDto extends BaseDto<AdminBrandUpdateDto>
   @ValidateNested()
   logo?: FileAttachmentDto[];
 
+  @ApiPropertyOptional({ type: [FileAttachmentDto] })
+  @IsOptional()
+  @Expose()
+  @Type(() => FileAttachmentDto)
+  @IsArray()
+  @ValidateNested({ each: true })
+  mainBanner?: FileAttachmentDto[];
+
+  @ApiPropertyOptional({ type: [FileAttachmentDto] })
+  @IsOptional()
+  @Expose()
+  @Type(() => FileAttachmentDto)
+  @IsArray()
+  @ValidateNested({ each: true })
+  sideBanner?: FileAttachmentDto[];
+
   @ApiPropertyOptional({ enum: STORE_COUNT })
   @IsEnum(STORE_COUNT)
   @IsOptional()
@@ -72,6 +88,11 @@ export class AdminBrandUpdateDto extends BaseDto<AdminBrandUpdateDto>
   @IsEnum(BRAND)
   @Expose()
   cost?: BRAND;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  urlPath?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

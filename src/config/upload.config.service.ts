@@ -8,6 +8,7 @@ export enum UPLOAD_TYPE {
   COMPANY_USER_ATTACHMENT = 'company-user-attachment',
   COMPANY_DISTRICT = 'company-district',
   BRAND_LOGO = 'brand-logo',
+  BRAND_BANNER = 'brand-banner',
   NOTICE_BOARD = 'notice-board',
   MENU = 'menu',
   MAIN_MENU_IMAGE = 'main-menu-image',
@@ -97,6 +98,11 @@ export class UploadConfigService {
     },
     [UPLOAD_TYPE.BRAND_LOGO]: {
       path: 'brand-logo',
+      sizeLimit: 1024 * 1024 * 10,
+      fileType: FileType.IMAGE,
+    },
+    [UPLOAD_TYPE.BRAND_BANNER]: {
+      path: 'brand-banner',
       sizeLimit: 1024 * 1024 * 10,
       fileType: FileType.IMAGE,
     },
