@@ -54,6 +54,18 @@ export class Brand extends BaseEntity<Brand> {
   mainMenuImage?: FileAttachmentDto[];
 
   @Column({
+    type: 'json',
+    name: 'MAIN_BANNER',
+  })
+  mainBanner?: FileAttachmentDto[];
+
+  @Column({
+    type: 'json',
+    name: 'SIDE_BANNER',
+  })
+  sideBanner?: FileAttachmentDto[];
+
+  @Column({
     type: 'varchar',
     name: 'NAME_KR',
     nullable: false,
@@ -93,6 +105,12 @@ export class Brand extends BaseEntity<Brand> {
     nullable: false,
   })
   isRecommendedYn: YN;
+
+  @Column({
+    type: 'varchar',
+    name: 'URL_PATH',
+  })
+  urlPath?: string;
 
   @Column('char', {
     length: 1,
@@ -135,6 +153,10 @@ export class Brand extends BaseEntity<Brand> {
   })
   kioskNo?: number;
 
+  @Column({
+    type: 'int',
+    name: 'SPACE_TYPE_NO',
+  })
   spaceTypeNo?: SPACE_TYPE;
 
   @OneToOne(type => FoodCategory)
