@@ -14,9 +14,11 @@ import { ProductConsultService } from './product-consult.service';
 import {
   AdminProductConsultListDto,
   AdminProductConsultUpdateDto,
+  AdminProductConsultUpdateStatusDto,
 } from './dto';
-import { PaginatedRequest, PaginatedResponse } from 'src/common';
+import { PaginatedRequest, PaginatedResponse, UserInfo } from 'src/common';
 import { ProductConsult } from './product-consult.entity';
+import { Admin } from '..';
 
 @Controller()
 @UseGuards(new AuthRolesGuard(...CONST_ADMIN_USER))
@@ -67,6 +69,36 @@ export class AdminProductConsultController extends BaseController {
     return await this.productConsultService.updateForAdmin(
       productConsultNo,
       adminProductConsultUpdateDto,
+    );
+  }
+
+  /**
+   * update status by ids
+   * @param adminProductConsultUpdateStatusDto
+   */
+  @Patch('/admin/product-consult/update-statuses')
+  async updateStatus(
+    @Body()
+    adminProductConsultUpdateStatusDto: AdminProductConsultUpdateStatusDto,
+  ) {
+    return await this.productConsultService.updateStatusByNos(
+      adminProductConsultUpdateStatusDto,
+    );
+  }
+
+  /**
+   * assign admin
+   * @param admin
+   * @param productConsultNo
+   */
+  @Patch('/admin/product-consult/:id([0-9]+)/assign')
+  async assign(
+    @UserInfo() admin: Admin,
+    @Param('id', ParseIntPipe) productConsultNo: number,
+  ) {
+    return await this.productConsultService.assignAdmin(
+      admin.no,
+      productConsultNo,
     );
   }
 }

@@ -297,7 +297,19 @@ export class BrandService extends BaseService {
     });
   }
 
+  /**
+   * find all
+   */
   async findAll() {
     return await this.brandRepo.find({ where: { showYn: YN.YES } });
+  }
+
+  /**
+   * find nanuda brand
+   */
+  async findNanudaBrand() {
+    return await this.brandRepo.find({
+      where: { delYn: YN.NO, isRecommendedYn: YN.YES },
+    });
   }
 }
