@@ -106,6 +106,12 @@ export class Brand extends BaseEntity<Brand> {
   })
   isRecommendedYn: YN;
 
+  @Column({
+    type: 'varchar',
+    name: 'URL_PATH',
+  })
+  urlPath?: string;
+
   @Column('char', {
     length: 1,
     name: 'SHOW_YN',

@@ -22,4 +22,9 @@ export class AdminBrandListDto extends BrandListDto {
   @IsOptional()
   @Expose()
   kioskNo?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  urlPath?: string;
 }
