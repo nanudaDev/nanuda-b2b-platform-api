@@ -23,10 +23,6 @@ import { BrandKioskMapper } from '../brand-kiosk-mapper/brand-kiosk-mapper.entit
 export class BrandService extends BaseService {
   constructor(
     @InjectRepository(Brand) private readonly brandRepo: Repository<Brand>,
-    @InjectRepository(DeliverySpaceBrandMapper)
-    private readonly deliverySpaceBrandMapperRepo: Repository<
-      DeliverySpaceBrandMapper
-    >,
     @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly fileUploadService: FileUploadService,
   ) {
@@ -101,6 +97,20 @@ export class BrandService extends BaseService {
       if (!adminBrandCreateDto.sideBanner) {
         throw new BadRequestException({
           message: 'Upload Failed! (side banner image)',
+        });
+      }
+    }
+
+    if (
+      adminBrandCreateDto.mobileSideBanner &&
+      adminBrandCreateDto.mobileSideBanner.length > 0
+    ) {
+      adminBrandCreateDto.mobileSideBanner = await this.fileUploadService.moveS3File(
+        adminBrandCreateDto.mobileSideBanner,
+      );
+      if (!adminBrandCreateDto.mobileSideBanner) {
+        throw new BadRequestException({
+          message: 'Upload Failed! (mobile side banner image)',
         });
       }
     }
@@ -282,6 +292,20 @@ export class BrandService extends BaseService {
         if (!adminBrandUpdateDto.sideBanner) {
           throw new BadRequestException({
             message: 'Upload Failed! (side banner image)',
+          });
+        }
+      }
+
+      if (
+        adminBrandUpdateDto.mobileSideBanner &&
+        adminBrandUpdateDto.mobileSideBanner.length > 0
+      ) {
+        adminBrandUpdateDto.mobileSideBanner = await this.fileUploadService.moveS3File(
+          adminBrandUpdateDto.mobileSideBanner,
+        );
+        if (!adminBrandUpdateDto.mobileSideBanner) {
+          throw new BadRequestException({
+            message: 'Upload Failed! (mobile side banner image)',
           });
         }
       }
