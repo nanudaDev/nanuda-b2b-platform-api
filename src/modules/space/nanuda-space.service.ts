@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import Axios from 'axios';
 import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
-import { BaseService } from 'src/core';
+import { BaseService, SPACE_TYPE } from 'src/core';
 import { EntityManager, Repository } from 'typeorm';
 import {
   DropdownResults,
@@ -31,6 +31,9 @@ export class NanudaSpaceService extends BaseService {
     const dropdownSpace = await this.spaceRepo
       .createQueryBuilder('space')
       .andWhere('space.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('space.spaceTypeNo = :spaceTypeNo', {
+        spaceTypeNo: SPACE_TYPE.SPACE_SHARE,
+      })
       .andWhere('space.showYn = :showYn', { showYn: YN.YES })
       .andWhere(
         'space.sido like :keyword or space.sigungu like :keyword or space.bName2 like :keyword',
@@ -138,6 +141,9 @@ export class NanudaSpaceService extends BaseService {
       .createQueryBuilder('space')
       .where('space.delYn = :delYn', { delYn: YN.NO })
       .andWhere('space.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('space.spaceTypeNo = :spaceTypeNo', {
+        spaceTypeNo: SPACE_TYPE.SPACE_SHARE,
+      })
       // .limit(2)
       .getMany();
     // TODO: typeorm subquery로 해결
@@ -161,6 +167,9 @@ export class NanudaSpaceService extends BaseService {
       .CustomLeftJoinAndSelect(['fileManagements'])
       .where('space.delYn = :delYn', { delYn: YN.NO })
       .andWhere('space.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('space.spaceTypeNo = :spaceTypeNo', {
+        spaceTypeNo: SPACE_TYPE.SPACE_SHARE,
+      })
       .andWhere(
         `space.monthlyFee BETWEEN ${selectedSpace.rentalFee} - 50 AND ${selectedSpace.rentalFee} + 50`,
       )
@@ -186,6 +195,9 @@ export class NanudaSpaceService extends BaseService {
       .createQueryBuilder('space')
       .where('space.delYn = :delYn', { delYn: YN.NO })
       .andWhere('space.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('space.spaceTypeNo = :spaceTypeNo', {
+        spaceTypeNo: SPACE_TYPE.SPACE_SHARE,
+      })
       .getCount();
 
     return await qb;

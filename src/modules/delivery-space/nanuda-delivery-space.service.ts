@@ -5,7 +5,12 @@ import { DeliverySpace } from './delivery-space.entity';
 import { Repository, EntityManager, In } from 'typeorm';
 import { CompanyDistrict } from '../company-district/company-district.entity';
 import { DeliverySpaceListDto } from './dto';
-import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
+import {
+  ORDER_BY_VALUE,
+  PaginatedRequest,
+  PaginatedResponse,
+  YN,
+} from 'src/common';
 import { FavoriteSpaceMapper } from '../favorite-space-mapper/favorite-space-mapper.entity';
 import { DeliveryFounderConsult } from '../delivery-founder-consult/delivery-founder-consult.entity';
 
@@ -172,6 +177,7 @@ export class NanudaDeliverySpaceService extends BaseService {
       .where('deliverySpace.no = :no', { no: deliverySpaceNo })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .addOrderBy('brands.isRecommendedYn', ORDER_BY_VALUE.DESC)
       .getOne();
     if (!space) {
       throw new NotFoundException();
