@@ -77,6 +77,14 @@ export class AdminBrandUpdateDto extends BaseDto<AdminBrandUpdateDto>
   @ValidateNested({ each: true })
   sideBanner?: FileAttachmentDto[];
 
+  @ApiPropertyOptional({ type: [FileAttachmentDto] })
+  @IsOptional()
+  @Expose()
+  @Type(() => FileAttachmentDto)
+  @IsArray()
+  @ValidateNested({ each: true })
+  mobileSideBanner?: FileAttachmentDto[];
+
   @ApiPropertyOptional({ enum: STORE_COUNT })
   @IsEnum(STORE_COUNT)
   @IsOptional()

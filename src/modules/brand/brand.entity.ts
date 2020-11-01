@@ -66,6 +66,12 @@ export class Brand extends BaseEntity<Brand> {
   sideBanner?: FileAttachmentDto[];
 
   @Column({
+    type: 'json',
+    name: 'MOBILE_SIDE_BANNER',
+  })
+  mobileSideBanner?: FileAttachmentDto[];
+
+  @Column({
     type: 'varchar',
     name: 'NAME_KR',
     nullable: false,
