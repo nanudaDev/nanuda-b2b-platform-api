@@ -18,7 +18,8 @@ import {
   AdminDeliveryFounderConsultUpdateDto,
   AdminDeliveryFounderConsultCreateDto,
 } from './dto';
-import { PaginatedRequest, PaginatedResponse } from 'src/common';
+import { PaginatedRequest, PaginatedResponse, UserInfo } from 'src/common';
+import { Admin } from '../admin/admin.entity';
 
 @Controller()
 @ApiTags('ADMIN DELIVERY FOUNDER CONSULT')
@@ -118,6 +119,22 @@ export class AdminDeliveryFounderConsultController extends BaseController {
   ): Promise<DeliveryFounderConsult[]> {
     return await this.deliveryFounderConsultService.excelExportJson(
       adminDeliveryFounderConsultListDto,
+    );
+  }
+
+  /**
+   * assign admin
+   * @param admin
+   * @param deliveryFounderConsultNo
+   */
+  @Patch('/admin/delivery-founder-consult/:id([0-9]+)/assign')
+  async assign(
+    @UserInfo() admin: Admin,
+    @Param('id', ParseIntPipe) deliveryFounderConsultNo: number,
+  ) {
+    return await this.deliveryFounderConsultService.assignAdmin(
+      admin.no,
+      deliveryFounderConsultNo,
     );
   }
 }
