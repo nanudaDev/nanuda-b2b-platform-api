@@ -40,99 +40,97 @@ export class BrandService extends BaseService {
     adminNo: number,
     adminBrandCreateDto: AdminBrandCreateDto,
   ): Promise<Brand> {
-    let brand = new Brand(adminBrandCreateDto);
-    brand.adminNo = adminNo;
-    brand.name = adminBrandCreateDto.nameKr;
-    const check = await this.brandRepo.findOne({
-      nameKr: adminBrandCreateDto.nameKr,
+    const brand = await this.entityManager.transaction(async entityManager => {
+      let brand = new Brand(adminBrandCreateDto);
+      brand.adminNo = adminNo;
+      brand.name = adminBrandCreateDto.nameKr;
+      const check = await this.brandRepo.findOne({
+        nameKr: adminBrandCreateDto.nameKr,
+      });
+      if (check) {
+        throw new BadRequestException({ message: 'Brand already exists.' });
+      }
+      if (adminBrandCreateDto.logo && adminBrandCreateDto.logo.length > 0) {
+        adminBrandCreateDto.logo = await this.fileUploadService.moveS3File(
+          adminBrandCreateDto.logo,
+        );
+        if (!adminBrandCreateDto.logo) {
+          throw new BadRequestException({
+            message: 'Upload Failed!',
+          });
+        }
+      }
+      if (
+        adminBrandCreateDto.mainMenuImage &&
+        adminBrandCreateDto.mainMenuImage.length > 0
+      ) {
+        adminBrandCreateDto.mainMenuImage = await this.fileUploadService.moveS3File(
+          adminBrandCreateDto.mainMenuImage,
+        );
+        if (!adminBrandCreateDto.mainMenuImage) {
+          throw new BadRequestException({
+            message: 'Upload Failed! (main menu image)',
+          });
+        }
+      }
+
+      // main banner
+      if (
+        adminBrandCreateDto.mainBanner &&
+        adminBrandCreateDto.mainBanner.length > 0
+      ) {
+        adminBrandCreateDto.mainBanner = await this.fileUploadService.moveS3File(
+          adminBrandCreateDto.mainBanner,
+        );
+        if (!adminBrandCreateDto.mainBanner) {
+          throw new BadRequestException({
+            message: 'Upload Failed! (main banner image)',
+          });
+        }
+      }
+
+      // side banner
+      if (
+        adminBrandCreateDto.sideBanner &&
+        adminBrandCreateDto.sideBanner.length > 0
+      ) {
+        adminBrandCreateDto.sideBanner = await this.fileUploadService.moveS3File(
+          adminBrandCreateDto.sideBanner,
+        );
+        if (!adminBrandCreateDto.sideBanner) {
+          throw new BadRequestException({
+            message: 'Upload Failed! (side banner image)',
+          });
+        }
+      }
+
+      // mobile side banner
+      if (
+        adminBrandCreateDto.mobileSideBanner &&
+        adminBrandCreateDto.mobileSideBanner.length > 0
+      ) {
+        adminBrandCreateDto.mobileSideBanner = await this.fileUploadService.moveS3File(
+          adminBrandCreateDto.mobileSideBanner,
+        );
+        if (!adminBrandCreateDto.mobileSideBanner) {
+          throw new BadRequestException({
+            message: 'Upload Failed! (mobile side banner image)',
+          });
+        }
+      }
+
+      brand = await this.brandRepo.save(brand);
+      const isMapped = await entityManager
+        .getRepository(SpaceTypeBrandMapper)
+        .findOne({ brandNo: brand.no });
+      if (adminBrandCreateDto.spaceTypeNo && !isMapped) {
+        let newSpaceTypeBrandMapper = new SpaceTypeBrandMapper();
+        newSpaceTypeBrandMapper.brandNo = brand.no;
+        newSpaceTypeBrandMapper.spaceTypeNo = adminBrandCreateDto.spaceTypeNo;
+        await entityManager.save(newSpaceTypeBrandMapper);
+      }
+      return brand;
     });
-    if (check) {
-      throw new BadRequestException({ message: 'Brand already exists.' });
-    }
-    if (adminBrandCreateDto.logo && adminBrandCreateDto.logo.length > 0) {
-      adminBrandCreateDto.logo = await this.fileUploadService.moveS3File(
-        adminBrandCreateDto.logo,
-      );
-      if (!adminBrandCreateDto.logo) {
-        throw new BadRequestException({
-          message: 'Upload Failed!',
-        });
-      }
-    }
-    if (
-      adminBrandCreateDto.mainMenuImage &&
-      adminBrandCreateDto.mainMenuImage.length > 0
-    ) {
-      adminBrandCreateDto.mainMenuImage = await this.fileUploadService.moveS3File(
-        adminBrandCreateDto.mainMenuImage,
-      );
-      if (!adminBrandCreateDto.mainMenuImage) {
-        throw new BadRequestException({
-          message: 'Upload Failed! (main menu image)',
-        });
-      }
-    }
-
-    if (
-      adminBrandCreateDto.mainBanner &&
-      adminBrandCreateDto.mainBanner.length > 0
-    ) {
-      adminBrandCreateDto.mainBanner = await this.fileUploadService.moveS3File(
-        adminBrandCreateDto.mainBanner,
-      );
-      if (!adminBrandCreateDto.mainBanner) {
-        throw new BadRequestException({
-          message: 'Upload Failed! (main banner image)',
-        });
-      }
-    }
-
-    if (
-      adminBrandCreateDto.sideBanner &&
-      adminBrandCreateDto.sideBanner.length > 0
-    ) {
-      adminBrandCreateDto.sideBanner = await this.fileUploadService.moveS3File(
-        adminBrandCreateDto.sideBanner,
-      );
-      if (!adminBrandCreateDto.sideBanner) {
-        throw new BadRequestException({
-          message: 'Upload Failed! (side banner image)',
-        });
-      }
-    }
-
-    if (
-      adminBrandCreateDto.mobileSideBanner &&
-      adminBrandCreateDto.mobileSideBanner.length > 0
-    ) {
-      adminBrandCreateDto.mobileSideBanner = await this.fileUploadService.moveS3File(
-        adminBrandCreateDto.mobileSideBanner,
-      );
-      if (!adminBrandCreateDto.mobileSideBanner) {
-        throw new BadRequestException({
-          message: 'Upload Failed! (mobile side banner image)',
-        });
-      }
-    }
-
-    brand = await this.brandRepo.save(brand);
-    if (
-      adminBrandCreateDto.brandKioskMapperNos &&
-      adminBrandCreateDto.brandKioskMapperNos.length > 0
-    ) {
-      await Promise.all(
-        adminBrandCreateDto.brandKioskMapperNos.map(
-          async brandKioskMapperNo => {
-            let brandKioskMapper = new BrandKioskMapper();
-            brandKioskMapper.brandNo = brand.no;
-            brandKioskMapper.kioskNo = brandKioskMapperNo;
-            await this.entityManager
-              .getRepository(BrandKioskMapper)
-              .save(brandKioskMapper);
-          },
-        ),
-      );
-    }
     return brand;
   }
 
@@ -223,6 +221,8 @@ export class BrandService extends BaseService {
     if (!qb) {
       throw new NotFoundException();
     }
+    // TODO: 변경 될 수도 있음
+    // 동시에 브랜드가 식당에다 배달이 될 수도 있음
     const spaceTypeBrandMapper = await this.entityManager
       .getRepository(SpaceTypeBrandMapper)
       .findOne({ brandNo: brandNo });
@@ -243,7 +243,6 @@ export class BrandService extends BaseService {
     adminBrandUpdateDto: AdminBrandUpdateDto,
     adminNo: number,
   ): Promise<Brand> {
-    console.log(adminBrandUpdateDto);
     const brand = await this.entityManager.transaction(async entityManager => {
       let brand = await this.brandRepo.findOne(brandNo);
       if (adminBrandUpdateDto.logo && adminBrandUpdateDto.logo.length > 0) {
@@ -323,33 +322,33 @@ export class BrandService extends BaseService {
         spaceTypeBrandMapper.brandName = brand.nameKr;
         spaceTypeBrandMapper = await entityManager.save(spaceTypeBrandMapper);
       }
-      if (
-        adminBrandUpdateDto.brandKioskMapperNos &&
-        adminBrandUpdateDto.brandKioskMapperNos.length > 0
-      ) {
-        // delete first
-        await this.entityManager
-          .getRepository(BrandKioskMapper)
-          .createQueryBuilder()
-          .delete()
-          .from(BrandKioskMapper)
-          .where('brandNo = :brandNo', { brandNo: brandNo })
-          .execute();
+      // if (
+      //   adminBrandUpdateDto.brandKioskMapperNos &&
+      //   adminBrandUpdateDto.brandKioskMapperNos.length > 0
+      // ) {
+      //   // delete first
+      //   await this.entityManager
+      //     .getRepository(BrandKioskMapper)
+      //     .createQueryBuilder()
+      //     .delete()
+      //     .from(BrandKioskMapper)
+      //     .where('brandNo = :brandNo', { brandNo: brandNo })
+      //     .execute();
 
-        // create new mapper
-        await Promise.all(
-          adminBrandUpdateDto.brandKioskMapperNos.map(
-            async brandKioskMappNo => {
-              let brandKioskMapper = new BrandKioskMapper();
-              brandKioskMapper.brandNo = brandNo;
-              brandKioskMapper.kioskNo = brandKioskMappNo;
-              brandKioskMapper = await this.entityManager
-                .getRepository(BrandKioskMapper)
-                .save(brandKioskMapper);
-            },
-          ),
-        );
-      }
+      //   // create new mapper
+      //   await Promise.all(
+      //     adminBrandUpdateDto.brandKioskMapperNos.map(
+      //       async brandKioskMappNo => {
+      //         let brandKioskMapper = new BrandKioskMapper();
+      //         brandKioskMapper.brandNo = brandNo;
+      //         brandKioskMapper.kioskNo = brandKioskMappNo;
+      //         brandKioskMapper = await this.entityManager
+      //           .getRepository(BrandKioskMapper)
+      //           .save(brandKioskMapper);
+      //       },
+      //     ),
+      //   );
+      // }
       return brand;
     });
     return brand;
