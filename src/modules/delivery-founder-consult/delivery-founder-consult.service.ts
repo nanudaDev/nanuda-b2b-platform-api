@@ -776,6 +776,20 @@ export class DeliveryFounderConsultService extends BaseService {
     return deliveryFounderConsult;
   }
 
+  /**
+   * assign yourself for manager
+   * @param adminNo
+   * @param deliveryFounderConsultNo
+   */
+  async assignAdmin(adminNo: number, deliveryFounderConsultNo: number) {
+    await this.deliveryFounderConsultRepo
+      .createQueryBuilder()
+      .update(DeliveryFounderConsult)
+      .set({ spaceConsultManager: adminNo })
+      .where('no = :no', { no: deliveryFounderConsultNo })
+      .execute();
+  }
+
   private async __create_contract(
     founderConsult: DeliveryFounderConsult,
   ): Promise<DeliveryFounderConsultContract> {
