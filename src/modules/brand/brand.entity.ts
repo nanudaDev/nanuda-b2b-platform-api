@@ -24,6 +24,7 @@ import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 import { Menu } from '../menu/menu.entity';
 import { CodeManagement } from '../code-management/code-management.entity';
 import { PaymentList } from '../payment-list/payment-list.entity';
+import { SpaceType } from '../space-type/space-type.entity';
 
 @Entity({ name: 'BRAND' })
 export class Brand extends BaseEntity<Brand> {
