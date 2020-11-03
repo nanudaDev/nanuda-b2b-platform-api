@@ -9,7 +9,7 @@ import {
   DropdownResults,
   SearchResults,
 } from '../company-district/nanuda-company-district.service';
-import { SpaceListDto } from './dto';
+import { NanudaSpaceSearchDto, SpaceListDto } from './dto';
 import { Space } from './space.entity';
 
 @Injectable()
@@ -103,7 +103,10 @@ export class NanudaSpaceService extends BaseService {
    * search
    * @param companyDistrictListDto
    */
-  async search(spaceListDto: SpaceListDto): Promise<SearchResults> {
+  async search(
+    spaceListDto: SpaceListDto,
+    nanudaSpaceSearchDto: NanudaSpaceSearchDto,
+  ): Promise<SearchResults> {
     const searchResults = new SearchResults();
 
     // "https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000" \
@@ -139,8 +142,11 @@ export class NanudaSpaceService extends BaseService {
     }
     const space = await this.spaceRepo
       .createQueryBuilder('space')
+      .CustomLeftJoinAndSelect(['amenities', 'brands'])
       .where('space.delYn = :delYn', { delYn: YN.NO })
       .andWhere('space.showYn = :showYn', { showYn: YN.YES })
+      .AndWhereIn('amenities', 'no', nanudaSpaceSearchDto.amenityIds)
+      .AndWhereIn('brands', 'no', nanudaSpaceSearchDto.brandIds)
       .andWhere('space.spaceTypeNo = :spaceTypeNo', {
         spaceTypeNo: SPACE_TYPE.SPACE_SHARE,
       })
