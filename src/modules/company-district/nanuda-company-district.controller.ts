@@ -5,7 +5,7 @@ import {
   NanudaCompanyDistrictService,
   SearchResults,
 } from './nanuda-company-district.service';
-import { CompanyDistrictListDto } from './dto';
+import { CompanyDistrictListDto, NanudaCompanyDistrictSearchDto } from './dto';
 import { CompanyDistrict } from './company-district.entity';
 
 @Controller()
@@ -24,11 +24,15 @@ export class NanudaCompanyDistrictController extends BaseController {
   @Get('/nanuda/company-district/search')
   async search(
     @Query() companyDistrictListDto: CompanyDistrictListDto,
+    @Query() nanudaCompanyDistrictSearchDto: NanudaCompanyDistrictSearchDto,
   ): Promise<SearchResults> {
     // if (!companyDistrictListDto.keyword) {
     //   return new SearchResults();
     // }
-    return await this.companyDistrictService.search(companyDistrictListDto);
+    return await this.companyDistrictService.search(
+      companyDistrictListDto,
+      nanudaCompanyDistrictSearchDto,
+    );
   }
 
   /**

@@ -4,7 +4,7 @@ import { BaseService, APPROVAL_STATUS } from 'src/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CompanyDistrict } from './company-district.entity';
 import { Repository } from 'typeorm';
-import { CompanyDistrictListDto } from './dto';
+import { CompanyDistrictListDto, NanudaCompanyDistrictSearchDto } from './dto';
 import Axios from 'axios';
 import { YN } from 'src/common';
 import { Space } from '../space/space.entity';
@@ -35,21 +35,23 @@ export class NanudaCompanyDistrictService extends BaseService {
 
   /**
    * search
-   * @param companyDistrictListDto
+   * @param nanudaCompanyDistrictSearchDto
    */
   async search(
-    companyDistrictListDto: CompanyDistrictListDto,
+    companyDistrictSearchDto: CompanyDistrictListDto,
+    nanudaCompanyDistrictSearchDto: NanudaCompanyDistrictSearchDto,
   ): Promise<SearchResults> {
+    console.log(nanudaCompanyDistrictSearchDto);
     const searchResults = new SearchResults();
 
     // "https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000" \
     // --data-urlencode "query=카카오프렌즈" \
     // -H "Authorization: KakaoAK {REST_API_KEY}"
-    if (companyDistrictListDto.keyword) {
+    if (companyDistrictSearchDto.keyword) {
       let latLon = await Axios.get(
         'https://dapi.kakao.com/v2/local/search/address.json',
         {
-          params: { query: companyDistrictListDto.keyword },
+          params: { query: companyDistrictSearchDto.keyword },
           headers: {
             Authorization: `KakaoAK ${process.env.KAKAO_API_KEY}`,
             mode: 'cors',
@@ -60,7 +62,7 @@ export class NanudaCompanyDistrictService extends BaseService {
         latLon = await Axios.get(
           'https://dapi.kakao.com/v2/local/search/keyword.json',
           {
-            params: { query: companyDistrictListDto.keyword },
+            params: { query: companyDistrictSearchDto.keyword },
             headers: {
               Authorization: `KakaoAK ${process.env.KAKAO_API_KEY}`,
               mode: 'cors',
@@ -77,6 +79,12 @@ export class NanudaCompanyDistrictService extends BaseService {
       .createQueryBuilder('companyDistrict')
       .CustomInnerJoinAndSelect(['company', 'deliverySpaces'])
       .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
+      .leftJoinAndSelect('deliverySpaces.amenities', 'amenities')
+      .leftJoinAndSelect('deliverySpaces.brands', 'brands')
+      .leftJoinAndSelect(
+        'deliverySpaces.deliverySpaceOptions',
+        'deliverySpaceOptions',
+      )
       .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
         companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
       })
@@ -85,6 +93,14 @@ export class NanudaCompanyDistrictService extends BaseService {
       })
       .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
+      // removed excludedDto
+      .AndWhereIn('amenities', 'no', nanudaCompanyDistrictSearchDto.amenityIds)
+      .AndWhereIn('brands', 'no', nanudaCompanyDistrictSearchDto.brandIds)
+      .AndWhereIn(
+        'deliverySpaceOptions',
+        'no',
+        nanudaCompanyDistrictSearchDto.deliverySpaceOptionIds,
+      )
       .getMany();
 
     // TODO: typeorm subquery로 해결
