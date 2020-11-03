@@ -36,10 +36,10 @@ export class CompanyUserListDto extends BaseDto<CompanyUserListDto>
   @Expose()
   companyNo?: number;
 
-  @ApiPropertyOptional({ enum: APPROVAL_STATUS })
+  @ApiPropertyOptional({ enum: APPROVAL_STATUS, isArray: true })
   @IsOptional()
   @Expose()
-  @IsEnum(APPROVAL_STATUS)
+  @IsEnum(APPROVAL_STATUS, { each: true })
   companyUserStatus?: APPROVAL_STATUS;
 
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })

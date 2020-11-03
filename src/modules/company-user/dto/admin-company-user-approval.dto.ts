@@ -10,8 +10,8 @@ export class AdminCompanyUserApprovalDto extends BaseDto<
     super();
   }
 
-  @ApiProperty({ enum: APPROVAL_STATUS })
-  @IsEnum(APPROVAL_STATUS)
+  @ApiProperty({ enum: APPROVAL_STATUS, isArray: true })
+  @IsEnum(APPROVAL_STATUS, { each: true })
   @Expose()
   companyUserStatus: APPROVAL_STATUS;
 }

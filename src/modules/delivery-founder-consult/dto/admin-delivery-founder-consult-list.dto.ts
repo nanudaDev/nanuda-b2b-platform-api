@@ -28,9 +28,9 @@ export class AdminDeliveryFounderConsultListDto
   @Expose()
   phone?: string;
 
-  @ApiPropertyOptional({ enum: FOUNDER_CONSULT })
+  @ApiPropertyOptional({ enum: FOUNDER_CONSULT, isArray: true })
   @IsOptional()
-  @IsEnum(FOUNDER_CONSULT)
+  @IsEnum(FOUNDER_CONSULT, { each: true })
   @Expose()
   status?: FOUNDER_CONSULT;
 

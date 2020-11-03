@@ -10,8 +10,8 @@ export class AdminCompanyUserCreateDto extends CompanyUserCreateDto {
     super();
   }
 
-  @ApiProperty({ enum: APPROVAL_STATUS })
-  @IsEnum(APPROVAL_STATUS)
+  @ApiProperty({ enum: APPROVAL_STATUS, isArray: true })
+  @IsEnum(APPROVAL_STATUS, { each: true })
   @Expose()
   @Default(APPROVAL_STATUS.NEED_APPROVAL)
   companyUserStatus: APPROVAL_STATUS;
