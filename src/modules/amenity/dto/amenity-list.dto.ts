@@ -18,7 +18,7 @@ export class AmenityListDto extends BaseDto<AmenityListDto>
 
   @ApiPropertyOptional({ enum: AMENITY })
   @IsOptional()
-  @IsEnum(AMENITY)
+  @IsEnum(AMENITY, { each: true })
   @Expose()
   amenityType?: AMENITY;
 }
