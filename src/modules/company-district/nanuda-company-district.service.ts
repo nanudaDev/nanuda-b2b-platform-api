@@ -75,28 +75,40 @@ export class NanudaCompanyDistrictService extends BaseService {
     }
     const cities = await this.companyDistrictRepo
       .createQueryBuilder('companyDistrict')
-      .CustomLeftJoinAndSelect(['deliverySpaces'])
+      .CustomInnerJoinAndSelect(['company', 'deliverySpaces'])
       .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
       .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
         companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
       })
+      .andWhere('company.companyStatus =:companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
       .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
       .getMany();
+
     // TODO: typeorm subquery로 해결
     cities.map(city => {
       city.deliverySpaces.map(deliverySpace => {
-        if (deliverySpace.quantity - deliverySpace.contracts.length < 1) {
+        const remaining =
+          deliverySpace.quantity - deliverySpace.contracts.length;
+        if (remaining === 0) {
           const index = city.deliverySpaces.indexOf(deliverySpace);
           city.deliverySpaces.splice(index, 1);
         }
       });
+    });
+    searchResults.cities = cities;
+    searchResults.cities.map(city => {
       if (city.deliverySpaces.length < 1) {
+        delete city.deliverySpaces;
+      }
+      if (!city.deliverySpaces) {
         const index = cities.indexOf(city);
         cities.splice(index, 1);
       }
     });
-    searchResults.cities = cities;
+
     return searchResults;
   }
 
@@ -109,7 +121,6 @@ export class NanudaCompanyDistrictService extends BaseService {
     // --data-urlencode "query=카카오프렌즈" \
     // -H "Authorization: KakaoAK {REST_API_KEY}"
     const searchResults = new SearchResults();
-    console.log(companyDistrictListDto);
     if (companyDistrictListDto.keyword) {
       let latLon = await Axios.get(
         'https://dapi.kakao.com/v2/local/search/address.json',
@@ -153,9 +164,12 @@ export class NanudaCompanyDistrictService extends BaseService {
     const secondResults: DropdownResults[] = [];
     const dropdownDistrict = await this.companyDistrictRepo
       .createQueryBuilder('companyDistrict')
-      .CustomInnerJoinAndSelect(['deliverySpaces'])
+      .CustomInnerJoinAndSelect(['company', 'deliverySpaces'])
       .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
         companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere('company.companyStatus =:companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
       })
       .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
       .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
