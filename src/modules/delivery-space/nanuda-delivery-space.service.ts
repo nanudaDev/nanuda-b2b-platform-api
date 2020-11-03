@@ -244,6 +244,9 @@ export class NanudaDeliverySpaceService extends BaseService {
       .CustomInnerJoinAndSelect(['companyDistrict'])
       .CustomLeftJoinAndSelect(['contracts'])
       .innerJoinAndSelect('companyDistrict.company', 'company')
+      .andWhere('company.companyStatus =:companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
       .andWhere(
         'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
         { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },

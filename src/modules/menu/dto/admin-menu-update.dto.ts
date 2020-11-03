@@ -44,5 +44,13 @@ export class AdminMenuUpdateDto extends BaseDto<AdminMenuUpdateDto>
   @Expose()
   images?: FileAttachmentDto[];
 
+  @ApiPropertyOptional({ type: [FileAttachmentDto] })
+  @IsArray()
+  @IsOptional()
+  @Type(() => FileAttachmentDto)
+  @ValidateNested({ each: true })
+  @Expose()
+  newImages?: FileAttachmentDto[];
+
   //TODO: IMAGE
 }
