@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
 import { BaseController } from 'src/core';
 import { SearchResults } from '../company-district/nanuda-company-district.service';
-import { SpaceListDto } from './dto';
+import { NanudaSpaceSearchDto, SpaceListDto } from './dto';
 import { NanudaSpaceService } from './nanuda-space.service';
 import { Space } from './space.entity';
 
@@ -37,8 +37,14 @@ export class NanudaSpaceController extends BaseController {
    * @param spaceListDto
    */
   @Get('/nanuda/space/search')
-  async search(@Query() spaceListDto: SpaceListDto): Promise<SearchResults> {
-    return await this.nanudaSpaceService.search(spaceListDto);
+  async search(
+    @Query() spaceListDto: SpaceListDto,
+    @Query() nanudaSpaceSearchDto: NanudaSpaceSearchDto,
+  ): Promise<SearchResults> {
+    return await this.nanudaSpaceService.search(
+      spaceListDto,
+      nanudaSpaceSearchDto,
+    );
   }
 
   /**
