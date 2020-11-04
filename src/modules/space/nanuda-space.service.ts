@@ -142,11 +142,11 @@ export class NanudaSpaceService extends BaseService {
     }
     const space = await this.spaceRepo
       .createQueryBuilder('space')
-      .CustomLeftJoinAndSelect(['amenities', 'brands'])
+      .CustomLeftJoinAndSelect(['amenities'])
       .where('space.delYn = :delYn', { delYn: YN.NO })
       .andWhere('space.showYn = :showYn', { showYn: YN.YES })
       .AndWhereIn('amenities', 'no', nanudaSpaceSearchDto.amenityIds)
-      .AndWhereIn('brands', 'no', nanudaSpaceSearchDto.brandIds)
+      // .AndWhereIn('brands', 'no', nanudaSpaceSearchDto.brandIds)
       .andWhere('space.spaceTypeNo = :spaceTypeNo', {
         spaceTypeNo: SPACE_TYPE.SPACE_SHARE,
       })
