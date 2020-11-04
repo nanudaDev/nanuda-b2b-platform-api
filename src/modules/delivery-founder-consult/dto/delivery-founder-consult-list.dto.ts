@@ -29,15 +29,15 @@ export class DeliveryFounderConsultListDto
   @Expose()
   phone?: string;
 
-  @ApiPropertyOptional({ enum: FOUNDER_CONSULT })
+  @ApiPropertyOptional({ enum: FOUNDER_CONSULT, isArray: true })
   @IsOptional()
-  @IsEnum(FOUNDER_CONSULT)
+  @IsEnum(FOUNDER_CONSULT, { each: true })
   @Expose()
   status?: FOUNDER_CONSULT;
 
-  @ApiPropertyOptional({ enum: AVAILABLE_TIME })
+  @ApiPropertyOptional({ enum: AVAILABLE_TIME, isArray: true })
   @IsOptional()
-  @IsEnum(AVAILABLE_TIME)
+  @IsEnum(AVAILABLE_TIME, { each: true })
   @Expose()
   hopeTime?: AVAILABLE_TIME;
 
@@ -110,9 +110,9 @@ export class DeliveryFounderConsultListDto
   @Expose()
   hopeFoodCategory?: string;
 
-  @ApiPropertyOptional({ enum: B2B_FOUNDER_CONSULT })
+  @ApiPropertyOptional({ enum: B2B_FOUNDER_CONSULT, isArray: true })
   @IsOptional()
-  @IsEnum(B2B_FOUNDER_CONSULT)
+  @IsEnum(B2B_FOUNDER_CONSULT, { each: true })
   @Expose()
   companyDecisionStatus?: B2B_FOUNDER_CONSULT;
 
