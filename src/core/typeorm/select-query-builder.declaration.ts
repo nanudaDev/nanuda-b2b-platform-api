@@ -121,6 +121,14 @@ declare module 'typeorm/query-builder/SelectQueryBuilder' {
       values: any[],
       excludedRequestDto?: any,
     ): SelectQueryBuilder<Entity>;
+
+    AndWhereMatchInIds(
+      this: SelectQueryBuilder<Entity>,
+      alias: string,
+      property: string,
+      values: any[],
+      excludedRequestDto?: any,
+    ): SelectQueryBuilder<Entity>;
     /**
      * between current started, ended
      */
@@ -476,6 +484,27 @@ SelectQueryBuilder.prototype.AndWhereIn = function<Entity>(
         [`${alias}${ALIAS_DELIMETER}${property}`]: values,
       },
     );
+  }
+  return this;
+};
+
+SelectQueryBuilder.prototype.AndWhereMatchInIds = function<Entity>(
+  this: SelectQueryBuilder<Entity>,
+  alias: string,
+  property: string,
+  values: any[],
+  excludedRequestDto?: any,
+): SelectQueryBuilder<Entity> {
+  if (values && values.length > 0) {
+    values.map(value => {
+      console.log(value, alias);
+      this.andWhere(
+        `${alias}.${property} IN (SELECT NO FROM AMENITY WHERE NO = ${value})`,
+        // {
+        //   [`${alias}${ALIAS_DELIMETER}${property}`]: value,
+        // },
+      );
+    });
   }
   return this;
 };

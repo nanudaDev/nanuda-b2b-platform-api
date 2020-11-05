@@ -13,7 +13,12 @@ import { Brand } from './brand.entity';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { Repository, EntityManager } from 'typeorm';
 import { FileUploadService } from '../file-upload/file-upload.service';
-import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
+import {
+  ORDER_BY_VALUE,
+  PaginatedRequest,
+  PaginatedResponse,
+  YN,
+} from 'src/common';
 import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/delivery-space-brand-mapper.entity';
 import { SpaceNanudaBrand } from '../space-nanuda-brand/space-nanuda-brand.entity';
 import { SpaceTypeBrandMapper } from '../space-type-brand-mapper/space-type-brand-mapper.entity';
@@ -388,7 +393,13 @@ export class BrandService extends BaseService {
    * find all
    */
   async findAll() {
-    return await this.brandRepo.find({ where: { showYn: YN.YES } });
+    return await this.brandRepo
+      .createQueryBuilder('brand')
+      .where('brand.showYn = :showYn', { showYn: YN.YES })
+      .select(['brand.no', 'brand.nameKr'])
+      .orderBy('brand.isRecommendedYn', ORDER_BY_VALUE.DESC)
+      .addOrderBy('brand.no', ORDER_BY_VALUE.DESC)
+      .getMany();
   }
 
   /**
