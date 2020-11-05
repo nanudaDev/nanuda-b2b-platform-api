@@ -1,7 +1,7 @@
 import { BaseDto } from 'src/core';
 import { DeliverySpace } from '../delivery-space.entity';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsEnum, IsNumber } from 'class-validator';
+import { IsOptional, IsEnum, IsNumber, IsArray } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 import { YN, ORDER_BY_VALUE, Default } from 'src/common';
 
@@ -89,6 +89,12 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @IsOptional()
   @Expose()
   address?: string;
+
+  @ApiPropertyOptional({ name: 'amenityIds[]', type: Number, isArray: true })
+  @IsOptional()
+  @IsArray()
+  @Expose()
+  amenityIds?: number[];
 
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsOptional()
