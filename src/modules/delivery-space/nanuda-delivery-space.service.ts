@@ -37,6 +37,8 @@ export class NanudaDeliverySpaceService extends BaseService {
     pagination: PaginatedRequest,
   ): Promise<PaginatedResponse<DeliverySpace>> {
     // passing nanuda user token from old server
+    // amenity ids length because of exclude dto
+
     let nanudaUserNo = null;
     if (deliverySpaceListDto.nanudaUserNo) {
       nanudaUserNo = deliverySpaceListDto.nanudaUserNo;
@@ -47,7 +49,6 @@ export class NanudaDeliverySpaceService extends BaseService {
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
       .CustomLeftJoinAndSelect([
-        'amenities',
         'deliverySpaceOptions',
         'favoritedUsers',
         'contracts',
@@ -65,12 +66,12 @@ export class NanudaDeliverySpaceService extends BaseService {
       .andWhere('company.companyStatus = :companyStatus', {
         companyStatus: APPROVAL_STATUS.APPROVAL,
       })
-      .AndWhereLike(
-        'amenities',
-        'amenityName',
-        deliverySpaceListDto.amenityName,
-        deliverySpaceListDto.exclude('amenityName'),
-      )
+      // .AndWhereLike(
+      //   'amenities',
+      //   'amenityName',
+      //   deliverySpaceListDto.amenityName,
+      //   deliverySpaceListDto.exclude('amenityName'),
+      // )
       .AndWhereLike(
         'deliverySpaceOptions',
         'deliverySpaceOptionName',
@@ -100,9 +101,24 @@ export class NanudaDeliverySpaceService extends BaseService {
         'address',
         deliverySpaceListDto.address,
         deliverySpaceListDto.exclude('address'),
-      )
-      .WhereAndOrder(deliverySpaceListDto)
-      .Paginate(pagination);
+      );
+    if (
+      deliverySpaceListDto.amenityIds &&
+      deliverySpaceListDto.amenityIds.length > 0
+    ) {
+      const amenityIdsLength = deliverySpaceListDto.amenityIds.length;
+      qb.innerJoinAndSelect('deliverySpace.amenities', 'amenities');
+      qb.AndWhereIn(
+        'amenities',
+        'no',
+        deliverySpaceListDto.amenityIds,
+        deliverySpaceListDto.exclude('amenityIds'),
+      );
+      qb.groupBy('deliverySpace.no');
+      qb.having(`COUNT(DISTINCT amenities.no) = ${amenityIdsLength}`);
+    }
+    qb.WhereAndOrder(deliverySpaceListDto);
+    qb.Paginate(pagination);
 
     const [items, totalCount] = await qb.getManyAndCount();
     // add favorite mark
