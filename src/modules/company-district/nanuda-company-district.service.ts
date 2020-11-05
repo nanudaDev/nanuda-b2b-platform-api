@@ -75,16 +75,16 @@ export class NanudaCompanyDistrictService extends BaseService {
       searchResults.lat = latLon.data.documents[0].y;
       searchResults.lon = latLon.data.documents[0].x;
     }
-    const cities = await this.companyDistrictRepo
+    let qb = this.companyDistrictRepo
       .createQueryBuilder('companyDistrict')
       .CustomInnerJoinAndSelect(['company', 'deliverySpaces'])
       .leftJoinAndSelect('deliverySpaces.contracts', 'contracts')
-      .leftJoinAndSelect('deliverySpaces.amenities', 'amenities')
-      .leftJoinAndSelect('deliverySpaces.brands', 'brands')
-      .leftJoinAndSelect(
-        'deliverySpaces.deliverySpaceOptions',
-        'deliverySpaceOptions',
-      )
+      .innerJoinAndSelect('deliverySpaces.amenities', 'amenities')
+      // .leftJoinAndSelect('deliverySpaces.brands', 'brands')
+      // .leftJoinAndSelect(
+      //   'deliverySpaces.deliverySpaceOptions',
+      //   'deliverySpaceOptions',
+      // )
       .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
         companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
       })
@@ -95,14 +95,22 @@ export class NanudaCompanyDistrictService extends BaseService {
       .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
       // removed excludedDto
       .AndWhereIn('amenities', 'no', nanudaCompanyDistrictSearchDto.amenityIds)
-      .AndWhereIn('brands', 'no', nanudaCompanyDistrictSearchDto.brandIds)
-      .AndWhereIn(
-        'deliverySpaceOptions',
-        'no',
-        nanudaCompanyDistrictSearchDto.deliverySpaceOptionIds,
-      )
-      .getMany();
-
+      // .AndWhereIn('brands', 'no', nanudaCompanyDistrictSearchDto.brandIds)
+      // .AndWhereIn(
+      //   'deliverySpaceOptions',
+      //   'no',
+      //   nanudaCompanyDistrictSearchDto.deliverySpaceOptionIds,
+      // )
+      .groupBy('companyDistrict.no');
+    if (
+      nanudaCompanyDistrictSearchDto.amenityIds &&
+      nanudaCompanyDistrictSearchDto.amenityIds.length > 0
+    ) {
+      qb.having(
+        `COUNT(DISTINCT amenities.no) = ${nanudaCompanyDistrictSearchDto.amenityIds.length}`,
+      );
+    }
+    const cities = await qb.getMany();
     // TODO: typeorm subquery로 해결
     cities.map(city => {
       city.deliverySpaces.map(deliverySpace => {
