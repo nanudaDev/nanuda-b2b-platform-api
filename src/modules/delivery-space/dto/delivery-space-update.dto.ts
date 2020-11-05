@@ -48,13 +48,13 @@ export class DeliverySpaceUpdateDto extends BaseDto<DeliverySpaceUpdateDto>
   @Expose()
   showYn?: YN;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ isArray: true })
   @IsOptional()
   @IsArray()
   @Expose()
   amenityIds?: number[];
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ isArray: true })
   @IsOptional()
   @IsArray()
   @Expose()

@@ -23,10 +23,10 @@ export class AdminDeliveryFounderConsultUpdateDto
   @Expose()
   spaceConsultEtc: string;
 
-  @ApiPropertyOptional({ enum: FOUNDER_CONSULT })
+  @ApiPropertyOptional({ enum: FOUNDER_CONSULT, isArray: true })
   @IsOptional()
   @Expose()
-  @IsEnum(FOUNDER_CONSULT)
+  @IsEnum(FOUNDER_CONSULT, { each: true })
   status?: FOUNDER_CONSULT;
 
   @ApiPropertyOptional({ enum: YN })
