@@ -29,20 +29,22 @@ export class AdminCompanyUserUpdateDto
   @Expose()
   email?: string;
 
-  @ApiPropertyOptional({ enum: COMPANY_USER })
+  @ApiPropertyOptional({ enum: COMPANY_USER, isArray: true })
   @IsOptional()
-  @IsEnum(COMPANY_USER)
+  @IsEnum(COMPANY_USER, { each: true })
   @Expose()
   authCode?: COMPANY_USER;
 
-  @ApiPropertyOptional({ enum: APPROVAL_STATUS })
+  @ApiPropertyOptional({ enum: APPROVAL_STATUS, isArray: true })
   @IsOptional()
   @Expose()
+  @IsEnum(APPROVAL_STATUS, { each: true })
   companyUserStatus?: APPROVAL_STATUS;
 
   @ApiPropertyOptional({ enum: YN })
   @IsOptional()
   @Expose()
+  @IsEnum(YN)
   delYn?: YN;
   //   company user number
   companyUserNo: number;

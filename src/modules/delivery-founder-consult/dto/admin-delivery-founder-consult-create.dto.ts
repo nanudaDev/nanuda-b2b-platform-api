@@ -1,6 +1,12 @@
 import { BaseDto, FOUNDER_CONSULT, FOOD_CATEGORY } from 'src/core';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsEnum, IsEmail } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsEnum,
+  IsEmail,
+  IsDate,
+} from 'class-validator';
 import { Expose } from 'class-transformer';
 import { Default, AVAILABLE_TIME, YN } from 'src/common';
 
@@ -23,7 +29,7 @@ export class AdminDeliveryFounderConsultCreateDto extends BaseDto<
   spaceConsultManager: number;
 
   @ApiPropertyOptional({ enum: FOUNDER_CONSULT })
-  @IsEnum(FOUNDER_CONSULT)
+  @IsEnum(FOUNDER_CONSULT, { each: true })
   @IsOptional()
   @Default(FOUNDER_CONSULT.F_NEW_REG)
   @Expose()
@@ -32,9 +38,10 @@ export class AdminDeliveryFounderConsultCreateDto extends BaseDto<
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  @IsDate()
   hopeDate?: Date;
 
-  @ApiPropertyOptional({ enum: AVAILABLE_TIME })
+  @ApiPropertyOptional({ enum: AVAILABLE_TIME, isArray: true })
   @IsOptional()
   @Expose()
   @Default(AVAILABLE_TIME.ALL)

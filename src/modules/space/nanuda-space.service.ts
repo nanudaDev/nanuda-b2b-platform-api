@@ -9,7 +9,7 @@ import {
   DropdownResults,
   SearchResults,
 } from '../company-district/nanuda-company-district.service';
-import { SpaceListDto } from './dto';
+import { NanudaSpaceSearchDto, SpaceListDto } from './dto';
 import { Space } from './space.entity';
 
 @Injectable()
@@ -103,9 +103,11 @@ export class NanudaSpaceService extends BaseService {
    * search
    * @param companyDistrictListDto
    */
-  async search(spaceListDto: SpaceListDto): Promise<SearchResults> {
+  async search(
+    spaceListDto: SpaceListDto,
+    nanudaSpaceSearchDto: NanudaSpaceSearchDto,
+  ): Promise<SearchResults> {
     const searchResults = new SearchResults();
-
     // "https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000" \
     // --data-urlencode "query=카카오프렌즈" \
     // -H "Authorization: KakaoAK {REST_API_KEY}"
@@ -137,15 +139,28 @@ export class NanudaSpaceService extends BaseService {
       searchResults.lat = latLon.data.documents[0].y;
       searchResults.lon = latLon.data.documents[0].x;
     }
-    const space = await this.spaceRepo
+    const qb = this.spaceRepo
       .createQueryBuilder('space')
       .where('space.delYn = :delYn', { delYn: YN.NO })
       .andWhere('space.showYn = :showYn', { showYn: YN.YES })
+      // .AndWhereIn('brands', 'no', nanudaSpaceSearchDto.brandIds)
       .andWhere('space.spaceTypeNo = :spaceTypeNo', {
         spaceTypeNo: SPACE_TYPE.SPACE_SHARE,
-      })
-      // .limit(2)
-      .getMany();
+      });
+    // .limit(2)
+    if (
+      nanudaSpaceSearchDto.amenityIds &&
+      nanudaSpaceSearchDto.amenityIds.length > 0
+    ) {
+      qb.CustomInnerJoinAndSelect(['amenities']);
+      qb.AndWhereIn('amenities', 'no', nanudaSpaceSearchDto.amenityIds);
+      qb.groupBy('space.no');
+      qb.having(
+        `COUNT(DISTINCT amenities.no) = ${nanudaSpaceSearchDto.amenityIds.length}`,
+      );
+    }
+
+    const space = await qb.getMany();
     // TODO: typeorm subquery로 해결
     searchResults.cities = space;
     return searchResults;

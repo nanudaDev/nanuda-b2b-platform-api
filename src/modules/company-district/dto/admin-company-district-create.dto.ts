@@ -7,15 +7,16 @@ import { Default } from 'src/common';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';
 
 export class AdminCompanyDistrictCreateDto extends CompanyDistrictCreateDto {
-  @ApiPropertyOptional({ enum: APPROVAL_STATUS })
+  @ApiPropertyOptional({ enum: APPROVAL_STATUS, isArray: true })
   @IsOptional()
-  @IsEnum(APPROVAL_STATUS)
+  @IsEnum(APPROVAL_STATUS, { each: true })
   @Expose()
   @Default(APPROVAL_STATUS.APPROVAL)
   companyDistrictStatus?: APPROVAL_STATUS;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ name: 'amenityIds[]', type: Number, isArray: true })
   @IsOptional()
   @Expose()
+  @IsArray()
   amenityIds?: number[];
 }

@@ -52,9 +52,9 @@ export class CompanyUserCreateDto extends BaseDto<CompanyUserCreateDto>
   @Expose()
   companyNo: number;
 
-  @ApiPropertyOptional({ enum: COMPANY_USER })
+  @ApiPropertyOptional({ enum: COMPANY_USER, isArray: true })
   @IsOptional()
-  @IsEnum(COMPANY_USER)
+  @IsEnum(COMPANY_USER, { each: true })
   @Default(COMPANY_USER.NORMAL_COMPANY_USER)
   @Expose()
   authCode?: COMPANY_USER;
