@@ -42,6 +42,8 @@ import {
   NanudaHomepageModule,
   PopupModule,
   BannerModule,
+  PresentationEventModule,
+  AttendeesModule,
 } from './modules';
 import { AdminModule } from './modules/admin/admin.module';
 import { PaymentList } from './modules/payment-list/payment-list.entity';
@@ -99,6 +101,7 @@ const env = process.env;
     AdminModule,
     AmenityModule,
     ArticleModule,
+    AttendeesModule,
     BannerModule,
     BestSpaceMapperModule,
     BrandModule,
@@ -126,6 +129,7 @@ const env = process.env;
     NoticeBoardModule,
     PaymentListModule,
     PopupModule,
+    PresentationEventModule,
     ProductConsultModule,
     SpaceModule,
     SearchModule,
