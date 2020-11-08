@@ -1,3 +1,4 @@
+export * from './attendees/attendees.module';
 export * from './auth/auth.module';
 export * from './company/company.module';
 export * from './admin';
@@ -28,6 +29,7 @@ export * from './homepage/nanuda-homepage.module';
 export * from './nanuda-kitchen-menu/nanuda-kitchen-menu.module';
 export * from './nanuda-user/nanuda-user.module';
 export * from './notice-board/notice-board.module';
+export * from './presentation-event/presentation-event.module';
 export * from './search/search.module';
 export * from './sms-auth/sms-auth.module';
 export * from './space/space.module';
