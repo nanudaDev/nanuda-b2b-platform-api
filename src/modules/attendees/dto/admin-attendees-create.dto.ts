@@ -23,6 +23,11 @@ export class AdminAttendeesCreateDto extends BaseDto<AdminAttendeesCreateDto>
   @Expose()
   eventNo: number;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @Expose()
+  scheduleTime?: string;
+
   @ApiPropertyOptional({ enum: YN })
   @IsOptional()
   @IsEnum(YN, { each: true })
@@ -37,7 +42,7 @@ export class AdminAttendeesCreateDto extends BaseDto<AdminAttendeesCreateDto>
   @Default(YN.NO)
   isContracted?: YN;
 
-  @ApiPropertyOptional({ enum: GENDER, isArray: true })
+  @ApiPropertyOptional({ enum: GENDER })
   @IsOptional()
   @IsEnum(GENDER, { each: true })
   @Expose()

@@ -45,20 +45,26 @@ export class Attendees extends BaseEntity<Attendees> {
     name: 'IS_CONTRACTED',
     default: YN.NO,
   })
-  isContracted: string;
+  isContracted?: string;
 
   @Column({
     type: 'char',
     name: 'IS_ATTENDED',
     default: YN.NO,
   })
-  isAttended: string;
+  isAttended?: string;
 
   @Column({
     type: 'char',
     name: 'GENDER',
   })
   gender?: GENDER;
+
+  @Column({
+    type: 'varchar',
+    name: 'SCHEDULE_TIME',
+  })
+  scheduleTime?: string;
 
   //   is nanuda user or no
   isNanudaUser?: YN;
