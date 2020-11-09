@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from 'src/core';
 import { YN } from 'src/common';
+import { Brand } from '../brand/brand.entity';
 
 @Entity({ name: 'SPACE_TYPE' })
 export class SpaceType extends BaseEntity<SpaceType> {
@@ -58,4 +59,19 @@ export class SpaceType extends BaseEntity<SpaceType> {
     default: YN.NO,
   })
   delYn?: YN;
+
+  @ManyToMany(
+    type => Brand,
+    brands => brands.spaceType,
+  )
+  @JoinTable({
+    name: 'SPACE_TYPE_BRAND_MAPPER',
+    joinColumn: {
+      name: 'SPACE_TYPE_NO',
+    },
+    inverseJoinColumn: {
+      name: 'BRAND_NO',
+    },
+  })
+  brands?: Brand[];
 }

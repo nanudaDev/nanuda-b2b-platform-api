@@ -47,6 +47,10 @@ export class AdminPresentationEventController extends BaseController {
     );
   }
 
+  /**
+   * find one for admin
+   * @param presentationEventNo
+   */
   @Get('/admin/presentation-event/:id([0-9]+)')
   async findOne(
     @Param('id', ParseIntPipe) presentationEventNo: number,

@@ -29,6 +29,14 @@ export class AttendeesService extends BaseService {
   ): Promise<Attendees> {
     let newAttendee = new Attendees(adminAttendeesCreateDto);
     newAttendee = await this.attendeesRepos.save(newAttendee);
+    // get event
+    // const attendedData = await this.attendeesRepos
+    //   .createQueryBuilder('attendee')
+    //   .CustomInnerJoinAndSelect(['event'])
+    //   .where('attendee.no = :no', { no: newAttendee.no })
+    //   .getOne();
+    // // send message to user
+    // await this.nanudaSmsNotificationService.sendPresentationEvent(attendedData);
     return newAttendee;
   }
 
@@ -58,7 +66,8 @@ export class AttendeesService extends BaseService {
   ): Promise<PaginatedResponse<Attendees>> {
     const qb = this.attendeesRepos
       .createQueryBuilder('attendees')
-      .CustomInnerJoinAndSelect(['event', 'genderInfo'])
+      .CustomInnerJoinAndSelect(['event'])
+      .CustomLeftJoinAndSelect(['genderInfo'])
       .AndWhereLike(
         'attendees',
         'name',
@@ -74,17 +83,19 @@ export class AttendeesService extends BaseService {
       .WhereAndOrder(adminAttendeesListDto)
       .Paginate(pagination);
 
-    const [items, totalCount] = await qb.getManyAndCount();
-    // items.map(async item => {
-    //   const isUser = await this.entityManager
-    //     .getRepository(NanudaUser)
-    //     .createQueryBuilder('nanudaUser')
-    //     .where('nanudaUser.phone = :phone', { no: item.phone })
-    //     .getOne();
-    //   if (isUser) {
-    //     item.isNanudaUser = YN.YES;
-    //   }
-    // });
+    let [items, totalCount] = await qb.getManyAndCount();
+    await Promise.all(
+      items.map(async item => {
+        const isUser = await this.entityManager
+          .getRepository(NanudaUser)
+          .findOne({ where: { phone: item.phone } });
+        if (!isUser) {
+          item.isNanudaUser = YN.NO;
+        } else {
+          item.isNanudaUser = YN.YES;
+        }
+      }),
+    );
     return { items, totalCount };
   }
 
@@ -95,7 +106,8 @@ export class AttendeesService extends BaseService {
   async findOneForAdmin(attendeesNo: number): Promise<Attendees> {
     const qb = await this.attendeesRepos
       .createQueryBuilder('attendees')
-      .CustomInnerJoinAndSelect(['event', 'genderInfo'])
+      .CustomInnerJoinAndSelect(['event'])
+      .CustomLeftJoinAndSelect(['genderInfo'])
       .where('attendees.no = :no', { no: attendeesNo })
       .getOne();
 
