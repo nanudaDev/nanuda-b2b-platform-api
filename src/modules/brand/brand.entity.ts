@@ -166,6 +166,21 @@ export class Brand extends BaseEntity<Brand> {
   })
   spaceTypeNo?: SPACE_TYPE;
 
+  @ManyToMany(
+    type => SpaceType,
+    spaceType => spaceType.brands,
+  )
+  @JoinTable({
+    name: 'SPACE_TYPE_BRAND_MAPPER',
+    joinColumn: {
+      name: 'BRAND_NO',
+    },
+    inverseJoinColumn: {
+      name: 'SPACE_TYPE_NO',
+    },
+  })
+  spaceType?: SpaceType[];
+
   @OneToOne(type => FoodCategory)
   @JoinColumn({ name: 'CATEGORY_NO' })
   category?: FoodCategory;

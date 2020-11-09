@@ -27,7 +27,7 @@ export class AdminPresentationEventCreateDto
   @Expose()
   desc?: string;
 
-  @ApiPropertyOptional({ enum: PRESENTATION_EVENT_TYPE, isArray: true })
+  @ApiPropertyOptional({ enum: PRESENTATION_EVENT_TYPE })
   @IsEnum(PRESENTATION_EVENT_TYPE, { each: true })
   @IsOptional()
   @Default(PRESENTATION_EVENT_TYPE.COMMON_EVENT)
@@ -54,6 +54,7 @@ export class AdminPresentationEventCreateDto
   @ArrayMinSize(1)
   @IsArray()
   @Expose()
+  @Default(['오전 11시', '오후 2시'])
   schedule: string[];
 
   @ApiProperty()

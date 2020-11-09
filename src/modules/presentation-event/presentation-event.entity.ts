@@ -1,3 +1,4 @@
+import { YN } from 'src/common';
 import { BaseEntity, PRESENTATION_EVENT_TYPE } from 'src/core';
 import {
   Column,
@@ -8,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Attendees } from '../attendees/attendees.entity';
+import { Brand } from '../brand/brand.entity';
 import { CodeManagement } from '../code-management/code-management.entity';
 import { FileAttachmentDto } from '../file-upload/dto';
 
@@ -104,6 +106,15 @@ export class PresentationEvent extends BaseEntity<PresentationEvent> {
   signedUpAttendees?: Attendees;
 
   @OneToOne(type => CodeManagement)
-  @JoinColumn({ name: 'EVENT_TYPEP', referencedColumnName: 'key' })
+  @JoinColumn({ name: 'EVENT_TYPE', referencedColumnName: 'key' })
   eventTypeInfo?: CodeManagement;
+
+  // brands based on space type no
+  brands?: Brand[];
+
+  // presentation event finished
+  isEnded?: YN;
+
+  // 주변 전철 정보
+  subwayStations?: any;
 }

@@ -4,7 +4,6 @@ import { BaseService } from '../base.service';
 import { Request } from 'express';
 import * as aligoapi from 'aligoapi';
 import { YN } from 'src/common';
-import { Admin } from 'src/modules/admin/admin.entity';
 import { AdminSendMessageDto } from 'src/modules/sms-auth/dto';
 export class AligoAuth {
   key: string;

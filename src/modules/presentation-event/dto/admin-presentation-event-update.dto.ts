@@ -27,7 +27,7 @@ export class AdminPresentationEventUpdateeDto
   @Expose()
   desc?: string;
 
-  @ApiPropertyOptional({ enum: PRESENTATION_EVENT_TYPE, isArray: true })
+  @ApiPropertyOptional({ enum: PRESENTATION_EVENT_TYPE })
   @IsEnum(PRESENTATION_EVENT_TYPE, { each: true })
   @IsOptional()
   @Default(PRESENTATION_EVENT_TYPE.COMMON_EVENT)
@@ -50,8 +50,9 @@ export class AdminPresentationEventUpdateeDto
   @Expose()
   mobileImage?: FileAttachmentDto[];
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @ArrayMinSize(1)
+  @IsOptional()
   @IsArray()
   @Expose()
   schedule: string[];
