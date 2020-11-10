@@ -74,4 +74,14 @@ export class AdminPresentationEventUpdateeDto
   @IsOptional()
   @Expose()
   presentationDate: Date;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  lat?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  lon?: string;
 }
