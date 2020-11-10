@@ -62,6 +62,16 @@ export class AdminProductConsultListDto
   @IsEnum(AVAILABLE_TIME)
   hopeTime?: AVAILABLE_TIME;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  brandNo?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  brandName?: string;
+
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsOptional()
   @IsEnum(ORDER_BY_VALUE)
