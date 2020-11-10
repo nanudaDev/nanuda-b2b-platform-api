@@ -107,4 +107,20 @@ export class AdminFounderConsultController extends BaseController {
   ): Promise<FounderConsult> {
     return await this.founderConsultService.reverseReadStatus(founderConsultNo);
   }
+
+  /**
+   * assign admin
+   * @param admin
+   * @param founderConsultNo
+   */
+  @Patch('/admin/founder-consult/:id([0-9]+)/assign')
+  async assign(
+    @UserInfo() admin: Admin,
+    @Param('id', ParseIntPipe) founderConsultNo: number,
+  ) {
+    return await this.founderConsultService.assignAdmin(
+      admin.no,
+      founderConsultNo,
+    );
+  }
 }

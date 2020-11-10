@@ -446,6 +446,20 @@ export class FounderConsultService extends BaseService {
   }
 
   /**
+   * assign yourself for manager
+   * @param adminNo
+   * @param founderConsultNo
+   */
+  async assignAdmin(adminNo: number, founderConsultNo: number) {
+    await this.founderConsultRepo
+      .createQueryBuilder()
+      .update(FounderConsult)
+      .set({ spaceConsultManager: adminNo })
+      .where('no = :no', { no: founderConsultNo })
+      .execute();
+  }
+
+  /**
    * search for founder consult
    * TODO: add OR
    * @param keyword

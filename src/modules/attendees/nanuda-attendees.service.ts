@@ -29,7 +29,7 @@ export class NanudaAttendeesService extends BaseService {
    */
   async createForNanudaUser(
     nanudaAttendeesCreateDto: NanudaAttendeesCreateDto,
-    req: Request,
+    req?: Request,
   ): Promise<Attendees> {
     let newAttendee = new Attendees(nanudaAttendeesCreateDto);
     const checkEvent = await this.entityManager
