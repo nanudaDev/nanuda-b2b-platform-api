@@ -37,6 +37,7 @@ export class AttendeesService extends BaseService {
     //   .getOne();
     // // send message to user
     // await this.nanudaSmsNotificationService.sendPresentationEvent(attendedData);
+    // 문자 보낼지 고민 중
     return newAttendee;
   }
 
@@ -113,4 +114,6 @@ export class AttendeesService extends BaseService {
 
     return qb;
   }
+
+  async compareAttendeesDataWithPreviousEvent(eventNo: number) {}
 }
