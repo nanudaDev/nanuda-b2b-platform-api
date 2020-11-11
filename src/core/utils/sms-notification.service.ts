@@ -4,7 +4,6 @@ import { BaseService } from '../base.service';
 import { Request } from 'express';
 import * as aligoapi from 'aligoapi';
 import { YN } from 'src/common';
-import { Admin } from 'src/modules/admin/admin.entity';
 import { AdminSendMessageDto } from 'src/modules/sms-auth/dto';
 export class AligoAuth {
   key: string;
@@ -25,8 +24,7 @@ export class SmsNotificationService extends BaseService {
   async sendLoginPrompt(req: Request, code: number): Promise<any> {
     const payload = await this.__login_prompt_message(req.body.phone, code);
     req.body = payload.body;
-    const sms = await aligoapi.send(req, payload.auth);
-    console.log(sms);
+    await aligoapi.send(req, payload.auth);
     return;
   }
 
@@ -47,8 +45,7 @@ export class SmsNotificationService extends BaseService {
       title: `${adminSendMessageDto.title}`,
     };
     req.body = body;
-    const sms = await aligoapi.send(req, auth);
-    console.log(sms);
+    await aligoapi.send(req, auth);
     return;
   }
 

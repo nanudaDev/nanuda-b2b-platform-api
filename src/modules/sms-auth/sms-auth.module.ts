@@ -9,6 +9,7 @@ import { CompanyUserUpdateHistory } from '../company-user-update-history/company
 import { PasswordService } from '../auth';
 import {
   NanudaSlackNotificationService,
+  NanudaSmsNotificationService,
   SmsNotificationService,
 } from 'src/core/utils';
 import { AdminSmsController } from './admin-sms-auth.controller';
@@ -24,7 +25,8 @@ import { AdminSmsController } from './admin-sms-auth.controller';
     PasswordService,
     NanudaSlackNotificationService,
     SmsNotificationService,
+    NanudaSmsNotificationService,
   ],
-  exports: [],
+  exports: [NanudaSmsNotificationService],
 })
 export class SmsAuthModule {}

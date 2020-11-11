@@ -12,6 +12,7 @@ export enum UPLOAD_TYPE {
   NOTICE_BOARD = 'notice-board',
   MENU = 'menu',
   MAIN_MENU_IMAGE = 'main-menu-image',
+  PRESENTATION_EVENT = 'presentation-event',
 }
 
 export enum ACL {
@@ -123,6 +124,11 @@ export class UploadConfigService {
     },
     [UPLOAD_TYPE.MAIN_MENU_IMAGE]: {
       path: 'main-menu-image',
+      sizeLimit: 1024 * 1024 * 10,
+      fileType: FileType.IMAGE,
+    },
+    [UPLOAD_TYPE.PRESENTATION_EVENT]: {
+      path: 'presentation-event',
       sizeLimit: 1024 * 1024 * 10,
       fileType: FileType.IMAGE,
     },
