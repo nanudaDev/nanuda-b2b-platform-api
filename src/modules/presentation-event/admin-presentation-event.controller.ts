@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -84,6 +85,17 @@ export class AdminPresentationEventController extends BaseController {
     return await this.presentationEventService.updateForAdmin(
       presentationEventNo,
       adminPresentationEventUpdateDto,
+    );
+  }
+
+  /**
+   * presentation event delete
+   * @param presentationEventNo
+   */
+  @Delete('/admin/presentation-event/:id([0-9]+)')
+  async hardDelete(@Param('id', ParseIntPipe) presentationEventNo: number) {
+    return await this.presentationEventService.deleteForAdmin(
+      presentationEventNo,
     );
   }
 }

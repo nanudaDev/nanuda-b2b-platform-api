@@ -1,5 +1,5 @@
 require('dotenv').config();
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
 import { BaseService } from 'src/core';
@@ -169,5 +169,24 @@ export class PresentationEventService extends BaseService {
     );
     qb.subwayStations = sub.data.response.body;
     return qb;
+  }
+
+  /**
+   * hard delete for admin
+   * @param presentationEventNo
+   */
+  async deleteForAdmin(presentationEventNo: number) {
+    const checkEvent = await this.presentationEventRepo.findOne(
+      presentationEventNo,
+    );
+    if (!checkEvent) {
+      throw new NotFoundException();
+    }
+    await this.presentationEventRepo
+      .createQueryBuilder()
+      .delete()
+      .from(PresentationEvent)
+      .where('no = :no', { no: presentationEventNo })
+      .execute();
   }
 }
