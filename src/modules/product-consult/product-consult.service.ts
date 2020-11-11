@@ -39,6 +39,7 @@ export class ProductConsultService extends BaseService {
         'availableTime',
         'spaceType',
         'addressInfo',
+        'brand',
       ])
       .CustomInnerJoinAndSelect(['codeManagement'])
       .AndWhereLike(
@@ -58,6 +59,18 @@ export class ProductConsultService extends BaseService {
         'phone',
         adminProductConsutListDto.nanudaUserPhone,
         adminProductConsutListDto.exclude('nanudaUserPhone'),
+      )
+      .AndWhereLike(
+        'brand',
+        'nameKr',
+        adminProductConsutListDto.brandName,
+        adminProductConsutListDto.exclude('brandName'),
+      )
+      .AndWhereEqual(
+        'brand',
+        'no',
+        adminProductConsutListDto.brandNo,
+        adminProductConsutListDto.exclude('brandNo'),
       )
       .AndWhereEqual(
         'nanudaUser',

@@ -27,6 +27,18 @@ export class AdminPresentationEventCreateDto
   @Expose()
   desc?: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  @Default('37.5019747')
+  lat: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  @Default('127.0244474')
+  lon?: string;
+
   @ApiPropertyOptional({ enum: PRESENTATION_EVENT_TYPE })
   @IsEnum(PRESENTATION_EVENT_TYPE, { each: true })
   @IsOptional()

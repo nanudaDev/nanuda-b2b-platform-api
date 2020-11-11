@@ -14,7 +14,7 @@ export class AdminAttendeesCreateDto extends BaseDto<AdminAttendeesCreateDto>
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsPhoneNumber('KR', { message: '옳바른 전화번호를 입력해주세요.' })
+  // @IsPhoneNumber('KR', { message: '옳바른 전화번호를 입력해주세요.' })
   @Expose()
   phone: string;
 
@@ -46,5 +46,5 @@ export class AdminAttendeesCreateDto extends BaseDto<AdminAttendeesCreateDto>
   @IsOptional()
   @IsEnum(GENDER, { each: true })
   @Expose()
-  gender: GENDER;
+  gender?: GENDER;
 }

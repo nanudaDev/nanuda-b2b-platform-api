@@ -20,7 +20,7 @@ export class NanudaAttendeesController extends BaseController {
   @Post('/nanuda/attendees')
   async create(
     @Body() nanudaAttendeesCreateDto: NanudaAttendeesCreateDto,
-    @Req() req: Request,
+    @Req() req?: Request,
   ): Promise<Attendees> {
     return await this.nanudaAttendeesService.createForNanudaUser(
       nanudaAttendeesCreateDto,

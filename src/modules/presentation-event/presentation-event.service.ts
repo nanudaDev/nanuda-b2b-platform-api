@@ -1,5 +1,5 @@
 require('dotenv').config();
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
 import { BaseService } from 'src/core';
@@ -155,12 +155,7 @@ export class PresentationEventService extends BaseService {
       .CustomLeftJoinAndSelect(['signedUpAttendees'])
       .where('presentationEvent.no = :no', { no: presentationEventNo })
       .getOne();
-    // query params
-    var request = require('request');
-
-    var url =
-      'http://openapi.tago.go.kr/openapi/service/SubwayInfoService/getKwrdFndSubwaySttnList';
-    var queryParams =
+    let queryParams =
       '?' +
       encodeURIComponent('ServiceKey') +
       `=${process.env.OPEN_API_DATA_KR_KEY}`; /* Service Key*/
@@ -168,40 +163,30 @@ export class PresentationEventService extends BaseService {
       '&' +
       encodeURIComponent('subwayStationName') +
       '=' +
-      encodeURIComponent('서울'); /* */
-
-    request(
-      {
-        url: url + queryParams,
-        method: 'GET',
-      },
-      function(error, response, body) {
-        //console.log('Status', response.statusCode);
-        // console.log('Headers', JSON.stringify(response.headers));
-        console.log('Reponse received', body);
-      },
+      encodeURIComponent('강남');
+    const sub = await Axios.get(
+      `${process.env.OPEN_API_DATA_KR_URL_GET_STATION}${queryParams}`,
     );
-    // console.log(process.env.OPEN_API_DATA_KR_KEY);
-    // const sub = await Axios.get(
-    //   `${process.env.OPEN_API_DATA_KR_URL_GET_STATION}`,
-    //   {
-    //     params: {
-    //       query: {
-    //         ServiceKey: process.env.OPEN_API_DATA_KR_KEY,
-    //         // subwayStationName: '서울',
-    //       },
-    //     },
-    //   },
-    // );
-    // console.log(sub.data);
-    // qb.subwayStations = JSON.stringify(
-    //   await Axios.get(`${process.env.OPEN_API_DATA_KR_URL_GET_STATION}`, {
-    //     params: {
-    //       ServiceKey: process.env.OPEN_API_DATA_KR_KEY,
-    //       subwayStationName: '서울',
-    //     },
-    //   }),
-    // );
+    qb.subwayStations = sub.data.response.body;
     return qb;
+  }
+
+  /**
+   * hard delete for admin
+   * @param presentationEventNo
+   */
+  async deleteForAdmin(presentationEventNo: number) {
+    const checkEvent = await this.presentationEventRepo.findOne(
+      presentationEventNo,
+    );
+    if (!checkEvent) {
+      throw new NotFoundException();
+    }
+    await this.presentationEventRepo
+      .createQueryBuilder()
+      .delete()
+      .from(PresentationEvent)
+      .where('no = :no', { no: presentationEventNo })
+      .execute();
   }
 }

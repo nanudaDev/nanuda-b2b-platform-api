@@ -27,6 +27,11 @@ export class AdminPresentationEventUpdateeDto
   @Expose()
   desc?: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  postEventDesc?: string;
+
   @ApiPropertyOptional({ enum: PRESENTATION_EVENT_TYPE })
   @IsEnum(PRESENTATION_EVENT_TYPE, { each: true })
   @IsOptional()
@@ -74,4 +79,14 @@ export class AdminPresentationEventUpdateeDto
   @IsOptional()
   @Expose()
   presentationDate: Date;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  lat?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  lon?: string;
 }
