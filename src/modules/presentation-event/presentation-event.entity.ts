@@ -102,7 +102,7 @@ export class PresentationEvent extends BaseEntity<PresentationEvent> {
     type: 'text',
     name: 'POST_EVENT_DESC',
   })
-  posteventDesc?: string;
+  postEventDesc?: string;
 
   //   no database column
   @OneToMany(
