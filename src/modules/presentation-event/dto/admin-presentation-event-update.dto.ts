@@ -27,6 +27,11 @@ export class AdminPresentationEventUpdateeDto
   @Expose()
   desc?: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  posteventDesc?: string;
+
   @ApiPropertyOptional({ enum: PRESENTATION_EVENT_TYPE })
   @IsEnum(PRESENTATION_EVENT_TYPE, { each: true })
   @IsOptional()
