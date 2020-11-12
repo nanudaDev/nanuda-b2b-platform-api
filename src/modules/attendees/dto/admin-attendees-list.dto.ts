@@ -1,6 +1,6 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsEnum, IsOptional, IsPhoneNumber } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsPhoneNumber } from 'class-validator';
 import { Default, ORDER_BY_VALUE, YN } from 'src/common';
 import { BaseDto, GENDER } from 'src/core';
 import { Attendees } from '../attendees.entity';
@@ -17,6 +17,11 @@ export class AdminAttendeesListDto extends BaseDto<AdminAttendeesListDto>
   @Expose()
   //   @IsPhoneNumber('KR')
   phone?: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @Expose()
+  eventNo: number;
 
   @ApiPropertyOptional({ enum: GENDER, isArray: true })
   @IsEnum(GENDER, { each: true })
