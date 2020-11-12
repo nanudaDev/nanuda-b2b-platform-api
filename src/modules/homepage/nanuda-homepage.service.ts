@@ -193,7 +193,7 @@ export class NanudaHomepageService extends BaseService {
       )
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
-      .limit(6)
+      .limit(12)
       .getMany();
 
     await Promise.all(

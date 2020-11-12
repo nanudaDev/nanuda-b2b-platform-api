@@ -4,6 +4,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsEnum, IsArray, ValidateNested } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';
+import { Default } from 'src/common';
 
 export class AdminCompanyDistrictUpdateDto extends CompanyDistrictUpdateDto {
   @ApiPropertyOptional({ enum: APPROVAL_STATUS })
@@ -16,4 +17,10 @@ export class AdminCompanyDistrictUpdateDto extends CompanyDistrictUpdateDto {
   @IsOptional()
   @Expose()
   companyNo?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  @Default(1000)
+  radius?: number;
 }

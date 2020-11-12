@@ -19,4 +19,10 @@ export class AdminCompanyDistrictCreateDto extends CompanyDistrictCreateDto {
   @Expose()
   @IsArray()
   amenityIds?: number[];
+
+  // @ApiPropertyOptional()
+  // @IsOptional()
+  // @Expose()
+  // @Default(1000)
+  // radius?: number
 }
