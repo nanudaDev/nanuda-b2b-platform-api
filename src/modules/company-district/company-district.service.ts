@@ -295,6 +295,7 @@ export class CompanyDistrictService extends BaseService {
           newCompanyDistrict.no,
           companyDistrictCreateDto.lat,
           companyDistrictCreateDto.lon,
+          companyDistrictCreateDto.radius,
         );
         return newCompanyDistrict;
       },
@@ -317,6 +318,7 @@ export class CompanyDistrictService extends BaseService {
       companyDistrictNo,
       adminCompanyDistrictLatLonDto.lat,
       adminCompanyDistrictLatLonDto.lon,
+      adminCompanyDistrictLatLonDto.radius,
     );
     return await this.companyDistrictRepo.save(district);
   }
@@ -577,6 +579,7 @@ export class CompanyDistrictService extends BaseService {
    * @param companyDistrictNo
    */
   async createVicinityInfo(companyDistrictNo: number) {
+    const defaultRadius = 1000;
     const companyDistrict = await this.companyDistrictRepo.findOne(
       companyDistrictNo,
     );
@@ -587,6 +590,7 @@ export class CompanyDistrictService extends BaseService {
       companyDistrict.no,
       companyDistrict.lat,
       companyDistrict.lon,
+      defaultRadius,
     );
   }
 
