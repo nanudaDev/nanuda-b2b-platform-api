@@ -16,8 +16,17 @@ export class CompanyDistrictAnalysisSenderService extends BaseService {
     super();
   }
 
-  async setVicinityAnalysis(districtNo: number, lat: string, lon: string) {
-    const param = { lat: parseFloat(lat), lon: parseFloat(lon) };
+  async setVicinityAnalysis(
+    districtNo: number,
+    lat: string,
+    lon: string,
+    radius: number,
+  ) {
+    const param = {
+      lat: parseFloat(lat),
+      lon: parseFloat(lon),
+      radius: radius,
+    };
     const start = new Date().getTime();
     console.log(`Started: ${start}`);
     const result = await Promise.all([
