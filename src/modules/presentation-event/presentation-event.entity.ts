@@ -104,6 +104,13 @@ export class PresentationEvent extends BaseEntity<PresentationEvent> {
   })
   postEventDesc?: string;
 
+  @Column({
+    type: 'varchar',
+    name: 'BUTTON_DESC',
+    default: '창업 설명회 신청하기',
+  })
+  buttonDesc?: string;
+
   //   no database column
   @OneToMany(
     type => Attendees,

@@ -13,6 +13,11 @@ import {
 import { PresentationEvent } from './presentation-event.entity';
 import Axios from 'axios';
 
+export class LatLon {
+  lat?: string;
+  lon?: string;
+}
+
 export class PresentationEventService extends BaseService {
   constructor(
     @InjectRepository(PresentationEvent)
@@ -54,6 +59,34 @@ export class PresentationEventService extends BaseService {
         });
       }
     }
+    if (adminPresentationEventCreateDto.address) {
+      let latLon = await Axios.get(
+        'https://dapi.kakao.com/v2/local/search/address.json',
+        {
+          params: { query: adminPresentationEventCreateDto.address },
+          headers: {
+            Authorization: `KakaoAK ${process.env.KAKAO_API_KEY}`,
+            mode: 'cors',
+          },
+        },
+      );
+      if (latLon.data.documents && latLon.data.documents.length === 0) {
+        latLon = await Axios.get(
+          'https://dapi.kakao.com/v2/local/search/keyword.json',
+          {
+            params: { query: adminPresentationEventCreateDto.address },
+            headers: {
+              Authorization: `KakaoAK ${process.env.KAKAO_API_KEY}`,
+              mode: 'cors',
+            },
+          },
+        );
+        adminPresentationEventCreateDto.lat = latLon.data.documents[0].y;
+        adminPresentationEventCreateDto.lon = latLon.data.documents[0].x;
+      }
+      adminPresentationEventCreateDto.lat = latLon.data.documents[0].y;
+      adminPresentationEventCreateDto.lon = latLon.data.documents[0].x;
+    }
     let newEvent = new PresentationEvent(adminPresentationEventCreateDto);
     newEvent = await this.presentationEventRepo.save(newEvent);
     return newEvent;
@@ -92,6 +125,34 @@ export class PresentationEventService extends BaseService {
           message: 'Mobile image upload failed!',
         });
       }
+    }
+    if (adminPresentationEventUpdateDto.address) {
+      let latLon = await Axios.get(
+        'https://dapi.kakao.com/v2/local/search/address.json',
+        {
+          params: { query: adminPresentationEventUpdateDto.address },
+          headers: {
+            Authorization: `KakaoAK ${process.env.KAKAO_API_KEY}`,
+            mode: 'cors',
+          },
+        },
+      );
+      if (latLon.data.documents && latLon.data.documents.length === 0) {
+        latLon = await Axios.get(
+          'https://dapi.kakao.com/v2/local/search/keyword.json',
+          {
+            params: { query: adminPresentationEventUpdateDto.address },
+            headers: {
+              Authorization: `KakaoAK ${process.env.KAKAO_API_KEY}`,
+              mode: 'cors',
+            },
+          },
+        );
+        adminPresentationEventUpdateDto.lat = latLon.data.documents[0].y;
+        adminPresentationEventUpdateDto.lon = latLon.data.documents[0].x;
+      }
+      adminPresentationEventUpdateDto.lat = latLon.data.documents[0].y;
+      adminPresentationEventUpdateDto.lon = latLon.data.documents[0].x;
     }
     presentationEvent = presentationEvent.set(adminPresentationEventUpdateDto);
     presentationEvent = await this.presentationEventRepo.save(
