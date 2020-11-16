@@ -184,6 +184,7 @@ export class NanudaHomepageService extends BaseService {
       .where('bestSpace.spaceTypeNo = :spaceTypeNo', {
         spaceTypeNo: SPACE_TYPE.ONLY_DELIVERY,
       })
+      .andWhere('bestSpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('company.companyStatus = :companyStatus', {
         companyStatus: APPROVAL_STATUS.APPROVAL,
       })

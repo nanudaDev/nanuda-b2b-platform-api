@@ -15,6 +15,7 @@ import {
   BRAND,
   DIFFICULTY,
   STORE_COUNT,
+  BRAND_TYPE,
 } from 'src/core';
 import { YN } from 'src/common';
 import { FoodCategory } from '../food-category/food-category.entity';
@@ -118,6 +119,12 @@ export class Brand extends BaseEntity<Brand> {
     name: 'URL_PATH',
   })
   urlPath?: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'BRAND_TYPE',
+  })
+  brandType?: BRAND_TYPE;
 
   @Column('char', {
     length: 1,
