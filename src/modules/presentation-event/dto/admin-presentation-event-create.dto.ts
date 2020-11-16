@@ -86,4 +86,10 @@ export class AdminPresentationEventCreateDto
   @IsNotEmpty()
   @Expose()
   presentationDate: Date;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Default('창업 설명회 신청하기')
+  @Expose()
+  buttonDesc?: string;
 }
