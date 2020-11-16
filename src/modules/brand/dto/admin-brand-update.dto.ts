@@ -1,4 +1,11 @@
-import { BaseDto, SPACE_TYPE, STORE_COUNT, BRAND, DIFFICULTY } from 'src/core';
+import {
+  BaseDto,
+  SPACE_TYPE,
+  STORE_COUNT,
+  BRAND,
+  DIFFICULTY,
+  BRAND_TYPE,
+} from 'src/core';
 import { Brand } from '../brand.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
@@ -101,6 +108,12 @@ export class AdminBrandUpdateDto extends BaseDto<AdminBrandUpdateDto>
   @IsOptional()
   @Expose()
   urlPath?: string;
+
+  @ApiPropertyOptional({ enum: BRAND_TYPE })
+  @IsOptional()
+  @IsEnum(BRAND_TYPE)
+  @Expose()
+  brandType?: BRAND_TYPE;
 
   @ApiPropertyOptional()
   @IsOptional()

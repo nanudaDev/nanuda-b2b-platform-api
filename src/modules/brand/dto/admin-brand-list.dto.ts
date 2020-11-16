@@ -1,4 +1,4 @@
-import { BaseDto } from 'src/core';
+import { BaseDto, BRAND_TYPE } from 'src/core';
 import { BrandListDto } from './brand-list.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { YN, Default } from 'src/common';
@@ -27,4 +27,10 @@ export class AdminBrandListDto extends BrandListDto {
   @IsOptional()
   @Expose()
   urlPath?: string;
+
+  @ApiPropertyOptional({ enum: BRAND_TYPE })
+  @IsOptional()
+  @IsEnum(BRAND_TYPE)
+  @Expose()
+  brandType?: BRAND_TYPE;
 }
