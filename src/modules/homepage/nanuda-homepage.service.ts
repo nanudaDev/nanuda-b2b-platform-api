@@ -39,6 +39,7 @@ export class NanudaHomepageService extends BaseService {
       .where('bestSpace.spaceTypeNo = :spaceTypeNo', {
         spaceTypeNo: SPACE_TYPE.SPACE_SHARE,
       })
+      .andWhere('bestSpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('space.showYn = :showYn', { showYn: YN.YES })
       .andWhere('space.delYn = :delYn', { delYn: YN.NO })
       .getMany();
@@ -81,6 +82,7 @@ export class NanudaHomepageService extends BaseService {
       .where('bestSpace.spaceTypeNo = :spaceTypeNo', {
         spaceTypeNo: SPACE_TYPE.ONLY_DELIVERY,
       })
+      .andWhere('bestSpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('company.companyStatus = :companyStatus', {
         companyStatus: APPROVAL_STATUS.APPROVAL,
       })
@@ -133,6 +135,7 @@ export class NanudaHomepageService extends BaseService {
       .where('bestSpace.spaceTypeNo = :spaceTypeNo', {
         spaceTypeNo: SPACE_TYPE.SPACE_SHARE,
       })
+      .andWhere('bestSpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('space.showYn = :showYn', { showYn: YN.YES })
       .andWhere('space.delYn = :delYn', { delYn: YN.NO })
       .limit(6)
@@ -184,6 +187,7 @@ export class NanudaHomepageService extends BaseService {
       .where('bestSpace.spaceTypeNo = :spaceTypeNo', {
         spaceTypeNo: SPACE_TYPE.ONLY_DELIVERY,
       })
+      .andWhere('bestSpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('company.companyStatus = :companyStatus', {
         companyStatus: APPROVAL_STATUS.APPROVAL,
       })
@@ -193,7 +197,7 @@ export class NanudaHomepageService extends BaseService {
       )
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
-      .limit(6)
+      .limit(12)
       .getMany();
 
     await Promise.all(

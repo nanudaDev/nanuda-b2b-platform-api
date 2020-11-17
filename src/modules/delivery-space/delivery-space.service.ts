@@ -3,7 +3,7 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { BaseService, SPACE_TYPE, SPACE, SPACE_PIC_STATUS } from 'src/core';
+import { BaseService, SPACE_TYPE, SPACE_PIC_STATUS } from 'src/core';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { DeliverySpace } from './delivery-space.entity';
 import { Repository, EntityManager } from 'typeorm';
@@ -25,8 +25,6 @@ import { DeliveryFounderConsultContractHistory } from '../delivery-founder-consu
 import { NanudaSlackNotificationService } from 'src/core/utils';
 import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/delivery-space-brand-mapper.entity';
 import { BestSpaceMapper } from '../best-space/best-space.entity';
-import { DeliverySpaceOption } from '../delivery-space-option/delivery-space-option.entity';
-import { Amenity } from '../amenity/amenity.entity';
 import { DeliverySpaceOptionSpaceMapper } from '../delivery-space-option-space-mapper/delivery-space-option-space-mapper.entity';
 
 @Injectable()

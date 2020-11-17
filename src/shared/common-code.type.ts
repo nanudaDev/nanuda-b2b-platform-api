@@ -48,6 +48,12 @@ export enum BRAND {
 }
 export const CONST_BRAND  = Object.values(BRAND);
 
+export enum BRAND_TYPE {
+ 'BUFFET_TYPE' = 'BUFFET_TYPE', 
+ 'PLATE_TYPE' = 'PLATE_TYPE', 
+}
+export const CONST_BRAND_TYPE  = Object.values(BRAND_TYPE);
+
 export enum CHANGUP_CONTRACT {
  'C_END' = 'C_END', 
  'C_PROCEEDING' = 'C_PROCEEDING', 

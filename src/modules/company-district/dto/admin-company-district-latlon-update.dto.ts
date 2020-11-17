@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Expose } from 'class-transformer';
+import { Default } from 'src/common';
 
 export class AdminCompanyDistrictLatLonDto {
   @ApiProperty()
@@ -27,4 +28,10 @@ export class AdminCompanyDistrictLatLonDto {
   @IsOptional()
   @Expose()
   region3DepthName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  @Default(1000)
+  radius?: number;
 }

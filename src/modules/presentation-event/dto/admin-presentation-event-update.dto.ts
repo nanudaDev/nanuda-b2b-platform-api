@@ -89,4 +89,10 @@ export class AdminPresentationEventUpdateeDto
   @IsOptional()
   @Expose()
   lon?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Default('창업 설명회 신청하기')
+  @Expose()
+  buttonDesc?: string;
 }
