@@ -56,13 +56,6 @@ export class Amenity extends BaseEntity<Amenity> {
   })
   image?: FileAttachmentDto[];
 
-  @Column({
-    type: 'json',
-    name: 'IMAGE',
-    nullable: true,
-  })
-  image?: FileAttachmentDto[];
-
   @ManyToMany(
     type => Space,
     space => space.amenities,
