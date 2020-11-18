@@ -11,6 +11,7 @@ import { Space } from '../space/space.entity';
 import { CompanyDistrict } from '../company-district/company-district.entity';
 import { Company } from '../company/company.entity';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
+import { FileAttachmentDto } from '../file-upload/dto';
 
 @Entity({ name: 'AMENITY' })
 export class Amenity extends BaseEntity<Amenity> {
@@ -48,6 +49,13 @@ export class Amenity extends BaseEntity<Amenity> {
     name: 'SPACE_TYPE_NO',
   })
   spaceTypeNo: number;
+
+  @Column({
+    type: 'json',
+    name: 'IMAGE',
+    nullable: true,
+  })
+  image?: FileAttachmentDto[];
 
   @ManyToMany(
     type => Space,
