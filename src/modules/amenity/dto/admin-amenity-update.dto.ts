@@ -1,4 +1,4 @@
-import { BaseDto, AMENITY } from 'src/core';
+import { BaseDto, AMENITY, SPACE_TYPE } from 'src/core';
 import { Part } from 'aws-sdk/clients/s3';
 import { Amenity } from '../amenity.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -26,5 +26,5 @@ export class AdminAmenityUpdateDto extends BaseDto<AdminAmenityUpdateDto>
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  spaceTypeNo?: 0 | 1 | 2;
+  spaceTypeNo?: SPACE_TYPE;
 }
