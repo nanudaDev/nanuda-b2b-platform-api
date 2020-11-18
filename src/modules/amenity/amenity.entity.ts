@@ -42,6 +42,13 @@ export class Amenity extends BaseEntity<Amenity> {
   })
   amenityType: AMENITY;
 
+  @Column({
+    type: 'int',
+    nullable: true,
+    name: 'SPACE_TYPE_NO',
+  })
+  spaceTypeNo: number;
+
   @ManyToMany(
     type => Space,
     space => space.amenities,
