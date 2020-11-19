@@ -109,7 +109,6 @@ export class DeliverySpaceService extends BaseService {
         companyDistrictNo: checkSpace.companyDistrictNo,
       })
       .AndWhereNext(deliverySpaceNo)
-      .select(['deliverySpace.no'])
       .getOne();
     if (!nextSpace) {
       return null;
@@ -129,7 +128,6 @@ export class DeliverySpaceService extends BaseService {
     const nextSpace = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .AndWhereNext(deliverySpaceNo)
-      .select(['deliverySpace.no'])
       .getOne();
     if (!nextSpace) {
       return null;
@@ -152,7 +150,6 @@ export class DeliverySpaceService extends BaseService {
         companyDistrictNo: checkSpace.companyDistrictNo,
       })
       .AndWherePrevious(deliverySpaceNo)
-      .select(['deliverySpace.no'])
       .getOne();
     if (!previousSpaceNo) {
       return null;
@@ -172,7 +169,6 @@ export class DeliverySpaceService extends BaseService {
     const previousSpaceNo = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .AndWherePrevious(deliverySpaceNo)
-      .select(['deliverySpace.no'])
       .getOne();
     if (!previousSpaceNo) {
       return null;
