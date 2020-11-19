@@ -6,11 +6,12 @@ import {
   JoinTable,
 } from 'typeorm';
 import { BaseEntity } from 'src/core';
-import { AMENITY } from 'src/shared';
+import { AMENITY, SPACE_TYPE } from 'src/shared';
 import { Space } from '../space/space.entity';
 import { CompanyDistrict } from '../company-district/company-district.entity';
 import { Company } from '../company/company.entity';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
+import { FileAttachmentDto } from '../file-upload/dto';
 
 @Entity({ name: 'AMENITY' })
 export class Amenity extends BaseEntity<Amenity> {
@@ -47,7 +48,13 @@ export class Amenity extends BaseEntity<Amenity> {
     nullable: true,
     name: 'SPACE_TYPE_NO',
   })
-  spaceTypeNo: number;
+  spaceTypeNo: SPACE_TYPE;
+
+  @Column({
+    type: 'json',
+    name: 'IMAGE',
+  })
+  image?: FileAttachmentDto[];
 
   @ManyToMany(
     type => Space,

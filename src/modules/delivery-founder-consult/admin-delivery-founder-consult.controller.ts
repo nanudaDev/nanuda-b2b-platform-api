@@ -137,4 +137,17 @@ export class AdminDeliveryFounderConsultController extends BaseController {
       deliveryFounderConsultNo,
     );
   }
+
+  /**
+   * send message for admin
+   * @param deliveryFounderConsultNo
+   */
+  @Get('/admin/delivery-founder/:id([0-9]+)/send-message')
+  async sendVicinityRecommendation(
+    @Param('id', ParseIntPipe) deliveryFounderConsultNo: number,
+  ) {
+    return await this.deliveryFounderConsultService.sendRecommendationMessage(
+      deliveryFounderConsultNo,
+    );
+  }
 }

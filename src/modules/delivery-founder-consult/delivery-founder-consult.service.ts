@@ -11,6 +11,7 @@ import {
   FOUNDER_CONSULT,
   BaseDto,
   B2B_FOUNDER_CONSULT,
+  SPACE_TYPE,
 } from '../../core';
 import {
   PaginatedRequest,
@@ -30,6 +31,7 @@ import {
 } from './dto';
 import { DeliverySpaceService } from '../delivery-space/delivery-space.service';
 import { DeliveryFounderConsultContract } from '../delivery-founder-consult-contract/delivery-founder-consult-contract.entity';
+import { Brand } from '../brand/brand.entity';
 
 @Injectable()
 export class DeliveryFounderConsultService extends BaseService {
@@ -788,6 +790,37 @@ export class DeliveryFounderConsultService extends BaseService {
       .set({ spaceConsultManager: adminNo })
       .where('no = :no', { no: deliveryFounderConsultNo })
       .execute();
+  }
+
+  //TODO: 문자 발송 기획부터
+  async sendRecommendationMessage(deliveryFounderConsultNo: number) {
+    const qb = await this.deliveryFounderConsultRepo
+      .createQueryBuilder('deliveryFounderConsult')
+      .CustomInnerJoinAndSelect([
+        'nanudaUser',
+        'deliverySpace',
+        'codeManagement',
+      ])
+      .innerJoinAndSelect('deliverySpace.companyDistrict', 'companyDistrict')
+      .where('deliveryFounderConsult.no = :no', {
+        no: deliveryFounderConsultNo,
+      })
+      .getOne();
+
+    const qbBrands = await this.entityManager
+      .getRepository(Brand)
+      .createQueryBuilder('brands')
+      .CustomInnerJoinAndSelect(['spaceType'])
+      .where('brands.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('brands.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('brands.isRecommendedYn = :isRecommendedYn', {
+        isRecommendedYn: YN.YES,
+      })
+      .andWhere('spaceType.code = :code', {
+        code: 'ONLY_DELIVERY',
+      })
+      .getMany();
+    return qb;
   }
 
   private async __create_contract(
