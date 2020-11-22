@@ -10,6 +10,12 @@ export class AligoAuth {
   user_id: string;
   testmode_yn: YN | string;
 }
+
+export class MessageObject {
+  body: object;
+  auth: AligoAuth;
+}
+
 @Injectable()
 export class SmsNotificationService extends BaseService {
   constructor() {

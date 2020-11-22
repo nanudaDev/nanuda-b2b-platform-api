@@ -7,7 +7,10 @@ import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 import { CompanyUser } from '../company-user/company-user.entity';
 import { Company } from '../company/company.entity';
 import { CompanyDistrict } from '../company-district/company-district.entity';
-import { NanudaSlackNotificationService } from 'src/core/utils';
+import {
+  NanudaSlackNotificationService,
+  NanudaSmsNotificationService,
+} from 'src/core/utils';
 import { DeliveryFounderConsultController } from './delivery-founder-consult.controller';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 import { DeliverySpaceService } from '../delivery-space/delivery-space.service';
@@ -50,6 +53,7 @@ import { B2CNanudaSlackNotificationService } from 'src/core/utils/b2c-nanuda-sla
     B2CNanudaSlackNotificationService,
     DeliverySpaceService,
     NanudaDeliveryFounderConsultService,
+    NanudaSmsNotificationService,
   ],
 })
 export class DeliveryFounderConsultModule {}
