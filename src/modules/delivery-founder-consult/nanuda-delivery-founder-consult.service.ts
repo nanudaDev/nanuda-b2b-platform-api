@@ -9,6 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { B2CNanudaSlackNotificationService } from 'src/core/utils/b2c-nanuda-slack-notification.service';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
+import { NanudaSmsNotificationService } from 'src/core/utils';
+import { Request } from 'express';
 
 @Injectable()
 export class NanudaDeliveryFounderConsultService extends BaseService {
@@ -18,6 +20,7 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
       DeliveryFounderConsult
     >,
     private readonly nanudaSlackNotificationService: B2CNanudaSlackNotificationService,
+    private readonly nanudaSmsNotificationService: NanudaSmsNotificationService,
   ) {
     super();
   }
@@ -28,6 +31,7 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
    */
   async create(
     nanudaDeliveryFounderConsultCreateDto: NanudaDeliveryFounderConsultCreateDto,
+    req: Request,
   ): Promise<DeliveryFounderConsult> {
     let newConsult = new DeliveryFounderConsult(
       nanudaDeliveryFounderConsultCreateDto,
@@ -47,6 +51,10 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
     // slack notification
     await this.nanudaSlackNotificationService.deliveryFounderConsultAdded(
       newConsult,
+    );
+    await this.nanudaSmsNotificationService.sendDeliveryFounderConsultMessage(
+      newConsult,
+      req,
     );
     return newConsult;
   }
