@@ -6,6 +6,7 @@ import { Attendees } from 'src/modules/attendees/attendees.entity';
 import * as moment from 'moment';
 import { NanudaUser } from 'src/modules/nanuda-user/nanuda-user.entity';
 import { DeliveryFounderConsult } from 'src/modules/delivery-founder-consult/delivery-founder-consult.entity';
+import { Admin } from 'src/modules/admin';
 
 @Injectable()
 export class NanudaSmsNotificationService {
@@ -30,10 +31,33 @@ export class NanudaSmsNotificationService {
     const payload = await this.__send_dist_complete_notification(
       deliveryFounderConsult,
     );
-    console.log(payload);
     req.body = payload.body;
     const sms = await aligoapi.send(req, payload.auth);
-    console.log(sms);
+    return;
+  }
+
+  /**
+   * 담당자에게 문자 발송
+   * @param deliveryFounderConsult
+   * @param admins
+   * @param req
+   */
+  async alertAdminNotification(
+    deliveryFounderConsult: DeliveryFounderConsult,
+    admins: Admin[],
+    req?: Request,
+  ) {
+    await Promise.all(
+      admins.map(async admin => {
+        const payload = await this.__notify_admin_for_consult(
+          deliveryFounderConsult,
+          admin,
+        );
+        req.body = payload.body;
+        const sms = await aligoapi.send(req, payload.auth);
+        console.log(sms);
+      }),
+    );
     return;
   }
 
@@ -103,6 +127,20 @@ export class NanudaSmsNotificationService {
       };
     }
     console.log(body);
+    return { body, auth };
+  }
+
+  private async __notify_admin_for_consult(
+    deliveryFounderConsult: DeliveryFounderConsult,
+    admin: Admin,
+  ): Promise<MessageObject> {
+    const auth = await this.__get_auth();
+    const body = {
+      receiver: admin.phone,
+      sender: process.env.ALIGO_SENDER_PHONE,
+      msg: `${deliveryFounderConsult.nanudaUser.name}님께서 ${deliveryFounderConsult.deliverySpace.companyDistrict.company.nameKr}의 공유주방 상담 문의가 들어왔습니다. \n지점: ${deliveryFounderConsult.deliverySpace.companyDistrict.region2DepthName}. \n빠른 대응 부탁드립니다.`,
+      title: '[나누다키친 공유주방 유선상담 안내]',
+    };
     return { body, auth };
   }
 }

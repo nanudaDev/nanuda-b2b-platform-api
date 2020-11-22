@@ -1,7 +1,7 @@
-import { BaseDto } from '../../../core';
+import { BaseDto, SPACE_TYPE } from '../../../core';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsOptional } from 'class-validator';
+import { IsEnum, IsOptional, IsPhoneNumber } from 'class-validator';
 import { Admin } from '../admin.entity';
 
 export class AdminUpdateDto extends BaseDto<AdminUpdateDto>
@@ -18,5 +18,11 @@ export class AdminUpdateDto extends BaseDto<AdminUpdateDto>
   @ApiPropertyOptional()
   @Expose()
   @IsOptional()
+  @IsPhoneNumber('KR')
   phone?: string;
+
+  @ApiPropertyOptional({ enum: SPACE_TYPE })
+  @IsEnum(SPACE_TYPE)
+  @Expose()
+  spaceTypeNo?: SPACE_TYPE;
 }

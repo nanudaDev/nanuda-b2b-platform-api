@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { BaseService } from 'src/core';
+import { BaseService, SPACE_TYPE } from 'src/core';
 import {
   NanudaDeliveryFounderConsultCreateDto,
   DeliveryFounderConsultListDto,
 } from './dto';
 import { DeliveryFounderConsult } from './delivery-founder-consult.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { B2CNanudaSlackNotificationService } from 'src/core/utils/b2c-nanuda-slack-notification.service';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
 import { NanudaSmsNotificationService } from 'src/core/utils';
 import { Request } from 'express';
+import { Admin } from '../admin';
 
 @Injectable()
 export class NanudaDeliveryFounderConsultService extends BaseService {
@@ -19,6 +20,7 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
     private readonly deliveryFounderConsultRepo: Repository<
       DeliveryFounderConsult
     >,
+    @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly nanudaSlackNotificationService: B2CNanudaSlackNotificationService,
     private readonly nanudaSmsNotificationService: NanudaSmsNotificationService,
   ) {
@@ -54,6 +56,15 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
     );
     await this.nanudaSmsNotificationService.sendDeliveryFounderConsultMessage(
       newConsult,
+      req,
+    );
+    // 담당자엑 문자하기
+    const admins = await this.entityManager
+      .getRepository(Admin)
+      .find({ where: { spaceTypeNo: SPACE_TYPE.ONLY_DELIVERY } });
+    await this.nanudaSmsNotificationService.alertAdminNotification(
+      newConsult,
+      admins,
       req,
     );
     return newConsult;

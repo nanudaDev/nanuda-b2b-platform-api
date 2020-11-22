@@ -74,7 +74,7 @@ export class AdminFounderConsultListDto
   companyDistrictNameEng?: string;
 
   @ApiPropertyOptional({ enum: SPACE_TYPE })
-  @IsEnum(SPACE_TYPE)
+  // @IsEnum(SPACE_TYPE)
   @IsOptional()
   @Expose()
   spaceTypeNo?: SPACE_TYPE;
