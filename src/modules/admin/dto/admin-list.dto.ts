@@ -3,7 +3,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsOptional, IsEnum } from 'class-validator';
 import { Admin } from '..';
-import { ADMIN_USER } from 'src/shared';
+import { ADMIN_USER, SPACE_TYPE } from 'src/shared';
 import { Default, ORDER_BY_VALUE, YN } from 'src/common';
 
 export class AdminListDto extends BaseDto<AdminListDto>
@@ -33,10 +33,15 @@ export class AdminListDto extends BaseDto<AdminListDto>
   @Expose()
   delYn?: YN;
 
+  @ApiPropertyOptional({ enum: SPACE_TYPE, isArray: true })
+  // @IsEnum(SPACE_TYPE)
+  @Expose()
+  spaceTypeNo?: SPACE_TYPE;
+
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsOptional()
   @Default(ORDER_BY_VALUE.DESC)
   @Expose()
   @IsEnum(ORDER_BY_VALUE)
-  orderByNo: ORDER_BY_VALUE;
+  orderByNo?: ORDER_BY_VALUE;
 }

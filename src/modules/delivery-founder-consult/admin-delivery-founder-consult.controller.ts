@@ -8,6 +8,7 @@ import {
   Patch,
   Body,
   Post,
+  Req,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthRolesGuard, CONST_ADMIN_USER, BaseController } from 'src/core';
@@ -20,6 +21,7 @@ import {
 } from './dto';
 import { PaginatedRequest, PaginatedResponse, UserInfo } from 'src/common';
 import { Admin } from '../admin/admin.entity';
+import { Request } from 'express';
 
 @Controller()
 @ApiTags('ADMIN DELIVERY FOUNDER CONSULT')
@@ -72,10 +74,12 @@ export class AdminDeliveryFounderConsultController extends BaseController {
     @Param('id', ParseIntPipe) deliveryFounderConsultNo: number,
     @Body()
     adminDeliveryFounderConsultUpdateDto: AdminDeliveryFounderConsultUpdateDto,
+    @Req() req: Request,
   ): Promise<DeliveryFounderConsult> {
     return await this.deliveryFounderConsultService.updateForAdmin(
       deliveryFounderConsultNo,
       adminDeliveryFounderConsultUpdateDto,
+      req,
     );
   }
 
