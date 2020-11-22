@@ -32,6 +32,7 @@ import {
 import { DeliverySpaceService } from '../delivery-space/delivery-space.service';
 import { DeliveryFounderConsultContract } from '../delivery-founder-consult-contract/delivery-founder-consult-contract.entity';
 import { Brand } from '../brand/brand.entity';
+import { Request } from 'express';
 
 @Injectable()
 export class DeliveryFounderConsultService extends BaseService {
@@ -340,6 +341,7 @@ export class DeliveryFounderConsultService extends BaseService {
   async updateForAdmin(
     deliveryFounderConsultNo: number,
     adminDeliveryFounderConsultUpdateDto: AdminDeliveryFounderConsultUpdateDto,
+    req?: Request,
   ): Promise<DeliveryFounderConsult> {
     const deliveryFounderConsult = await this.entityManager.transaction(
       async entityManager => {
@@ -381,9 +383,10 @@ export class DeliveryFounderConsultService extends BaseService {
           nanudaUserUpdateHistory.nanudaUserNo = nanudaUser.no;
           await entityManager.save(nanudaUserUpdateHistory);
         }
-        const nanudaUser = await this.nanudaUserRepo.findOne(
-          deliveryFounderConsult.nanudaUserNo,
-        );
+        // do not need to check off gender anymore Friday 11/22/2020
+        // const nanudaUser = await this.nanudaUserRepo.findOne(
+        //   deliveryFounderConsult.nanudaUserNo,
+        // );
         // if (
         //   !nanudaUser.gender &&
         //   adminDeliveryFounderConsultUpdateDto.status ===
