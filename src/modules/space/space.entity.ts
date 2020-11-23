@@ -505,4 +505,7 @@ export class Space extends BaseEntity<Space> {
     fileManagement => fileManagement.space,
   )
   fileManagements?: FileManagement[];
+
+  // TODO: add to DB
+  images?: FileManagement[];
 }
