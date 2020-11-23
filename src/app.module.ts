@@ -1,6 +1,5 @@
 import { Module, CacheModule, CacheInterceptor } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService, CacheConfigService } from './config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -139,7 +138,6 @@ const env = process.env;
   ],
   controllers: [AppController],
   providers: [
-    AppService,
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
     // { provide: APP_INTERCEPTOR, useClass: HttpCacheInterceptor },
   ],
