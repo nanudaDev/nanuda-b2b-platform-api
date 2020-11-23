@@ -60,21 +60,21 @@ export class DeliverySpaceCreateDto extends BaseDto<DeliverySpaceCreateDto>
   @Default(YN.NO)
   showYn?: YN;
 
-  @ApiPropertyOptional({ type: [FileAttachmentDto], isArray: true })
+  @ApiPropertyOptional({ type: [FileAttachmentDto] })
   @Type(() => FileAttachmentDto)
   @IsOptional()
   @IsArray()
-  @ValidateNested()
+  @ValidateNested({ each: true })
   @Expose()
   images?: FileAttachmentDto[];
 
-  @ApiPropertyOptional({ isArray: true })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsArray()
   @Expose()
   amenityIds?: number[];
 
-  @ApiPropertyOptional({ isArray: true })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsArray()
   @Expose()
@@ -82,7 +82,6 @@ export class DeliverySpaceCreateDto extends BaseDto<DeliverySpaceCreateDto>
 
   @ApiProperty()
   @IsNotEmpty()
-  @Type(() => Number)
   @Expose()
   companyDistrictNo: number;
 }
