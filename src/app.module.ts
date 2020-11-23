@@ -96,6 +96,31 @@ const env = process.env;
       //   Do not turn to true!!!! 나누다 키친 데이터 다 날라가요 ~ ㅠㅠ
       synchronize: false,
     }),
+    // 상권분석 관련 디비
+    TypeOrmModule.forRoot({
+      name: 'wq',
+      type: 'mysql' as 'mysql',
+      host: env.ANALYSIS_DB_HOST,
+      port: Number(env.ANALYSIS_DB_PORT),
+      username: env.ANALYSIS_DB_USERNAME,
+      password: env.ANALYSIS_DB_PASSWORD,
+      database: env.ANALYSIS_DB_DATABASE,
+      // won't need to keep alive
+      //   keepConnectionAlive: true,
+      bigNumberStrings: false,
+      supportBigNumbers: false,
+      entities: [
+        NanudaKitchenMaster,
+        NanudaKitchenMenu,
+        PaymentList,
+        KioskOrderList,
+      ],
+      // migrations: [],
+      // cli: {},
+      // subscribers: [],
+      //   Do not turn to true!!!! 나누다 키친 데이터 다 날라가요 ~ ㅠㅠ
+      synchronize: false,
+    }),
     AuthModule,
     AdminModule,
     AmenityModule,
