@@ -23,6 +23,7 @@ export class AdminUpdateDto extends BaseDto<AdminUpdateDto>
 
   @ApiPropertyOptional({ enum: SPACE_TYPE })
   @IsEnum(SPACE_TYPE)
+  @IsOptional()
   @Expose()
   spaceTypeNo?: SPACE_TYPE;
 }

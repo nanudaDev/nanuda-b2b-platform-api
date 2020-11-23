@@ -1,12 +1,13 @@
+require('dotenv').config();
 import { Injectable } from '@nestjs/common';
 import { AligoAuth, MessageObject } from './sms-notification.service';
 import * as aligoapi from 'aligoapi';
 import { Request } from 'express';
 import { Attendees } from 'src/modules/attendees/attendees.entity';
 import * as moment from 'moment';
-import { NanudaUser } from 'src/modules/nanuda-user/nanuda-user.entity';
 import { DeliveryFounderConsult } from 'src/modules/delivery-founder-consult/delivery-founder-consult.entity';
 import { Admin } from 'src/modules/admin';
+import { ENVIRONMENT } from 'src/config';
 
 @Injectable()
 export class NanudaSmsNotificationService {
@@ -20,7 +21,12 @@ export class NanudaSmsNotificationService {
     req.body = payload.body;
     console.log(payload);
     const sms = await aligoapi.send(req, payload.auth);
-    console.log(sms);
+    if (
+      process.env.NODE_ENV === ENVIRONMENT.DEVELOPMENT ||
+      ENVIRONMENT.STAGING
+    ) {
+      console.log(sms);
+    }
     return;
   }
 
@@ -33,6 +39,12 @@ export class NanudaSmsNotificationService {
     );
     req.body = payload.body;
     const sms = await aligoapi.send(req, payload.auth);
+    if (
+      process.env.NODE_ENV === ENVIRONMENT.DEVELOPMENT ||
+      ENVIRONMENT.STAGING
+    ) {
+      console.log(sms);
+    }
     return;
   }
 
@@ -55,7 +67,12 @@ export class NanudaSmsNotificationService {
         );
         req.body = payload.body;
         const sms = await aligoapi.send(req, payload.auth);
-        console.log(sms);
+        if (
+          process.env.NODE_ENV === ENVIRONMENT.DEVELOPMENT ||
+          ENVIRONMENT.STAGING
+        ) {
+          console.log(sms);
+        }
       }),
     );
     return;
@@ -126,7 +143,6 @@ export class NanudaSmsNotificationService {
         title: '[나누다키친 공유주방 유선상담 안내]',
       };
     }
-    console.log(body);
     return { body, auth };
   }
 
