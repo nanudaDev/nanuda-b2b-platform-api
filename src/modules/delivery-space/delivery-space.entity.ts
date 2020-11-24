@@ -114,6 +114,14 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
   })
   showYn?: YN;
 
+  @Column({
+    type: 'char',
+    name: 'IS_OPENED_YN',
+    // 오픈 후 짬 타서 기본 값 변경
+    default: YN.YES,
+  })
+  isOpenedYn?: YN;
+
   @Column('char', {
     length: 1,
     name: 'DEL_YN',
