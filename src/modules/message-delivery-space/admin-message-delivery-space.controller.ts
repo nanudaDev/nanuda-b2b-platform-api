@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthRolesGuard, BaseController, CONST_ADMIN_USER } from 'src/core';
 import { MessageDeliverySpaceService } from './admin-message-delivery-space.service';
@@ -13,5 +21,16 @@ export class AdminMessageDeliverySpaceController extends BaseController {
     private readonly messageDeliverySpaceService: MessageDeliverySpaceService,
   ) {
     super();
+  }
+
+  /**
+   * send text message
+   * @param companyDistrictNo
+   */
+  @Get('/admin/message-delivery-space/:id([0-9]+)')
+  async sendMessage(@Param('id', ParseIntPipe) companyDistrictNo: number) {
+    return await this.messageDeliverySpaceService.findFloatingPopulation(
+      companyDistrictNo,
+    );
   }
 }
