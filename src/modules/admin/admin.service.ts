@@ -108,9 +108,14 @@ export class AdminService extends BaseService {
    * hard delete
    * @param adminId
    */
-  async hardDelete(adminId: number): Promise<boolean> {
-    await this.__check_if_admin_exists(adminId);
-    // cons await this.adminRepo.delete(adminId)
+  async hardDelete(adminNo: number): Promise<boolean> {
+    await this.__check_if_admin_exists(adminNo);
+    await this.adminRepo
+      .createQueryBuilder()
+      .delete()
+      .from(Admin)
+      .where('no = :no', { no: adminNo })
+      .execute();
     return true;
   }
 

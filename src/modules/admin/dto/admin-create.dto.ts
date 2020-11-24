@@ -2,7 +2,7 @@ import { Admin } from '../admin.entity';
 import { BaseDto, SPACE_TYPE } from '../../../core';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsEnum, IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 import { IsPasswordEqualTo } from '../../../common';
 
 export class AdminCreateDto extends BaseDto<AdminCreateDto>
@@ -31,6 +31,7 @@ export class AdminCreateDto extends BaseDto<AdminCreateDto>
 
   @ApiPropertyOptional({ enum: SPACE_TYPE })
   @IsEnum(SPACE_TYPE)
+  @IsOptional()
   @Expose()
   spaceTypeNo?: SPACE_TYPE;
 }

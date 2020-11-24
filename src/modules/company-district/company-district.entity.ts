@@ -113,6 +113,18 @@ export class CompanyDistrict extends BaseEntity<CompanyDistrict> {
   })
   lon?: string;
 
+  @Column({
+    name: 'H_CODE',
+    type: 'varchar',
+  })
+  hCode?: string;
+
+  @Column({
+    name: 'B_CODE',
+    type: 'varchar',
+  })
+  bCode?: string;
+
   @Column('varchar', {
     name: 'COMPANY_DISTRICT_STATUS',
     default: APPROVAL_STATUS.NEED_APPROVAL,

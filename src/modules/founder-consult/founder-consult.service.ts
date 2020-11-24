@@ -23,6 +23,7 @@ import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 import { NanudaUserUpdateHistory } from '../nanuda-user-update-history/nanuda-user-update-history.entity';
 import { NanudaSlackNotificationService } from 'src/core/utils';
 import { DeliveryFounderConsultContract } from '../delivery-founder-consult-contract/delivery-founder-consult-contract.entity';
+import { FileManagement } from '../file-management/file-management.entity';
 
 @Injectable()
 export class FounderConsultService extends BaseService {
@@ -173,6 +174,9 @@ export class FounderConsultService extends BaseService {
       .where('founderConsult.no = :no', { no: founderConsultNo })
       .getOne();
 
+    qb.space.images = await this.entityManager
+      .getRepository(FileManagement)
+      .find({ where: { targetTable: 'SPACE', targetTableNo: qb.space.no } });
     return qb;
   }
 

@@ -1,6 +1,5 @@
 import { Module, CacheModule, CacheInterceptor } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService, CacheConfigService } from './config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -44,12 +43,14 @@ import {
   BannerModule,
   PresentationEventModule,
   AttendeesModule,
+  MessageDeliverySpaceModule,
 } from './modules';
 import { AdminModule } from './modules/admin/admin.module';
 import { PaymentList } from './modules/payment-list/payment-list.entity';
 import { NanudaKitchenMaster } from './modules/nanuda-kitchen-master/nanuda-kitchen-master.entity';
 import { NanudaKitchenMenu } from './modules/nanuda-kitchen-menu/nanuda-kitchen-menu.entity';
 import { KioskOrderList } from './modules/kiosk-order-list/kiosk-order-list.entity';
+import { IndexMessage } from './modules/message-delivery-space/index-message.entity';
 require('dotenv').config();
 const env = process.env;
 @Module({
@@ -97,6 +98,26 @@ const env = process.env;
       //   Do not turn to true!!!! 나누다 키친 데이터 다 날라가요 ~ ㅠㅠ
       synchronize: false,
     }),
+    // 상권분석 관련 디비
+    TypeOrmModule.forRoot({
+      name: 'wq',
+      type: 'mysql' as 'mysql',
+      host: env.ANALYSIS_DB_HOST,
+      port: Number(env.ANALYSIS_DB_PORT),
+      username: env.ANALYSIS_DB_USERNAME,
+      password: env.ANALYSIS_DB_PASSWORD,
+      database: env.ANALYSIS_DB_DATABASE,
+      // won't need to keep alive
+      //   keepConnectionAlive: true,
+      bigNumberStrings: false,
+      supportBigNumbers: false,
+      entities: [IndexMessage],
+      // migrations: [],
+      // cli: {},
+      // subscribers: [],
+      //   Do not turn to true!!!! 나누다 키친 데이터 다 날라가요 ~ ㅠㅠ
+      synchronize: false,
+    }),
     AuthModule,
     AdminModule,
     AmenityModule,
@@ -123,6 +144,7 @@ const env = process.env;
     FounderConsultManagementModule,
     InquiryModule,
     MenuModule,
+    MessageDeliverySpaceModule,
     NanudaHomepageModule,
     NanudaUserModule,
     NanudaKitchenMenuModule,
@@ -139,7 +161,6 @@ const env = process.env;
   ],
   controllers: [AppController],
   providers: [
-    AppService,
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
     // { provide: APP_INTERCEPTOR, useClass: HttpCacheInterceptor },
   ],

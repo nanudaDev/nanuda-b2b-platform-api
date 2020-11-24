@@ -34,7 +34,8 @@ export class AdminListDto extends BaseDto<AdminListDto>
   delYn?: YN;
 
   @ApiPropertyOptional({ enum: SPACE_TYPE, isArray: true })
-  // @IsEnum(SPACE_TYPE)
+  @IsEnum(SPACE_TYPE)
+  @IsOptional()
   @Expose()
   spaceTypeNo?: SPACE_TYPE;
 
