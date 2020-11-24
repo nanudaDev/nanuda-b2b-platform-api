@@ -104,8 +104,7 @@ export class NanudaSmsNotificationService {
       bestSpaces,
     );
     req.body = payload.body;
-    console.log(payload.body);
-    const sms = await aligoapi.send(req, payload.auth);
+    await aligoapi.send(req, payload.auth);
     return;
   }
 
@@ -205,7 +204,6 @@ export class NanudaSmsNotificationService {
     } else if (parseInt(furnitureRatio[0].max_value_column_name) > 1) {
       furnitureRatioUpAndDown = '2인 이상 가구';
     }
-    console.log(genderAge);
     const body = {
       receiver: deliveryFounderConsult.nanudaUser.phone,
       sender: process.env.ALIGO_SENDER_PHONE,

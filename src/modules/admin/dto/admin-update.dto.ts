@@ -34,8 +34,8 @@ export class AdminUpdateDto extends BaseDto<AdminUpdateDto>
   @Expose()
   spaceTypeNo?: SPACE_TYPE;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @Expose()
   @MinLength(6)
   password: string;
