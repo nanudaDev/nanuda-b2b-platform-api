@@ -15,21 +15,4 @@ export class MessageDeliverySpaceService extends BaseService {
   ) {
     super();
   }
-
-  /**
-   * find floating population
-   * @param messageFloatingPopulationDto
-   */
-  async findFloatingPopulation(
-    messageFloatingPopulationDto: MessageFloatingPopulationDto,
-  ) {
-    const query = `SELECT hdongCode, round(avg(TotalCnt)) as avgTotalCnt
-      FROM kr_seoul_living_local
-      WHERE hdongCode = ${messageFloatingPopulationDto.hdongName} AND time IN (11, 12, 13)
-      GROUP BY hdongCode
-      ;`;
-
-    const float = await this.wqEntityManager.query(query);
-    return float;
-  }
 }

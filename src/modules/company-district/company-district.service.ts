@@ -313,6 +313,8 @@ export class CompanyDistrictService extends BaseService {
     district.region1DepthName = adminCompanyDistrictLatLonDto.region1DepthName;
     district.region2DepthName = adminCompanyDistrictLatLonDto.region2DepthName;
     district.region3DepthName = adminCompanyDistrictLatLonDto.region3DepthName;
+    district.hCode = adminCompanyDistrictLatLonDto.hCode;
+    district.bCode = adminCompanyDistrictLatLonDto.bCode;
     // update vicinity
     this.companyDistrictAnalysisSenderService.setVicinityAnalysis(
       companyDistrictNo,
