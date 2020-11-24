@@ -37,3 +37,6 @@ export * from './survey-question-answer-mapper/survey-question-answer-mapper.mod
 export * from './space-type/space-type.module';
 export * from './amenity/amenity.module';
 export * from './founder-consult-management/founder-consult-management.module';
+
+// 상권 분석
+export * from './message-delivery-space/message-delivery-space.module';
