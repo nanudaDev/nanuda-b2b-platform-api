@@ -50,6 +50,7 @@ import { PaymentList } from './modules/payment-list/payment-list.entity';
 import { NanudaKitchenMaster } from './modules/nanuda-kitchen-master/nanuda-kitchen-master.entity';
 import { NanudaKitchenMenu } from './modules/nanuda-kitchen-menu/nanuda-kitchen-menu.entity';
 import { KioskOrderList } from './modules/kiosk-order-list/kiosk-order-list.entity';
+import { IndexMessage } from './modules/message-delivery-space/index-message.entity';
 require('dotenv').config();
 const env = process.env;
 @Module({
@@ -110,12 +111,7 @@ const env = process.env;
       //   keepConnectionAlive: true,
       bigNumberStrings: false,
       supportBigNumbers: false,
-      entities: [
-        NanudaKitchenMaster,
-        NanudaKitchenMenu,
-        PaymentList,
-        KioskOrderList,
-      ],
+      entities: [IndexMessage],
       // migrations: [],
       // cli: {},
       // subscribers: [],

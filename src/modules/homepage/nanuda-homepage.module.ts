@@ -6,5 +6,6 @@ import { NanudaHomepageService } from './nanuda-homepage.service';
   imports: [],
   controllers: [NanudaHomepageController],
   providers: [NanudaHomepageService],
+  exports: [NanudaHomepageService],
 })
 export class NanudaHomepageModule {}
