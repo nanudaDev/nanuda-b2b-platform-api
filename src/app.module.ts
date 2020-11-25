@@ -35,7 +35,6 @@ import {
   MenuModule,
   ArticleModule,
   BestSpaceMapperModule,
-  SurveyQuesionAnswerMapperModule,
   BrandKioskMapperModule,
   CredentialModule,
   NanudaHomepageModule,
@@ -157,7 +156,6 @@ const env = process.env;
     SearchModule,
     SmsAuthModule,
     SpaceTypeModule,
-    SurveyQuesionAnswerMapperModule,
   ],
   controllers: [AppController],
   providers: [
