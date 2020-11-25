@@ -339,6 +339,7 @@ SelectQueryBuilder.prototype.AndWhereNext = function<Entity>(
   no: number,
 ): SelectQueryBuilder<Entity> {
   this.andWhere(`${this.alias}.NO > :no ORDER BY NO LIMIT 1`, { no: no });
+  this.select([`${this.alias}.no`]);
   return this;
 };
 
@@ -350,6 +351,7 @@ SelectQueryBuilder.prototype.AndWherePrevious = function<Entity>(
   no: number,
 ): SelectQueryBuilder<Entity> {
   this.andWhere(`${this.alias}.NO < :no ORDER BY NO DESC LIMIT 1`, { no: no });
+  this.select([`${this.alias}.no`]);
   return this;
 };
 

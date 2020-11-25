@@ -152,4 +152,17 @@ export class AdminController extends BaseController {
   async findMe(@UserInfo() admin: Admin): Promise<Admin> {
     return await this.adminService.findMe(admin.no);
   }
+
+  /**
+   * general update for admin
+   * @param adminNo
+   * @param adminUpdateDto
+   */
+  @Patch('/admin/update/:id([0-9]+)')
+  async updateAdmin(
+    @Param('id', ParseIntPipe) adminNo: number,
+    @Body() adminUpdateDto: AdminUpdateDto,
+  ): Promise<Admin> {
+    return await this.adminService.updateAdmin(adminNo, adminUpdateDto);
+  }
 }

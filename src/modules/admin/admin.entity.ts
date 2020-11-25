@@ -1,11 +1,12 @@
 import { BaseUser } from '../../core/base-user.entity';
 import { UserType } from '../auth/types/user.type';
-import { Column, Entity, OneToMany, JoinColumn } from 'typeorm';
+import { Column, Entity, OneToMany, JoinColumn, OneToOne } from 'typeorm';
 import { YN } from '../../common';
-import { ADMIN_USER, APPROVAL_STATUS } from '../../shared';
+import { ADMIN_USER, APPROVAL_STATUS, SPACE_TYPE } from '../../shared';
 import { Exclude, classToPlain } from 'class-transformer';
 import { FounderConsult } from '../founder-consult/founder-consult.entity';
 import { Brand } from '../brand/brand.entity';
+import { SpaceType } from '../space-type/space-type.entity';
 
 @Entity('ADMIN_USER')
 export class Admin extends BaseUser {
@@ -46,6 +47,13 @@ export class Admin extends BaseUser {
   })
   lastLoginAt?: Date;
 
+  @Column({
+    type: 'int',
+    name: 'SPACE_TYPE_NO',
+    nullable: true,
+  })
+  spaceTypeNo?: SPACE_TYPE;
+
   // @OneToMany(
   //   type => Brand,
   //   brand => brand.admin,
@@ -72,6 +80,10 @@ export class Admin extends BaseUser {
   toJSON() {
     return classToPlain(this);
   }
+
+  @OneToOne(type => SpaceType)
+  @JoinColumn({ name: 'SPACE_TYPE_NO' })
+  spaceType?: SPACE_TYPE;
 }
 
 // TODO: change authCode into json_array

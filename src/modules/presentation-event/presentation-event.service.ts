@@ -216,19 +216,20 @@ export class PresentationEventService extends BaseService {
       .CustomLeftJoinAndSelect(['signedUpAttendees'])
       .where('presentationEvent.no = :no', { no: presentationEventNo })
       .getOne();
-    let queryParams =
-      '?' +
-      encodeURIComponent('ServiceKey') +
-      `=${process.env.OPEN_API_DATA_KR_KEY}`; /* Service Key*/
-    queryParams +=
-      '&' +
-      encodeURIComponent('subwayStationName') +
-      '=' +
-      encodeURIComponent('강남');
-    const sub = await Axios.get(
-      `${process.env.OPEN_API_DATA_KR_URL_GET_STATION}${queryParams}`,
-    );
-    qb.subwayStations = sub.data.response.body;
+    // TODO: 기획하고...
+    // let queryParams =
+    //   '?' +
+    //   encodeURIComponent('ServiceKey') +
+    //   `=${process.env.OPEN_API_DATA_KR_KEY}`; /* Service Key*/
+    // queryParams +=
+    //   '&' +
+    //   encodeURIComponent('subwayStationName') +
+    //   '=' +
+    //   encodeURIComponent('강남');
+    // const sub = await Axios.get(
+    //   `${process.env.OPEN_API_DATA_KR_URL_GET_STATION}${queryParams}`,
+    // );
+    // qb.subwayStations = sub.data.response.body;
     return qb;
   }
 

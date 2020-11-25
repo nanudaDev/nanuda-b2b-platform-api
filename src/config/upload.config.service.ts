@@ -1,4 +1,5 @@
 export enum UPLOAD_TYPE {
+  AMENITY = 'amenity',
   ARTICLE = 'article',
   DELIVERY_SPACE = 'delivery-space',
   BANNER = 'banner',
@@ -62,6 +63,11 @@ export class UploadConfigService {
   };
 
   public readonly bucketTypes: UploadOptionConfig = {
+    [UPLOAD_TYPE.AMENITY]: {
+      path: 'amenity',
+      sizeLimit: 1024 * 1024 * 10,
+      fileType: FileType.IMAGE,
+    },
     [UPLOAD_TYPE.ARTICLE]: {
       path: 'article',
       sizeLimit: 1024 * 1024 * 10,

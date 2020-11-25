@@ -2,8 +2,9 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Expose } from 'class-transformer';
 import { Default } from 'src/common';
+import { CompanyDistrict } from '../company-district.entity';
 
-export class AdminCompanyDistrictLatLonDto {
+export class AdminCompanyDistrictLatLonDto implements Partial<CompanyDistrict> {
   @ApiProperty()
   @IsNotEmpty()
   @Expose()
@@ -28,6 +29,16 @@ export class AdminCompanyDistrictLatLonDto {
   @IsOptional()
   @Expose()
   region3DepthName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  hCode?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  bCode?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

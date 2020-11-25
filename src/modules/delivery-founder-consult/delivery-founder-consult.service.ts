@@ -11,6 +11,7 @@ import {
   FOUNDER_CONSULT,
   BaseDto,
   B2B_FOUNDER_CONSULT,
+  SPACE_TYPE,
 } from '../../core';
 import {
   PaginatedRequest,
@@ -30,6 +31,8 @@ import {
 } from './dto';
 import { DeliverySpaceService } from '../delivery-space/delivery-space.service';
 import { DeliveryFounderConsultContract } from '../delivery-founder-consult-contract/delivery-founder-consult-contract.entity';
+import { Brand } from '../brand/brand.entity';
+import { Request } from 'express';
 
 @Injectable()
 export class DeliveryFounderConsultService extends BaseService {
@@ -338,6 +341,7 @@ export class DeliveryFounderConsultService extends BaseService {
   async updateForAdmin(
     deliveryFounderConsultNo: number,
     adminDeliveryFounderConsultUpdateDto: AdminDeliveryFounderConsultUpdateDto,
+    req?: Request,
   ): Promise<DeliveryFounderConsult> {
     const deliveryFounderConsult = await this.entityManager.transaction(
       async entityManager => {
@@ -379,9 +383,10 @@ export class DeliveryFounderConsultService extends BaseService {
           nanudaUserUpdateHistory.nanudaUserNo = nanudaUser.no;
           await entityManager.save(nanudaUserUpdateHistory);
         }
-        const nanudaUser = await this.nanudaUserRepo.findOne(
-          deliveryFounderConsult.nanudaUserNo,
-        );
+        // do not need to check off gender anymore Friday 11/22/2020
+        // const nanudaUser = await this.nanudaUserRepo.findOne(
+        //   deliveryFounderConsult.nanudaUserNo,
+        // );
         // if (
         //   !nanudaUser.gender &&
         //   adminDeliveryFounderConsultUpdateDto.status ===
@@ -788,6 +793,37 @@ export class DeliveryFounderConsultService extends BaseService {
       .set({ spaceConsultManager: adminNo })
       .where('no = :no', { no: deliveryFounderConsultNo })
       .execute();
+  }
+
+  //TODO: 문자 발송 기획부터
+  async sendRecommendationMessage(deliveryFounderConsultNo: number) {
+    const qb = await this.deliveryFounderConsultRepo
+      .createQueryBuilder('deliveryFounderConsult')
+      .CustomInnerJoinAndSelect([
+        'nanudaUser',
+        'deliverySpace',
+        'codeManagement',
+      ])
+      .innerJoinAndSelect('deliverySpace.companyDistrict', 'companyDistrict')
+      .where('deliveryFounderConsult.no = :no', {
+        no: deliveryFounderConsultNo,
+      })
+      .getOne();
+
+    const qbBrands = await this.entityManager
+      .getRepository(Brand)
+      .createQueryBuilder('brands')
+      .CustomInnerJoinAndSelect(['spaceType'])
+      .where('brands.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('brands.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('brands.isRecommendedYn = :isRecommendedYn', {
+        isRecommendedYn: YN.YES,
+      })
+      .andWhere('spaceType.code = :code', {
+        code: 'ONLY_DELIVERY',
+      })
+      .getMany();
+    return qb;
   }
 
   private async __create_contract(

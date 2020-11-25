@@ -272,6 +272,7 @@ export class NanudaDeliverySpaceService extends BaseService {
       )
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('deliverySpace.quantity > 0')
       .limit(5)
       .Paginate(pagination);
 

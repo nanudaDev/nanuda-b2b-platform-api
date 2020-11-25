@@ -34,6 +34,7 @@ export class AdminService extends BaseService {
   ): Promise<PaginatedResponse<Admin>> {
     const qb = await this.adminRepo
       .createQueryBuilder('Admin')
+      .CustomLeftJoinAndSelect(['spaceType'])
       .AndWhereLike(
         'Admin',
         'name',
@@ -55,10 +56,14 @@ export class AdminService extends BaseService {
 
   /**
    * admin detail
-   * @param adminId
+   * @param adminNo
    */
-  async findOne(adminId: number): Promise<Admin> {
-    const admin = await this.adminRepo.findOne(adminId);
+  async findOne(adminNo: number): Promise<Admin> {
+    const admin = await this.adminRepo
+      .createQueryBuilder('admin')
+      .CustomLeftJoinAndSelect(['spaceType'])
+      .where('admin.no = :no', { no: adminNo })
+      .getOne();
     if (!admin) {
       throw new NotFoundException();
     }
@@ -103,9 +108,14 @@ export class AdminService extends BaseService {
    * hard delete
    * @param adminId
    */
-  async hardDelete(adminId: number): Promise<boolean> {
-    await this.__check_if_admin_exists(adminId);
-    // cons await this.adminRepo.delete(adminId)
+  async hardDelete(adminNo: number): Promise<boolean> {
+    await this.__check_if_admin_exists(adminNo);
+    await this.adminRepo
+      .createQueryBuilder()
+      .delete()
+      .from(Admin)
+      .where('no = :no', { no: adminNo })
+      .execute();
     return true;
   }
 
@@ -163,6 +173,21 @@ export class AdminService extends BaseService {
    */
   async findMe(adminNo: number): Promise<Admin> {
     return await this.__check_if_admin_exists(adminNo);
+  }
+
+  /**
+   * general update route for admin
+   * @param adminNo
+   * @param adminUpdateDto
+   */
+  async updateAdmin(
+    adminNo: number,
+    adminUpdateDto: AdminUpdateDto,
+  ): Promise<Admin> {
+    let admin = await this.adminRepo.findOne(adminNo);
+    admin = admin.set(adminUpdateDto);
+    admin = await this.adminRepo.save(admin);
+    return admin;
   }
 
   /**

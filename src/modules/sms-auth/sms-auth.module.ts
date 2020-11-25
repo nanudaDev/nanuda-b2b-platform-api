@@ -27,6 +27,6 @@ import { AdminSmsController } from './admin-sms-auth.controller';
     SmsNotificationService,
     NanudaSmsNotificationService,
   ],
-  exports: [NanudaSmsNotificationService],
+  exports: [NanudaSmsNotificationService, SmsNotificationService],
 })
 export class SmsAuthModule {}
