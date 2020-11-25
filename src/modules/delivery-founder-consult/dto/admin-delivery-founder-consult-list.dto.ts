@@ -91,6 +91,11 @@ export class AdminDeliveryFounderConsultListDto
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  adminNo?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   adminUserName?: string;
 
   @ApiPropertyOptional()

@@ -155,6 +155,12 @@ export class DeliveryFounderConsultService extends BaseService {
         adminDeliveryFounderConsultListDto.gender,
         adminDeliveryFounderConsultListDto.exclude('gender'),
       )
+      .AndWhereEqual(
+        'admin',
+        'no',
+        adminDeliveryFounderConsultListDto.adminNo,
+        adminDeliveryFounderConsultListDto.exclude('adminNo'),
+      )
       // .AndWhereBetweenOpenedAt(
       //   adminDeliveryFounderConsultListDto.startDate,
       //   adminDeliveryFounderConsultListDto.endDate,
