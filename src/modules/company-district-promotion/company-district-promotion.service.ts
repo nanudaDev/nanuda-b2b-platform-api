@@ -3,6 +3,8 @@ import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
 import { BaseService } from 'src/core';
 import { EntityManager, Repository } from 'typeorm';
+import { CompanyDistrict } from '../company-district/company-district.entity';
+import { Company } from '../company/company.entity';
 import { CompanyDistrictPromotion } from './company-district-promotion.entity';
 import {
   AdminCompanyDistrictPromotionCreateDto,
@@ -79,12 +81,21 @@ export class CompanyDistrictPromotionService extends BaseService {
     return qb;
   }
 
+  /**
+   * create for admin
+   * @param adminCompanyDistrictPromotionCreateDto
+   */
   async createForAdmin(
     adminCompanyDistrictPromotionCreateDto: AdminCompanyDistrictPromotionCreateDto,
   ): Promise<CompanyDistrictPromotion> {
     let newPromotion = new CompanyDistrictPromotion(
       adminCompanyDistrictPromotionCreateDto,
     );
+    const company = await this.entityManager
+      .getRepository(CompanyDistrict)
+      .findOne(adminCompanyDistrictPromotionCreateDto.companyDistrictNo);
+    newPromotion.companyNo = company.companyNo;
+    newPromotion = await this.promotionRepo.save(newPromotion);
     return newPromotion;
   }
 }
