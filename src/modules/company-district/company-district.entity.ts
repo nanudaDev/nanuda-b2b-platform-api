@@ -17,6 +17,7 @@ import { CodeManagement } from '../code-management/code-management.entity';
 import { Amenity } from '../amenity/amenity.entity';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 import { FileAttachmentDto } from '../file-upload/dto';
+import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 
 @Entity({ name: 'COMPANY_DISTRICT' })
 export class CompanyDistrict extends BaseEntity<CompanyDistrict> {
@@ -189,6 +190,12 @@ export class CompanyDistrict extends BaseEntity<CompanyDistrict> {
   @ManyToOne(type => CompanyDistrictUpdateHistory)
   @JoinColumn({ name: 'NO', referencedColumnName: 'companyDistrictNo' })
   companyDistrictUpdateHistories?: CompanyDistrictUpdateHistory[];
+
+  @OneToMany(
+    type => CompanyDistrictPromotion,
+    promotion => promotion.companyDistrict,
+  )
+  promotions?: CompanyDistrictPromotion[];
 
   deliverySpaceCount?: number;
 }

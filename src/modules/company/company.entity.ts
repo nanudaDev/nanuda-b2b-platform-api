@@ -19,6 +19,7 @@ import { CompanyUpdateRefusalReason } from '../company-update-history/company-up
 import { CompanyUpdateHistory } from '../company-update-history/company-update-history.entity';
 import { CompanyPricing } from '../company-pricing/company-pricing.entity';
 import { FileAttachmentDto } from '../file-upload/dto';
+import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 
 @Entity({ name: 'COMPANY' })
 export class Company extends BaseEntity<Company> {
@@ -173,4 +174,10 @@ export class Company extends BaseEntity<Company> {
     },
   })
   pricing?: CompanyPricing[];
+
+  @OneToMany(
+    type => CompanyDistrictPromotion,
+    promotions => promotions.company,
+  )
+  promotions?: CompanyDistrictPromotion[];
 }
