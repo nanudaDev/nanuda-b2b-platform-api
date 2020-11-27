@@ -131,10 +131,10 @@ const generate = (async () => {
     password: 'Sksnek8183#3',
     database: 'nanuda_platform_test',
   });
-  generateSpaceType(() => {
-    console.log('Generating');
-    // if (connection) connection.end();
-  });
+  // generateSpaceType(() => {
+  //   console.log('Generating');
+  //   // if (connection) connection.end();
+  // });
   generateFoodCategoryType(() => {
     // if (connection) connection.end();
     console.log('Generating');

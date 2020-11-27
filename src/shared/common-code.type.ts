@@ -28,6 +28,11 @@ export enum APPROVAL_STATUS {
 }
 export const CONST_APPROVAL_STATUS  = Object.values(APPROVAL_STATUS);
 
+export enum B2B_EVENT_TYPE {
+ 'TO_BE_OPENED' = 'TO_BE_OPENED', 
+}
+export const CONST_B2B_EVENT_TYPE  = Object.values(B2B_EVENT_TYPE);
+
 export enum B2B_FOUNDER_CONSULT {
  'B2B_F_CANCELLED' = 'B2B_F_CANCELLED', 
  'B2B_F_CONTRACT_COMPLETE' = 'B2B_F_CONTRACT_COMPLETE', 

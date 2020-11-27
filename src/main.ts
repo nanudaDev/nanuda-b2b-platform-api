@@ -35,10 +35,15 @@ async function bootstrap() {
   // await generate.generate;
   if (env === ENVIRONMENT.DEVELOPMENT) {
     console.log('Running in development mode. 개발 모드로 진행중');
+    app = await NestFactory.create<NestExpressApplication>(AppModule, {
+      // logger: true
+    });
+  } else {
+    app = await NestFactory.create<NestExpressApplication>(AppModule, {
+      logger: true,
+    });
   }
-  app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    // logger: process.env.NODE_ENV === ENVIRONMENT.PRODUCTION ? false : true,
-  });
+
   app.use(urlencoded({ extended: true }));
   app.use(json({ limit: '50mb' }));
   app.disable('x-powered-by');
