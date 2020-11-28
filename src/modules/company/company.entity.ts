@@ -19,6 +19,7 @@ import { CompanyUpdateRefusalReason } from '../company-update-history/company-up
 import { CompanyUpdateHistory } from '../company-update-history/company-update-history.entity';
 import { CompanyPricing } from '../company-pricing/company-pricing.entity';
 import { FileAttachmentDto } from '../file-upload/dto';
+import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 
 @Entity({ name: 'COMPANY' })
 export class Company extends BaseEntity<Company> {
@@ -173,4 +174,19 @@ export class Company extends BaseEntity<Company> {
     },
   })
   pricing?: CompanyPricing[];
+
+  @ManyToMany(
+    type => CompanyDistrictPromotion,
+    promotion => promotion.company,
+  )
+  @JoinTable({
+    name: 'B2B_COMPANY_DISTRICT_PROMOTION_MAPPER',
+    joinColumn: {
+      name: 'COMPANY_NO',
+    },
+    inverseJoinColumn: {
+      name: 'PROMOTION_NO',
+    },
+  })
+  promotions?: CompanyDistrictPromotion[];
 }

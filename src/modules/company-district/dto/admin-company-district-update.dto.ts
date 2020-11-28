@@ -23,4 +23,16 @@ export class AdminCompanyDistrictUpdateDto extends CompanyDistrictUpdateDto {
   @Expose()
   @Default(1000)
   radius?: number;
+
+  @ApiPropertyOptional({ name: 'promotionIds[]', type: Number, isArray: true })
+  @IsOptional()
+  @Expose()
+  @IsArray()
+  promotionNos?: number[];
+
+  @ApiPropertyOptional({ name: 'amenityIds[]', type: Number, isArray: true })
+  @IsOptional()
+  @Expose()
+  @IsArray()
+  amenityIds?: number[];
 }

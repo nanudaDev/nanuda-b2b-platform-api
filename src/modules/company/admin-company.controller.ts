@@ -22,6 +22,7 @@ import {
 import { PaginatedRequest, PaginatedResponse, UserInfo } from 'src/common';
 import { Company } from './company.entity';
 import { Admin } from '../admin';
+import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 
 @Controller()
 @ApiTags('ADMIN COMPANY')
@@ -134,5 +135,37 @@ export class AdminCompanyController extends BaseController {
   @Delete('/admin/company/:id([0-9]+)')
   async delete(@Param('id', ParseIntPipe) companyNo: number) {
     return await this.companyService.delete(companyNo);
+  }
+
+  /**
+   * find expired promotions
+   * @param companyNo
+   * @param pagination
+   */
+  @Get('/admin/company/:id([0-9]+)/expired-promotions')
+  async findExpiredPromotions(
+    @Param('id', ParseIntPipe) companyNo: number,
+    @Query() pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<CompanyDistrictPromotion>> {
+    return await this.companyService.findExpiredPromotion(
+      companyNo,
+      pagination,
+    );
+  }
+
+  /**
+   * find ongoing promotions
+   * @param companyNo
+   * @param pagination
+   */
+  @Get('/admin/company/:id([0-9]+)/ongoing-promotions')
+  async findOngoingPromotions(
+    @Param('id', ParseIntPipe) companyNo: number,
+    @Query() pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<CompanyDistrictPromotion>> {
+    return await this.companyService.findOngoingPromotions(
+      companyNo,
+      pagination,
+    );
   }
 }
