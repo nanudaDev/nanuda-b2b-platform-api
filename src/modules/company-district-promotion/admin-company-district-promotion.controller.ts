@@ -20,7 +20,7 @@ import {
 } from './dto';
 
 @Controller()
-@ApiTags('ADMIN COMPANY DISTRICT PROMOTION')
+@ApiTags('ADMIN COMPANY DISTRICT DELIVERY PROMOTION')
 // @ApiBearerAuth()
 // @UseGuards(new AuthRolesGuard(...CONST_ADMIN_USER))
 export class AdminCompanyDistrictPromotionController extends BaseController {
@@ -65,7 +65,7 @@ export class AdminCompanyDistrictPromotionController extends BaseController {
    * @param promotionNo
    * @param pagination
    */
-  @Get('/admin/delivery-space/:id([0-9]+)/company-districts')
+  @Get('/admin/delivery-promotion/:id([0-9]+)/company-districts')
   async findDistricts(
     @Param('id', ParseIntPipe) promotionNo: number,
     @Query() pagination: PaginatedRequest,
