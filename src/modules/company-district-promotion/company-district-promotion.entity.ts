@@ -55,7 +55,7 @@ export class CompanyDistrictPromotion extends BaseEntity<
     name: 'SHOW_YN',
     default: YN.NO,
   })
-  showYn?: YN.NO;
+  showYn?: YN;
 
   @Column({
     type: 'datetime',

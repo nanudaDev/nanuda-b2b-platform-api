@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsEnum, IsOptional } from 'class-validator';
-import { Default, ORDER_BY_VALUE } from 'src/common';
+import { Default, ORDER_BY_VALUE, YN } from 'src/common';
 import { B2B_EVENT_TYPE, BaseDto } from 'src/core';
 import { CompanyDistrictPromotion } from '../company-district-promotion.entity';
 
@@ -28,6 +28,12 @@ export class AdminCompanyDistrictPromotionListDto
   @IsOptional()
   @Expose()
   companyDistrictNo?: number;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @Expose()
+  @Default(YN.NO)
+  showYn?: YN;
 
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsOptional()

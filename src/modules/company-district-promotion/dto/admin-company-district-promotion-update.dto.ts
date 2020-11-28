@@ -7,6 +7,7 @@ import {
   IsNotEmpty,
   IsOptional,
 } from 'class-validator';
+import { YN, Default } from 'src/common';
 import { B2B_EVENT_TYPE, BaseDto } from 'src/core';
 import { CompanyDistrictPromotion } from '../company-district-promotion.entity';
 
@@ -45,4 +46,10 @@ export class AdminCompanyDistrictPromotionUpdateDto
   @IsDate()
   @Expose()
   ended?: Date;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @Expose()
+  @Default(YN.NO)
+  showYn?: YN;
 }
