@@ -4,6 +4,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -22,20 +24,6 @@ export class CompanyDistrictPromotion extends BaseEntity<
     unsigned: true,
   })
   no: number;
-
-  @Column({
-    type: 'int',
-    name: 'COMPANY_NO',
-    nullable: false,
-  })
-  companyNo?: number;
-
-  @Column({
-    type: 'int',
-    name: 'COMPANY_DISTRICT_NO',
-    nullable: false,
-  })
-  companyDistrictNo?: number;
 
   @Column({
     type: 'varchar',
@@ -63,6 +51,13 @@ export class CompanyDistrictPromotion extends BaseEntity<
   promotionType?: B2B_EVENT_TYPE;
 
   @Column({
+    type: 'char',
+    name: 'SHOW_YN',
+    default: YN.NO,
+  })
+  showYn?: YN.NO;
+
+  @Column({
     type: 'datetime',
     name: 'START_DATE',
   })
@@ -74,22 +69,34 @@ export class CompanyDistrictPromotion extends BaseEntity<
   })
   ended?: Date;
 
-  @ManyToOne(
+  @ManyToMany(
     type => CompanyDistrict,
     district => district.promotions,
   )
-  @JoinColumn({ name: 'COMPANY_DISTRICT_NO' })
-  companyDistrict?: CompanyDistrict;
+  @JoinTable({
+    name: 'B2B_COMPANY_DISTRICT_PROMOTION_MAPPER',
+    joinColumn: {
+      name: 'PROMOTION_NO',
+    },
+    inverseJoinColumn: {
+      name: 'COMPANY_DISTRICT_NO',
+    },
+  })
+  companyDistricts?: CompanyDistrict[];
 
   @OneToOne(type => CodeManagement)
   @JoinColumn({ name: 'PROMOTION_TYPE', referencedColumnName: 'key' })
   promotionTypeCode?: CodeManagement;
 
-  @ManyToOne(
+  @ManyToMany(
     type => Company,
     company => company.promotions,
   )
-  @JoinColumn({ name: 'COMPANY_NO' })
+  @JoinTable({
+    name: 'B2B_COMPANY_DISTRICT_PROMOTION_MAPPER',
+    joinColumn: { name: 'PROMOTION_NO' },
+    inverseJoinColumn: { name: 'COMPANY_NO' },
+  })
   company?: Company;
 
   isExpired?: YN;

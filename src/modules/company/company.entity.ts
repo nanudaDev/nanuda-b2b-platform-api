@@ -175,9 +175,18 @@ export class Company extends BaseEntity<Company> {
   })
   pricing?: CompanyPricing[];
 
-  @OneToMany(
+  @ManyToMany(
     type => CompanyDistrictPromotion,
-    promotions => promotions.company,
+    promotion => promotion.company,
   )
+  @JoinTable({
+    name: 'B2B_COMPANY_DISTRICT_PROMOTION_MAPPER',
+    joinColumn: {
+      name: 'COMPANY_NO',
+    },
+    inverseJoinColumn: {
+      name: 'PROMOTION_NO',
+    },
+  })
   promotions?: CompanyDistrictPromotion[];
 }

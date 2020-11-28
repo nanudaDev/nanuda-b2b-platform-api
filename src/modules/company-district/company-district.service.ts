@@ -28,6 +28,7 @@ import { CompanyDistrictAnalysisSenderService } from './company-district-analysi
 import * as daum from 'daum-map-api';
 import { FileUploadService } from '../file-upload/file-upload.service';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
+import { CompanyDistrictPromotionMapper } from '../company-district-promotion-mapper/company-district-promotion-mapper.entity';
 
 @Injectable()
 export class CompanyDistrictService extends BaseService {
@@ -75,7 +76,7 @@ export class CompanyDistrictService extends BaseService {
     const qb = this.companyDistrictRepo
       .createQueryBuilder('companyDistrict')
       .CustomInnerJoinAndSelect(['company'])
-      .CustomLeftJoinAndSelect(['companyDistrictUpdateHistories'])
+      .CustomLeftJoinAndSelect(['companyDistrictUpdateHistories', 'promotions'])
       // .orderBy('companyDistrictUpdateHistories.no', ORDER_BY_VALUE.DESC)
       .AndWhereLike(
         'companyDistrict',
@@ -113,6 +114,24 @@ export class CompanyDistrictService extends BaseService {
         adminCompanyDistrictListDto.companyNo,
         adminCompanyDistrictListDto.exclude('companyNo'),
       )
+      .AndWhereLike(
+        'promotions',
+        'title',
+        adminCompanyDistrictListDto.promotionTitle,
+        adminCompanyDistrictListDto.exclude('promotionTitle'),
+      )
+      .AndWhereEqual(
+        'promotions',
+        'no',
+        adminCompanyDistrictListDto.promotionNo,
+        adminCompanyDistrictListDto.exclude('promotionNo'),
+      )
+      .AndWhereEqual(
+        'promotions',
+        'promotionType',
+        adminCompanyDistrictListDto.promotionType,
+        adminCompanyDistrictListDto.exclude('promotionType'),
+      )
       .WhereAndOrder(adminCompanyDistrictListDto)
       // .addOrderBy('companyDistrictUpdateHistories.no', ORDER_BY_VALUE.DESC)
       .Paginate(pagination);
@@ -133,7 +152,7 @@ export class CompanyDistrictService extends BaseService {
   ): Promise<PaginatedResponse<CompanyDistrict>> {
     const qb = this.companyDistrictRepo
       .createQueryBuilder('companyDistrict')
-      .CustomLeftJoinAndSelect(['codeManagement'])
+      .CustomInnerJoinAndSelect(['codeManagement'])
       .AndWhereLike(
         'companyDistrict',
         'nameKr',
@@ -172,6 +191,7 @@ export class CompanyDistrictService extends BaseService {
         'companyDistrictUpdateHistories',
         'amenities',
         'deliverySpaces',
+        'promotions',
       ])
       .orderBy('companyDistrictUpdateHistories.no', ORDER_BY_VALUE.DESC)
       .where('companyDistrict.no = :no', { no: companyDistrictNo })
@@ -272,6 +292,7 @@ export class CompanyDistrictService extends BaseService {
         let companyDistrictUpdateHistory = this.__company_district_update_history(
           newCompanyDistrict,
         );
+        // create amenity mappers
         if (
           companyDistrictCreateDto.amenityIds &&
           companyDistrictCreateDto.amenityIds.length > 0
@@ -283,6 +304,21 @@ export class CompanyDistrictService extends BaseService {
               newMapper.companyDistrictNo = newCompanyDistrict.no;
               newMapper.companyNo = newCompanyDistrict.companyNo;
               newMapper.adminNo = userNo;
+              newMapper = await entityManager.save(newMapper);
+            }),
+          );
+        }
+        // create promotion mappers
+        if (
+          companyDistrictCreateDto.promotionNos &&
+          companyDistrictCreateDto.promotionNos.length > 0
+        ) {
+          await Promise.all(
+            companyDistrictCreateDto.promotionNos.map(async promotionMapper => {
+              let newMapper = new CompanyDistrictPromotionMapper();
+              newMapper.companyDistrictNo = newCompanyDistrict.no;
+              newMapper.companyNo = newCompanyDistrict.companyNo;
+              newMapper.promotionNo = promotionMapper;
               newMapper = await entityManager.save(newMapper);
             }),
           );
@@ -351,6 +387,7 @@ export class CompanyDistrictService extends BaseService {
         companyDistrictUpdateHistory = await entityManager.save(
           companyDistrictUpdateHistory,
         );
+        // create amenity mappers
         if (
           adminCompanyDistrictUpdateDto.amenityIds &&
           adminCompanyDistrictUpdateDto.amenityIds.length > 0
@@ -372,6 +409,32 @@ export class CompanyDistrictService extends BaseService {
                 newAmenity.companyDistrictNo = companyDistrictNo;
                 newAmenity.adminNo = adminNo;
                 newAmenity = await entityManager.save(newAmenity);
+              },
+            ),
+          );
+        }
+        // create new promotion mappers
+        if (
+          adminCompanyDistrictUpdateDto.promotionNos &&
+          adminCompanyDistrictUpdateDto.promotionNos.length > 0
+        ) {
+          await entityManager
+            .getRepository(CompanyDistrictPromotionMapper)
+            .createQueryBuilder()
+            .delete()
+            .from(CompanyDistrictPromotionMapper)
+            .where('companyDistrictNo = :companyDistrictNo', {
+              companyDistrictNo: companyDistrictNo,
+            })
+            .execute();
+          await Promise.all(
+            adminCompanyDistrictUpdateDto.promotionNos.map(
+              async promotionMapper => {
+                let newMapper = new CompanyDistrictPromotionMapper();
+                newMapper.companyDistrictNo = companyDistrictNo;
+                newMapper.companyNo = companyDistrict.companyNo;
+                newMapper.promotionNo = promotionMapper;
+                await entityManager.save(newMapper);
               },
             ),
           );

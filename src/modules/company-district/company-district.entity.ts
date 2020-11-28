@@ -191,11 +191,20 @@ export class CompanyDistrict extends BaseEntity<CompanyDistrict> {
   @JoinColumn({ name: 'NO', referencedColumnName: 'companyDistrictNo' })
   companyDistrictUpdateHistories?: CompanyDistrictUpdateHistory[];
 
-  @OneToMany(
-    type => CompanyDistrictPromotion,
-    promotion => promotion.companyDistrict,
-  )
-  promotions?: CompanyDistrictPromotion[];
-
   deliverySpaceCount?: number;
+
+  @ManyToMany(
+    type => CompanyDistrictPromotion,
+    promotions => promotions.companyDistricts,
+  )
+  @JoinTable({
+    name: 'B2B_COMPANY_DISTRICT_PROMOTION_MAPPER',
+    joinColumn: {
+      name: 'COMPANY_DISTRICT_NO',
+    },
+    inverseJoinColumn: {
+      name: 'PROMOTION_NO',
+    },
+  })
+  promotions?: CompanyDistrictPromotion[];
 }

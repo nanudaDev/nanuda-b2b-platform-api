@@ -10,11 +10,11 @@ import {
 import { B2B_EVENT_TYPE, BaseDto } from 'src/core';
 import { CompanyDistrictPromotion } from '../company-district-promotion.entity';
 
-export class AdminCompanyDistrictPromotionCreateDto
-  extends BaseDto<AdminCompanyDistrictPromotionCreateDto>
+export class AdminCompanyDistrictPromotionUpdateDto
+  extends BaseDto<AdminCompanyDistrictPromotionUpdateDto>
   implements Partial<CompanyDistrictPromotion> {
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @Expose()
   title: string;
 
@@ -34,15 +34,15 @@ export class AdminCompanyDistrictPromotionCreateDto
   @IsEnum(B2B_EVENT_TYPE)
   promotionType?: B2B_EVENT_TYPE;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  // @IsDate()
-  @Expose()
-  started?: Date;
+  //   @ApiPropertyOptional({ type: 'date' })
+  //   @IsOptional()
+  //   @IsDate()
+  //   @Expose()
+  //   started?: Date;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: 'date' })
   @IsOptional()
-  // @IsDate()
+  @IsDate()
   @Expose()
   ended?: Date;
 }

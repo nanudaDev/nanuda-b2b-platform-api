@@ -27,16 +27,6 @@ export class AdminCompanyDistrictPromotionListDto
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  companyDistrictNameKr?: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Expose()
-  companyNameKr?: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Expose()
   companyDistrictNo?: number;
 
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
