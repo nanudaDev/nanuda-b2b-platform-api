@@ -99,6 +99,7 @@ export class NanudaBestSpaceService extends BaseService {
       if (remaining === 0) {
         const index = items.indexOf(deliverySpace);
         items.splice(index, 1);
+        totalCount = totalCount - 1;
       }
     });
 
