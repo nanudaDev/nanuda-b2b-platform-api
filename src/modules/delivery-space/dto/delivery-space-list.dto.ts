@@ -27,6 +27,16 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  companyNameKr?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  companyNo?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   companyDistrictNo?: number;
 
   @ApiPropertyOptional()
