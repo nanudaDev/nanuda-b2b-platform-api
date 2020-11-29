@@ -85,6 +85,18 @@ export class NanudaDeliverySpaceService extends BaseService {
         deliverySpaceListDto.exclude('monthlyRentFee'),
       )
       .AndWhereLike(
+        'company',
+        'nameKr',
+        deliverySpaceListDto.companyNameKr,
+        deliverySpaceListDto.exclude('companyNameKr'),
+      )
+      .AndWhereEqual(
+        'company',
+        'no',
+        deliverySpaceListDto.companyNo,
+        deliverySpaceListDto.exclude('companyNo'),
+      )
+      .AndWhereLike(
         'companyDistrict',
         'nameKr',
         deliverySpaceListDto.companyDistrictName,
