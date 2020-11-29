@@ -1,4 +1,4 @@
-import { BaseDto } from 'src/core';
+import { B2B_EVENT_TYPE, BaseDto } from 'src/core';
 import { DeliverySpace } from '../delivery-space.entity';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsEnum, IsNumber, IsArray } from 'class-validator';
@@ -105,6 +105,12 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @IsArray()
   @Expose()
   amenityIds?: number[];
+
+  @ApiPropertyOptional({ enum: B2B_EVENT_TYPE })
+  @IsOptional()
+  @IsEnum(B2B_EVENT_TYPE)
+  @Expose()
+  promotionType?: B2B_EVENT_TYPE;
 
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsOptional()

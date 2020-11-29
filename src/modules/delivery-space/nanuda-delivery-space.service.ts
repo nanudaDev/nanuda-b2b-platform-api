@@ -54,6 +54,7 @@ export class NanudaDeliverySpaceService extends BaseService {
         'contracts',
       ])
       .innerJoinAndSelect('companyDistrict.company', 'company')
+      .leftJoinAndSelect('company.promotions', 'promotions')
       .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       //   .andWhere('deliveryFounderConsults.status != :status', {
@@ -72,6 +73,12 @@ export class NanudaDeliverySpaceService extends BaseService {
       //   deliverySpaceListDto.amenityName,
       //   deliverySpaceListDto.exclude('amenityName'),
       // )
+      .AndWhereEqual(
+        'promotions',
+        'promotionType',
+        deliverySpaceListDto.promotionType,
+        deliverySpaceListDto.exclude('promotionType'),
+      )
       .AndWhereLike(
         'deliverySpaceOptions',
         'deliverySpaceOptionName',
