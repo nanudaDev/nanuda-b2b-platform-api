@@ -46,6 +46,10 @@ export class NanudaCompanyService extends BaseService {
       })
       .getMany();
 
-    return qb;
+    return this.__remove_duplicate(qb);
+  }
+
+  private __remove_duplicate(array: any) {
+    return array.filter((a: string, b: string) => array.indexOf(a) === b);
   }
 }
