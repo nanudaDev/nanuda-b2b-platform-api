@@ -62,6 +62,7 @@ export class NanudaBestSpaceService extends BaseService {
       .CustomInnerJoinAndSelect(['companyDistrict'])
       .CustomLeftJoinAndSelect(['contracts'])
       .innerJoinAndSelect('companyDistrict.company', 'company')
+      .leftJoinAndSelect('companyDistrict.promotions', 'promotions')
       .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
         companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
       })
@@ -77,6 +78,8 @@ export class NanudaBestSpaceService extends BaseService {
       //   isOpenedYn: YN.NO,
       // })
       .andWhere('deliverySpaces.quantity > 0')
+      .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
+      .AndWhereJoinBetweenDate('promotions', new Date())
       .AndWhereLike(
         'company',
         'nameKr',

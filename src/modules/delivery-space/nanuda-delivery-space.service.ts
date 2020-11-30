@@ -54,7 +54,7 @@ export class NanudaDeliverySpaceService extends BaseService {
         'contracts',
       ])
       .innerJoinAndSelect('companyDistrict.company', 'company')
-      .leftJoinAndSelect('company.promotions', 'promotions')
+      .leftJoinAndSelect('companyDistrict.promotions', 'promotions')
       .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       //   .andWhere('deliveryFounderConsults.status != :status', {
@@ -73,12 +73,13 @@ export class NanudaDeliverySpaceService extends BaseService {
       //   deliverySpaceListDto.amenityName,
       //   deliverySpaceListDto.exclude('amenityName'),
       // )
-      .AndWhereEqual(
-        'promotions',
-        'promotionType',
-        deliverySpaceListDto.promotionType,
-        deliverySpaceListDto.exclude('promotionType'),
-      )
+      // .AndWhereEqual(
+      //   'promotions',
+      //   'promotionType',
+      //   deliverySpaceListDto.promotionType,
+      //   deliverySpaceListDto.exclude('promotionType'),
+      // )
+
       .AndWhereLike(
         'deliverySpaceOptions',
         'deliverySpaceOptionName',
@@ -120,7 +121,41 @@ export class NanudaDeliverySpaceService extends BaseService {
         'address',
         deliverySpaceListDto.address,
         deliverySpaceListDto.exclude('address'),
+      )
+      .AndWhereBetweenValues(
+        'deliverySpace',
+        'size',
+        deliverySpaceListDto.minSize,
+        deliverySpaceListDto.maxSize,
+        deliverySpaceListDto.exclude('minSize'),
+        deliverySpaceListDto.exclude('maxSize'),
+      )
+      .AndWhereBetweenValues(
+        'deliverySpace',
+        'deposit',
+        deliverySpaceListDto.minDeposit,
+        deliverySpaceListDto.maxDeposit,
+        deliverySpaceListDto.exclude('minDeposit'),
+        deliverySpaceListDto.exclude('maxDeposit'),
+      )
+      .AndWhereBetweenValues(
+        'deliverySpace',
+        'monthlyRentFee',
+        deliverySpaceListDto.minMonthlyRentFee,
+        deliverySpaceListDto.maxMonthlyRentFee,
+        deliverySpaceListDto.exclude('minMonthlyRentFee'),
+        deliverySpaceListDto.exclude('maxMonthlyRentFee'),
       );
+    if (deliverySpaceListDto.promotionNo) {
+      qb.AndWhereEqual(
+        'promotions',
+        'no',
+        deliverySpaceListDto.promotionNo,
+        deliverySpaceListDto.exclude('promotionNo'),
+      );
+      qb.AndWhereJoinBetweenDate('promotions', new Date());
+      qb.andWhere('promotions.showYn = :showYn', { showYn: YN.YES });
+    }
     if (
       deliverySpaceListDto.amenityIds &&
       deliverySpaceListDto.amenityIds.length > 0
