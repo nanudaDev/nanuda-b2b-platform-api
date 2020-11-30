@@ -242,12 +242,15 @@ export class NanudaDeliverySpaceService extends BaseService {
         'contracts',
       ])
       .leftJoinAndSelect('companyDistrict.amenities', 'commonAmenities')
+      .leftJoinAndSelect('companyDistrict.promotions', 'promotions')
       .leftJoinAndSelect('deliverySpace.brands', 'brands')
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('deliverySpace.no = :no', { no: deliverySpaceNo })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       .addOrderBy('brands.isRecommendedYn', ORDER_BY_VALUE.DESC)
+      .AndWhereJoinBetweenDate('promotions', new Date())
+      .andWhere('promotions.showYn = :showYn', { showYn: YN.NO })
       .getOne();
     if (!space) {
       throw new NotFoundException();
