@@ -248,20 +248,21 @@ export class NanudaDeliverySpaceService extends BaseService {
       .where('deliverySpace.no = :no', { no: deliverySpaceNo })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('brands.showYn = :showYn', { showYn: YN.YES })
       .addOrderBy('brands.isRecommendedYn', ORDER_BY_VALUE.DESC)
       .AndWhereJoinBetweenDate('promotions', new Date())
-      .andWhere('promotions.showYn = :showYn', { showYn: YN.NO })
+      .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
       .getOne();
     if (!space) {
       throw new NotFoundException();
     }
     // filter out brands
-    space.brands.map(brand => {
-      const index = space.brands.indexOf(brand);
-      if (brand.showYn === YN.NO) {
-        space.brands.splice(index, 1);
-      }
-    });
+    // space.brands.map(brand => {
+    //   const index = space.brands.indexOf(brand);
+    //   if (brand.showYn === YN.NO) {
+    //     space.brands.splice(index, 1);
+    //   }
+    // });
     const likedCount = await this.entityManager
       .getRepository(FavoriteSpaceMapper)
       .find({ where: { deliverySpaceNo: deliverySpaceNo } });
