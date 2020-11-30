@@ -106,6 +106,11 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @Expose()
   amenityIds?: number[];
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  promotionNo?: number;
+
   @ApiPropertyOptional({ enum: B2B_EVENT_TYPE })
   @IsOptional()
   @IsEnum(B2B_EVENT_TYPE)
@@ -130,4 +135,35 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @IsEnum(ORDER_BY_VALUE)
   @Expose()
   orderByDeposit?: ORDER_BY_VALUE;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  minSize?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  maxSize?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  minDeposit?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  maxDeposit?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  minMonthlyRentFee?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  maxMonthlyRentFee?: number;
 }
+``;

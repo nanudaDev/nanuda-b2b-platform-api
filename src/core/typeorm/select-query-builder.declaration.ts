@@ -137,6 +137,17 @@ declare module 'typeorm/query-builder/SelectQueryBuilder' {
       date: Date,
     ): SelectQueryBuilder<Entity>;
     /**
+     * between dates for join
+     * @param this
+     * @param alias
+     * @param date
+     */
+    AndWhereJoinBetweenDate(
+      this: SelectQueryBuilder<Entity>,
+      alias: string,
+      date: Date,
+    ): SelectQueryBuilder<Entity>;
+    /**
      * 시작 날짜랑 마지막 날짜 정한다.
      */
     AndWhereBetweenStartAndEndDate(
@@ -164,6 +175,17 @@ declare module 'typeorm/query-builder/SelectQueryBuilder' {
       START_DAY: Date | string,
       END_DATE: Date | string,
     ): SelectQueryBuilder<Entity>;
+
+    AndWhereBetweenValues(
+      this: SelectQueryBuilder<Entity>,
+      alias: string,
+      property: string,
+      MIN_VALUE: number,
+      MAX_VALUE: number,
+      excludedRequestDto?: any,
+      excludedRequestDto2?: any,
+    ): SelectQueryBuilder<Entity>;
+
     /**
      * graph between start day and end day
      * @param this
@@ -258,6 +280,30 @@ SelectQueryBuilder.prototype.AddDateRange = function<Entity>(
   return this;
 };
 
+SelectQueryBuilder.prototype.AndWhereBetweenValues = function<Entity>(
+  this: SelectQueryBuilder<Entity>,
+  alias: string,
+  property: string,
+  MIN_VALUE?: number,
+  MAX_VALUE?: number,
+): SelectQueryBuilder<Entity> {
+  if (MIN_VALUE && !MAX_VALUE) {
+    this.andWhere(`${alias}.${property} >= :MIN_VALUE`, {
+      MIN_VALUE,
+    });
+  }
+  if (!MIN_VALUE && MAX_VALUE) {
+    this.andWhere(`${alias}.${property} <= :MAX_VALUE`, { MAX_VALUE });
+  }
+  if (MIN_VALUE && MAX_VALUE) {
+    this.andWhere(`${alias}.${property} BETWEEN :MIN_VALUE AND :MAX_VALUE`, {
+      MIN_VALUE,
+      MAX_VALUE,
+    });
+  }
+  return this;
+};
+
 SelectQueryBuilder.prototype.AndWhereBetweenDate = function<Entity>(
   this: SelectQueryBuilder<Entity>,
   DATE?: Date,
@@ -267,6 +313,19 @@ SelectQueryBuilder.prototype.AndWhereBetweenDate = function<Entity>(
       `${this.alias}.started <= :DATE AND ${this.alias}.ended >= :DATE`,
       { DATE },
     );
+  }
+  return this;
+};
+
+SelectQueryBuilder.prototype.AndWhereJoinBetweenDate = function<Entity>(
+  this: SelectQueryBuilder<Entity>,
+  alias: string,
+  DATE?: Date,
+): SelectQueryBuilder<Entity> {
+  if (DATE) {
+    this.andWhere(`${alias}.started <= :DATE AND ${alias}.ended >= :DATE`, {
+      DATE,
+    });
   }
   return this;
 };
