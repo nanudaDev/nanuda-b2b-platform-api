@@ -34,7 +34,7 @@ export class CompanyDistrictPromotionService extends BaseService {
   ): Promise<PaginatedResponse<CompanyDistrictPromotion>> {
     const qb = this.promotionRepo
       .createQueryBuilder('promotion')
-      .CustomInnerJoinAndSelect(['promotionTypeCode'])
+      .CustomInnerJoinAndSelect(['codeManagement'])
       .AndWhereLike(
         'promotion',
         'title',
@@ -64,7 +64,7 @@ export class CompanyDistrictPromotionService extends BaseService {
   ): Promise<CompanyDistrictPromotion> {
     let qb = await this.promotionRepo
       .createQueryBuilder('promotion')
-      .CustomInnerJoinAndSelect(['promotionTypeCode'])
+      .CustomInnerJoinAndSelect(['codeManagement'])
       .where('promotion.no = :no', { no: promotionNo })
       .getOne();
 

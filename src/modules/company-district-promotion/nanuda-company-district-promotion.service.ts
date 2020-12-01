@@ -26,6 +26,7 @@ export class NanudaCompanyDistrictPromotionService extends BaseService {
   ): Promise<PaginatedResponse<CompanyDistrictPromotion>> {
     const qb = this.promotionRepo
       .createQueryBuilder('promotion')
+      .CustomInnerJoinAndSelect(['codeManagement'])
       .where('promotion.showYn = :showYn', { showYn: YN.YES })
       .AndWhereBetweenDate(new Date())
       .Paginate(pagination);
@@ -44,6 +45,7 @@ export class NanudaCompanyDistrictPromotionService extends BaseService {
   ): Promise<CompanyDistrictPromotion> {
     const promotion = await this.promotionRepo
       .createQueryBuilder('promotion')
+      .CustomInnerJoinAndSelect(['codeManagement'])
       .where('promotion.showYn = :showYn', { showYn: YN.YES })
       .AndWhereBetweenDate(new Date())
       .andWhere('promotion.no = :no', { no: promotionNo })
