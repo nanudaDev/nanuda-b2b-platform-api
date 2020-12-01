@@ -498,13 +498,16 @@ export class CompanyService extends BaseService {
       .getRepository(CompanyDistrictPromotion)
       .createQueryBuilder('promotion')
       .CustomLeftJoinAndSelect(['company'])
+      .CustomInnerJoinAndSelect(['codeManagement'])
       .where('company.no = :no', { no: companyNo })
       .AndWhereBetweenDate(new Date())
       .orderBy('promotion.createdAt', ORDER_BY_VALUE.DESC)
       .Paginate(pagination);
 
-    const [items, totalCount] = await promotions.getManyAndCount();
-
+    let [items, totalCount] = await promotions.getManyAndCount();
+    items = this.__remove_duplicate(items);
+    const diff = totalCount - items.length;
+    totalCount = totalCount - diff;
     return { items, totalCount };
   }
 
@@ -632,5 +635,9 @@ export class CompanyService extends BaseService {
     newCompanyUpdateHistory.companyNo = companyNo;
 
     return newCompanyUpdateHistory;
+  }
+
+  private __remove_duplicate(array: any) {
+    return array.filter((a: string, b: string) => array.indexOf(a) === b);
   }
 }
