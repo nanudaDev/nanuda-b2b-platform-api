@@ -1,7 +1,7 @@
 require('dotenv').config();
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { YN } from 'src/common';
+import { ORDER_BY_VALUE, YN } from 'src/common';
 import { APPROVAL_STATUS, BaseService, COMPANY, SPACE_TYPE } from 'src/core';
 import { EntityManager } from 'typeorm';
 import { BestSpaceMapper } from '../best-space/best-space.entity';
@@ -90,8 +90,13 @@ export class NanudaHomepageService extends BaseService {
         'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
         { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
       )
+      .andWhere('companyDistrict.region1DepthName = :region1DepthName', {
+        region1DepthName: '서울',
+      })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.quantity > 0')
+      .orderBy('deliverySpace.quantity', ORDER_BY_VALUE.DESC)
       .getMany();
 
     await Promise.all(
@@ -195,8 +200,13 @@ export class NanudaHomepageService extends BaseService {
         'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
         { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
       )
+      .andWhere('companyDistrict.region1DepthName = :region1DepthName', {
+        region1DepthName: '서울',
+      })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.quantity > 0')
+      .orderBy('deliverySpace.quantity', ORDER_BY_VALUE.DESC)
       .limit(12)
       .getMany();
 
