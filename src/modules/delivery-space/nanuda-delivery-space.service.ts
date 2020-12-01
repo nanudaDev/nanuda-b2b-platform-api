@@ -372,5 +372,33 @@ export class NanudaDeliverySpaceService extends BaseService {
     return await qb;
   }
 
-  // TODO: 마감 임박 엔드포인트 필요
+  async findMaxValues() {
+    const maxDepositValue = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .select(['deliverySpace.deposit'])
+      .limit(1)
+      .orderBy('deliverySpace.deposit', ORDER_BY_VALUE.DESC)
+      .getMany();
+
+    const maxSizeValue = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .select(['deliverySpace.size'])
+      .limit(1)
+      .orderBy('deliverySpace.size', ORDER_BY_VALUE.DESC)
+      .getMany();
+
+    const maxRentValue = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .select(['deliverySpace.monthlyRentFee'])
+      .limit(1)
+      .orderBy('deliverySpace.monthlyRentFee', ORDER_BY_VALUE.DESC)
+      .getMany();
+
+    const results = {
+      maxDeposit: maxDepositValue[0].deposit,
+      maxSize: maxSizeValue[0].size,
+      maxMonthlyRentFee: maxRentValue[0].monthlyRentFee,
+    };
+    return results;
+  }
 }

@@ -68,11 +68,16 @@ export class NanudaDeliverySpaceController extends BaseController {
     );
   }
 
+  @Get('/nanuda/delivery-space/max-values')
+  async findMaxValues() {
+    return await this.nanudaDeliverySpaceService.findMaxValues();
+  }
+
   /**
    * get count
    */
   @Get('/nanuda/delivery-space/count')
   async deliverySpaceCount() {
-    return await this.nanudaDeliverySpaceService.deliverySpaceCount()
+    return await this.nanudaDeliverySpaceService.deliverySpaceCount();
   }
 }
