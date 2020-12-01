@@ -86,7 +86,7 @@ export class CompanyDistrictPromotion extends BaseEntity<
 
   @OneToOne(type => CodeManagement)
   @JoinColumn({ name: 'PROMOTION_TYPE', referencedColumnName: 'key' })
-  promotionTypeCode?: CodeManagement;
+  codeManagement?: CodeManagement;
 
   @ManyToMany(
     type => Company,
