@@ -26,7 +26,7 @@ export class NanudaCompanyDistrictPromotionService extends BaseService {
   ): Promise<PaginatedResponse<CompanyDistrictPromotion>> {
     const qb = this.promotionRepo
       .createQueryBuilder('promotion')
-      .CustomInnerJoinAndSelect(['codeManagement'])
+      .CustomInnerJoinAndSelect(['codeManagement', 'company'])
       .where('promotion.showYn = :showYn', { showYn: YN.YES })
       .AndWhereBetweenDate(new Date())
       .Paginate(pagination);
