@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { BaseService } from 'src/core';
+import { BaseService, PRODUCT_CONSULT } from 'src/core';
 import {
   AdminProductConsultListDto,
   AdminProductConsultUpdateDto,
@@ -86,7 +86,6 @@ export class ProductConsultService extends BaseService {
       )
       .WhereAndOrder(adminProductConsutListDto)
       .Paginate(pagination);
-
     const [items, totalCount] = await qb.getManyAndCount();
     return { items, totalCount };
   }

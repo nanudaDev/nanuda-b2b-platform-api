@@ -1,4 +1,4 @@
-import { BaseDto } from 'src/core';
+import { B2B_EVENT_TYPE, BaseDto } from 'src/core';
 import { DeliverySpace } from '../delivery-space.entity';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsEnum, IsNumber, IsArray } from 'class-validator';
@@ -23,6 +23,16 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @IsNumber()
   @Type(() => Number)
   size?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  companyNameKr?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  companyNo?: number;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -96,6 +106,17 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @Expose()
   amenityIds?: number[];
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  promotionNo?: number;
+
+  @ApiPropertyOptional({ enum: B2B_EVENT_TYPE })
+  @IsOptional()
+  @IsEnum(B2B_EVENT_TYPE)
+  @Expose()
+  promotionType?: B2B_EVENT_TYPE;
+
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsOptional()
   @IsEnum(ORDER_BY_VALUE)
@@ -114,4 +135,35 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @IsEnum(ORDER_BY_VALUE)
   @Expose()
   orderByDeposit?: ORDER_BY_VALUE;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  minSize?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  maxSize?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  minDeposit?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  maxDeposit?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  minMonthlyRentFee?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  maxMonthlyRentFee?: number;
 }
+``;

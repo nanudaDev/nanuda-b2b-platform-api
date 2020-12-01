@@ -1,4 +1,4 @@
-import { BaseDto, APPROVAL_STATUS } from 'src/core';
+import { BaseDto, APPROVAL_STATUS, B2B_EVENT_TYPE } from 'src/core';
 import { CompanyDistrict } from '../company-district.entity';
 import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsEnum } from 'class-validator';
@@ -24,4 +24,20 @@ export class AdminCompanyDistrictListDto extends CompanyDistrictListDto {
   @IsOptional()
   @Expose()
   companyNameEng?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  promotionTitle?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  promotionNo?: number;
+
+  @ApiPropertyOptional({ enum: B2B_EVENT_TYPE, isArray: true })
+  @IsOptional()
+  @Expose()
+  @IsEnum(B2B_EVENT_TYPE)
+  promotionType?: B2B_EVENT_TYPE;
 }

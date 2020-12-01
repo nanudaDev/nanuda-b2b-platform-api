@@ -54,6 +54,7 @@ export class NanudaDeliverySpaceService extends BaseService {
         'contracts',
       ])
       .innerJoinAndSelect('companyDistrict.company', 'company')
+      .leftJoinAndSelect('companyDistrict.promotions', 'promotions')
       .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       //   .andWhere('deliveryFounderConsults.status != :status', {
@@ -72,6 +73,13 @@ export class NanudaDeliverySpaceService extends BaseService {
       //   deliverySpaceListDto.amenityName,
       //   deliverySpaceListDto.exclude('amenityName'),
       // )
+      // .AndWhereEqual(
+      //   'promotions',
+      //   'promotionType',
+      //   deliverySpaceListDto.promotionType,
+      //   deliverySpaceListDto.exclude('promotionType'),
+      // )
+
       .AndWhereLike(
         'deliverySpaceOptions',
         'deliverySpaceOptionName',
@@ -83,6 +91,18 @@ export class NanudaDeliverySpaceService extends BaseService {
         'monthlyRentFee',
         deliverySpaceListDto.monthlyRentFee,
         deliverySpaceListDto.exclude('monthlyRentFee'),
+      )
+      .AndWhereLike(
+        'company',
+        'nameKr',
+        deliverySpaceListDto.companyNameKr,
+        deliverySpaceListDto.exclude('companyNameKr'),
+      )
+      .AndWhereEqual(
+        'company',
+        'no',
+        deliverySpaceListDto.companyNo,
+        deliverySpaceListDto.exclude('companyNo'),
       )
       .AndWhereLike(
         'companyDistrict',
@@ -101,7 +121,41 @@ export class NanudaDeliverySpaceService extends BaseService {
         'address',
         deliverySpaceListDto.address,
         deliverySpaceListDto.exclude('address'),
+      )
+      .AndWhereBetweenValues(
+        'deliverySpace',
+        'size',
+        deliverySpaceListDto.minSize,
+        deliverySpaceListDto.maxSize,
+        deliverySpaceListDto.exclude('minSize'),
+        deliverySpaceListDto.exclude('maxSize'),
+      )
+      .AndWhereBetweenValues(
+        'deliverySpace',
+        'deposit',
+        deliverySpaceListDto.minDeposit,
+        deliverySpaceListDto.maxDeposit,
+        deliverySpaceListDto.exclude('minDeposit'),
+        deliverySpaceListDto.exclude('maxDeposit'),
+      )
+      .AndWhereBetweenValues(
+        'deliverySpace',
+        'monthlyRentFee',
+        deliverySpaceListDto.minMonthlyRentFee,
+        deliverySpaceListDto.maxMonthlyRentFee,
+        deliverySpaceListDto.exclude('minMonthlyRentFee'),
+        deliverySpaceListDto.exclude('maxMonthlyRentFee'),
       );
+    if (deliverySpaceListDto.promotionNo) {
+      qb.AndWhereEqual(
+        'promotions',
+        'no',
+        deliverySpaceListDto.promotionNo,
+        deliverySpaceListDto.exclude('promotionNo'),
+      );
+      qb.AndWhereJoinBetweenDate('promotions', new Date());
+      qb.andWhere('promotions.showYn = :showYn', { showYn: YN.YES });
+    }
     if (
       deliverySpaceListDto.amenityIds &&
       deliverySpaceListDto.amenityIds.length > 0
@@ -188,23 +242,27 @@ export class NanudaDeliverySpaceService extends BaseService {
         'contracts',
       ])
       .leftJoinAndSelect('companyDistrict.amenities', 'commonAmenities')
+      .leftJoinAndSelect('companyDistrict.promotions', 'promotions')
       .leftJoinAndSelect('deliverySpace.brands', 'brands')
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('deliverySpace.no = :no', { no: deliverySpaceNo })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('brands.showYn = :showYn', { showYn: YN.YES })
       .addOrderBy('brands.isRecommendedYn', ORDER_BY_VALUE.DESC)
+      .AndWhereJoinBetweenDate('promotions', new Date())
+      .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
       .getOne();
     if (!space) {
       throw new NotFoundException();
     }
     // filter out brands
-    space.brands.map(brand => {
-      const index = space.brands.indexOf(brand);
-      if (brand.showYn === YN.NO) {
-        space.brands.splice(index, 1);
-      }
-    });
+    // space.brands.map(brand => {
+    //   const index = space.brands.indexOf(brand);
+    //   if (brand.showYn === YN.NO) {
+    //     space.brands.splice(index, 1);
+    //   }
+    // });
     const likedCount = await this.entityManager
       .getRepository(FavoriteSpaceMapper)
       .find({ where: { deliverySpaceNo: deliverySpaceNo } });

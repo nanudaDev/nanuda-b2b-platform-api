@@ -46,6 +46,10 @@ export class NanudaCompanyDistrictController extends BaseController {
     );
   }
 
+  /**
+   * dropwdown test
+   * @param companyDistrictListDto
+   */
   @Get('/nanuda/company-district/dropdown-test')
   async dropdown2(@Query() companyDistrictListDto: CompanyDistrictListDto) {
     return await this.companyDistrictService.companyDistrictDown2(

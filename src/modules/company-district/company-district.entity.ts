@@ -17,6 +17,7 @@ import { CodeManagement } from '../code-management/code-management.entity';
 import { Amenity } from '../amenity/amenity.entity';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 import { FileAttachmentDto } from '../file-upload/dto';
+import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 
 @Entity({ name: 'COMPANY_DISTRICT' })
 export class CompanyDistrict extends BaseEntity<CompanyDistrict> {
@@ -191,4 +192,19 @@ export class CompanyDistrict extends BaseEntity<CompanyDistrict> {
   companyDistrictUpdateHistories?: CompanyDistrictUpdateHistory[];
 
   deliverySpaceCount?: number;
+
+  @ManyToMany(
+    type => CompanyDistrictPromotion,
+    promotions => promotions.companyDistricts,
+  )
+  @JoinTable({
+    name: 'B2B_COMPANY_DISTRICT_PROMOTION_MAPPER',
+    joinColumn: {
+      name: 'COMPANY_DISTRICT_NO',
+    },
+    inverseJoinColumn: {
+      name: 'PROMOTION_NO',
+    },
+  })
+  promotions?: CompanyDistrictPromotion[];
 }
