@@ -26,6 +26,8 @@ import { NanudaSlackNotificationService } from 'src/core/utils';
 import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/delivery-space-brand-mapper.entity';
 import { BestSpaceMapper } from '../best-space/best-space.entity';
 import { DeliverySpaceOptionSpaceMapper } from '../delivery-space-option-space-mapper/delivery-space-option-space-mapper.entity';
+import { CompanyDistrictPromotionMapper } from '../company-district-promotion-mapper/company-district-promotion-mapper.entity';
+import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 
 @Injectable()
 export class DeliverySpaceService extends BaseService {
@@ -689,14 +691,29 @@ export class DeliverySpaceService extends BaseService {
     if (!space) {
       throw new NotFoundException();
     }
-    // find remaining count
-    const contracted = await this.duplicateCheckRepo.find({
-      where: { deliverySpaceNo: space.no },
-    });
-    space.remainingCount = space.quantity - contracted.length;
-    if (space.remainingCount < 0) {
-      throw new BadRequestException({ message: 'Overbooked' });
+    const promotionIds = [];
+    const promotions = await this.entityManager
+      .getRepository(CompanyDistrictPromotionMapper)
+      .createQueryBuilder('mapper')
+      .where('mapper.companyDistrictNo = :companyDistrictNo', {
+        companyDistrictNo: space.companyDistrict.no,
+      })
+      .select(['mapper.promotionNo'])
+      .getMany();
+
+    if (promotions && promotions.length > 0) {
+      promotions.map(promotion => {
+        promotionIds.push(promotion.promotionNo);
+      });
+      space.companyDistrict.promotions = await this.entityManager
+        .getRepository(CompanyDistrictPromotion)
+        .createQueryBuilder('promotions')
+        .whereInIds(promotionIds)
+        .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
+        .AndWhereBetweenDate(new Date())
+        .getMany();
     }
+
     return space;
   }
 
