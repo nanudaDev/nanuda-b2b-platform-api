@@ -345,6 +345,21 @@ export class CompanyDistrictService extends BaseService {
           companyDistrictCreateDto.promotionNos &&
           companyDistrictCreateDto.promotionNos.length > 0
         ) {
+          const checkDeliverySpaceLength = await this.entityManager
+            .getRepository(DeliverySpace)
+            .createQueryBuilder('deliverySpace')
+            .where('deliverySpace.companyDistrictNo = :companyDistrictNo', {
+              companyDistrictNo: newCompanyDistrict.no,
+            })
+            .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+            .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+            .andWhere('deliverySpace.remainingCount > 0')
+            .getMany();
+          if (checkDeliverySpaceLength && checkDeliverySpaceLength.length < 1) {
+            throw new BadRequestException(
+              '노출 시킬 공간들이 이 지점 존재하지 않습니다.',
+            );
+          }
           await Promise.all(
             companyDistrictCreateDto.promotionNos.map(async promotionMapper => {
               let newMapper = new CompanyDistrictPromotionMapper();
