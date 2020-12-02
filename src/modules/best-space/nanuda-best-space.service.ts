@@ -58,7 +58,7 @@ export class NanudaBestSpaceService extends BaseService {
   ): Promise<PaginatedResponse<DeliverySpace>> {
     const qb = this.entityManager
       .getRepository(DeliverySpace)
-      .createQueryBuilder('deliverySpaces')
+      .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
       .CustomLeftJoinAndSelect(['contracts'])
       .innerJoinAndSelect('companyDistrict.company', 'company')
@@ -72,12 +72,13 @@ export class NanudaBestSpaceService extends BaseService {
       .andWhere('companyDistrict.region1DepthName = :region1DepthName', {
         region1DepthName: '서울',
       })
-      .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
-      .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       // .andWhere('deliverySpaces.isOpenedYn = :isOpenedYn', {
       //   isOpenedYn: YN.NO,
       // })
-      .andWhere('deliverySpaces.quantity > 0')
+      .andWhere('deliverySpace.quantity > 0')
+      .andWhere('deliverySpace.remainingCount > 0')
       .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
       .AndWhereJoinBetweenDate('promotions', new Date())
       .AndWhereLike(
@@ -92,19 +93,20 @@ export class NanudaBestSpaceService extends BaseService {
         nanudaBestSpaceListDto.companyDistrictNameKr,
         nanudaBestSpaceListDto.exclude('companyDistrictNameKr'),
       )
-      .orderBy('deliverySpaces.quantity', ORDER_BY_VALUE.DESC)
+      .orderBy('deliverySpace.remainingCount', ORDER_BY_VALUE.ASC)
+      .addOrderBy('deliverySpace.quantity', ORDER_BY_VALUE.DESC)
       .Paginate(pagination);
 
     let [items, totalCount] = await qb.getManyAndCount();
 
-    items.map(deliverySpace => {
-      const remaining = deliverySpace.quantity - deliverySpace.contracts.length;
-      if (remaining === 0) {
-        const index = items.indexOf(deliverySpace);
-        items.splice(index, 1);
-        totalCount = totalCount - 1;
-      }
-    });
+    // items.map(deliverySpace => {
+    //   const remaining = deliverySpace.quantity - deliverySpace.contracts.length;
+    //   if (remaining === 0) {
+    //     const index = items.indexOf(deliverySpace);
+    //     items.splice(index, 1);
+    //     totalCount = totalCount - 1;
+    //   }
+    // });
 
     return { items, totalCount };
   }

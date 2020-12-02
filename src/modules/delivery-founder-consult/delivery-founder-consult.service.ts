@@ -33,6 +33,7 @@ import { DeliverySpaceService } from '../delivery-space/delivery-space.service';
 import { DeliveryFounderConsultContract } from '../delivery-founder-consult-contract/delivery-founder-consult-contract.entity';
 import { Brand } from '../brand/brand.entity';
 import { Request } from 'express';
+import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 
 @Injectable()
 export class DeliveryFounderConsultService extends BaseService {
@@ -843,6 +844,16 @@ export class DeliveryFounderConsultService extends BaseService {
     contract.companyNo =
       founderConsult.deliverySpace.companyDistrict.company.no;
     contract.nanudaUserNo = founderConsult.nanudaUserNo;
+    // update remaining count for delivery space
+    let updateDeliverySpace = await this.entityManager
+      .getRepository(DeliverySpace)
+      .createQueryBuilder('deliverySpace')
+      .where('deliverySpace.no = :no', { no: contract.deliverySpaceNo })
+      .getOne();
+    updateDeliverySpace.remainingCount = updateDeliverySpace.remainingCount - 1;
+    updateDeliverySpace = await this.entityManager
+      .getRepository(DeliverySpace)
+      .save(updateDeliverySpace);
     return contract;
   }
 }

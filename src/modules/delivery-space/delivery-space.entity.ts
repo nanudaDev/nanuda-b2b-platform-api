@@ -139,6 +139,10 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
   picStatus: SPACE_PIC_STATUS;
 
   // no database
+  @Column({
+    type: 'int',
+    name: 'REMAINING_COUNT',
+  })
   remainingCount?: number;
 
   // no database
