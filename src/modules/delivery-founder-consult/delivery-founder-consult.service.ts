@@ -359,6 +359,7 @@ export class DeliveryFounderConsultService extends BaseService {
             'deliverySpace.companyDistrict',
             'companyDistrict',
           )
+          .innerJoinAndSelect('companyDistrict.company', 'company')
           .where('deliveryConsult.no = :no', { no: deliveryFounderConsultNo })
           .getOne();
         if (!deliveryFounderConsult) {
@@ -848,7 +849,7 @@ export class DeliveryFounderConsultService extends BaseService {
     let updateDeliverySpace = await this.entityManager
       .getRepository(DeliverySpace)
       .createQueryBuilder('deliverySpace')
-      .where('deliverySpace.no = :no', { no: contract.deliverySpaceNo })
+      .where('deliverySpace.no = :no', { no: founderConsult.deliverySpaceNo })
       .getOne();
     updateDeliverySpace.remainingCount = updateDeliverySpace.remainingCount - 1;
     updateDeliverySpace = await this.entityManager

@@ -322,6 +322,7 @@ export class NanudaDeliverySpaceService extends BaseService {
         .getRepository(CompanyDistrictPromotion)
         .createQueryBuilder('promotion')
         .whereInIds(promotionIds)
+        .andWhere('promotion.showYn = :showYn', { showYn: YN.YES })
         .AndWhereBetweenDate(new Date())
         .getMany();
     }
