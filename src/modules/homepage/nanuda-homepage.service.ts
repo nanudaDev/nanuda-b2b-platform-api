@@ -95,6 +95,7 @@ export class NanudaHomepageService extends BaseService {
       })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.remainingCount > 0')
       .andWhere('deliverySpace.quantity > 0')
       .orderBy('deliverySpace.quantity', ORDER_BY_VALUE.DESC)
       .getMany();
@@ -206,6 +207,7 @@ export class NanudaHomepageService extends BaseService {
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       .andWhere('deliverySpace.quantity > 0')
+      .andWhere('deliverySpace.remainingCount > 0')
       .orderBy('deliverySpace.quantity', ORDER_BY_VALUE.DESC)
       .limit(12)
       .getMany();

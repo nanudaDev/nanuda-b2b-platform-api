@@ -13,6 +13,8 @@ import {
 } from 'src/common';
 import { FavoriteSpaceMapper } from '../favorite-space-mapper/favorite-space-mapper.entity';
 import { DeliveryFounderConsult } from '../delivery-founder-consult/delivery-founder-consult.entity';
+import { CompanyDistrictPromotionMapper } from '../company-district-promotion-mapper/company-district-promotion-mapper.entity';
+import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 
 @Injectable()
 export class NanudaDeliverySpaceService extends BaseService {
@@ -54,7 +56,6 @@ export class NanudaDeliverySpaceService extends BaseService {
         'contracts',
       ])
       .innerJoinAndSelect('companyDistrict.company', 'company')
-      .leftJoinAndSelect('companyDistrict.promotions', 'promotions')
       .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       //   .andWhere('deliveryFounderConsults.status != :status', {
@@ -122,6 +123,8 @@ export class NanudaDeliverySpaceService extends BaseService {
         deliverySpaceListDto.address,
         deliverySpaceListDto.exclude('address'),
       )
+      // remaining count > 0
+      .andWhere('deliverySpace.remainingCount > 0')
       .AndWhereBetweenValues(
         'deliverySpace',
         'size',
@@ -147,6 +150,7 @@ export class NanudaDeliverySpaceService extends BaseService {
         deliverySpaceListDto.exclude('maxMonthlyRentFee'),
       );
     if (deliverySpaceListDto.promotionNo) {
+      qb.leftJoinAndSelect('companyDistrict.promotions', 'promotions');
       qb.AndWhereEqual(
         'promotions',
         'no',
@@ -174,7 +178,7 @@ export class NanudaDeliverySpaceService extends BaseService {
     qb.WhereAndOrder(deliverySpaceListDto);
     qb.Paginate(pagination);
 
-    const [items, totalCount] = await qb.getManyAndCount();
+    let [items, totalCount] = await qb.getManyAndCount();
     // add favorite mark
     await Promise.all(
       items.map(async item => {
@@ -192,12 +196,13 @@ export class NanudaDeliverySpaceService extends BaseService {
             },
           });
         item.consultCount = consults.length;
-        item.remainingCount = item.quantity - item.contracts.length;
-        // splice and remove unwanted delivery spaces
-        if (item.remainingCount === 0) {
-          const index = items.indexOf(item);
-          items.splice(index, 1);
-        }
+        // item.remainingCount = item.quantity - item.contracts.length;
+        // // splice and remove unwanted delivery spaces
+        // if (item.remainingCount === 0) {
+        //   const index = items.indexOf(item);
+        //   items.splice(index, 1);
+        //   totalCount - 1;
+        // }
         delete item.contracts;
       }),
     );
@@ -242,16 +247,17 @@ export class NanudaDeliverySpaceService extends BaseService {
         'contracts',
       ])
       .leftJoinAndSelect('companyDistrict.amenities', 'commonAmenities')
-      .leftJoinAndSelect('companyDistrict.promotions', 'promotions')
+      // .leftJoinAndSelect('companyDistrict.promotions', 'promotions')
       .leftJoinAndSelect('deliverySpace.brands', 'brands')
-      .innerJoinAndSelect('companyDistrict.company', 'company')
+      .leftJoinAndSelect('companyDistrict.company', 'company')
       .where('deliverySpace.no = :no', { no: deliverySpaceNo })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       .andWhere('brands.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('deliverySpace.remainingCount > 0')
       .addOrderBy('brands.isRecommendedYn', ORDER_BY_VALUE.DESC)
-      .AndWhereJoinBetweenDate('promotions', new Date())
-      .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
+      // .AndWhereJoinBetweenDate('promotions', new Date())
+      // .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
       .getOne();
     if (!space) {
       throw new NotFoundException();
@@ -293,11 +299,34 @@ export class NanudaDeliverySpaceService extends BaseService {
         space.likedYn = false;
       }
     }
-    space.remainingCount = space.quantity - space.contracts.length;
+    // space.remainingCount = space.quantity - space.contracts.length;
     delete space.contracts;
-    if (space.remainingCount === 0) {
-      throw new NotFoundException({ message: 'Full delivery space' });
+    // if (space.remainingCount < 1) {
+    //   throw new NotFoundException({ message: 'Full delivery space' });
+    // }
+    const promotionIds = [];
+    const promotions = await this.entityManager
+      .getRepository(CompanyDistrictPromotionMapper)
+      .createQueryBuilder('mapper')
+      .where('mapper.companyDistrictNo = :companyDistrictNo', {
+        companyDistrictNo: space.companyDistrict.no,
+      })
+      .select(['mapper.promotionNo'])
+      .getMany();
+    console.log(promotionIds);
+    if (promotions && promotions.length > 0) {
+      promotions.map(promotion => {
+        promotionIds.push(promotion.promotionNo);
+      });
+      space.companyDistrict.promotions = await this.entityManager
+        .getRepository(CompanyDistrictPromotion)
+        .createQueryBuilder('promotion')
+        .whereInIds(promotionIds)
+        .andWhere('promotion.showYn = :showYn', { showYn: YN.YES })
+        .AndWhereBetweenDate(new Date())
+        .getMany();
     }
+
     return space;
   }
 
@@ -331,6 +360,7 @@ export class NanudaDeliverySpaceService extends BaseService {
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.quantity > 0')
+      .andWhere('deliverySpace.remainingCount > 0')
       .limit(5)
       .Paginate(pagination);
 
@@ -342,11 +372,11 @@ export class NanudaDeliverySpaceService extends BaseService {
         items.splice(index, 1);
         totalCount - 1;
       }
-      if (item.quantity - item.contracts.length < 1) {
-        const index = items.indexOf(item);
-        items.splice(index, 1);
-        totalCount - 1;
-      }
+      // if (item.quantity - item.contracts.length < 1) {
+      //   const index = items.indexOf(item);
+      //   items.splice(index, 1);
+      //   totalCount - 1;
+      // }
     });
     return { items, totalCount };
   }
@@ -375,6 +405,10 @@ export class NanudaDeliverySpaceService extends BaseService {
   async findMaxValues() {
     const maxDepositValue = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
+      .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.quantity > 0')
+      .andWhere('deliverySpace.remainingCount > 0')
       .select(['deliverySpace.deposit'])
       .limit(1)
       .orderBy('deliverySpace.deposit', ORDER_BY_VALUE.DESC)
@@ -382,6 +416,10 @@ export class NanudaDeliverySpaceService extends BaseService {
 
     const maxSizeValue = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
+      .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.quantity > 0')
+      .andWhere('deliverySpace.remainingCount > 0')
       .select(['deliverySpace.size'])
       .limit(1)
       .orderBy('deliverySpace.size', ORDER_BY_VALUE.DESC)
@@ -389,6 +427,10 @@ export class NanudaDeliverySpaceService extends BaseService {
 
     const maxRentValue = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
+      .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.quantity > 0')
+      .andWhere('deliverySpace.remainingCount > 0')
       .select(['deliverySpace.monthlyRentFee'])
       .limit(1)
       .orderBy('deliverySpace.monthlyRentFee', ORDER_BY_VALUE.DESC)

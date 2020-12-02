@@ -32,7 +32,6 @@ export class AdminCompanyDistrictPromotionListDto
   @ApiPropertyOptional({ enum: YN })
   @IsOptional()
   @Expose()
-  @Default(YN.NO)
   showYn?: YN;
 
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
