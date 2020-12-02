@@ -332,6 +332,7 @@ export class NanudaDeliverySpaceService extends BaseService {
       space.companyDistrict.promotions = await this.entityManager
         .getRepository(CompanyDistrictPromotion)
         .createQueryBuilder('promotion')
+        .CustomInnerJoinAndSelect(['codeManagement'])
         .whereInIds(promotionIds)
         .andWhere('promotion.showYn = :showYn', { showYn: YN.YES })
         .AndWhereBetweenDate(new Date())
