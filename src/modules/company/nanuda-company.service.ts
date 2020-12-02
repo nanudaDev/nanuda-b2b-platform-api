@@ -29,6 +29,18 @@ export class NanudaCompanyService extends BaseService {
     return qb;
   }
 
+  async findOne(companyNo): Promise<Company> {
+    const qb = await this.companyRepo
+      .createQueryBuilder('company')
+      .where('company.companyStatus = :companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere('company.no = :no', { no: companyNo })
+      .getOne();
+
+    return qb;
+  }
+
   /**
    * find by company no
    * @param companyNo

@@ -42,6 +42,18 @@ export class NanudaCompanyController extends BaseController {
    * @param companyNo
    * @param pagination
    */
+  @Get('/nanuda/company/:id([0-9]+)')
+  async findOne(
+    @Param('id', ParseIntPipe) companyNo: number,
+  ): Promise<Company> {
+    return await this.companyService.findOne(companyNo);
+  }
+
+  /**
+   * find ongoing promotions for company
+   * @param companyNo
+   * @param pagination
+   */
   @Get('/nanuda/company/:id([0-9]+)/ongoing-promotions')
   async findCompanyPromotions(
     @Param('id', ParseIntPipe) companyNo: number,
