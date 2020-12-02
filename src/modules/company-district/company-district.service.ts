@@ -7,6 +7,7 @@ import {
   PaginatedRequest,
   PaginatedResponse,
   ORDER_BY_VALUE,
+  YN,
 } from 'src/common';
 import {
   AdminCompanyDistrictListDto,
@@ -29,6 +30,7 @@ import * as daum from 'daum-map-api';
 import { FileUploadService } from '../file-upload/file-upload.service';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 import { CompanyDistrictPromotionMapper } from '../company-district-promotion-mapper/company-district-promotion-mapper.entity';
+import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 
 @Injectable()
 export class CompanyDistrictService extends BaseService {
@@ -226,10 +228,16 @@ export class CompanyDistrictService extends BaseService {
     const companyDistrict = await this.companyDistrictRepo
       .createQueryBuilder('companyDistrict')
       .CustomInnerJoinAndSelect(['codeManagement', 'company'])
-      .CustomLeftJoinAndSelect(['companyDistrictUpdateHistories', 'amenities'])
+      .CustomLeftJoinAndSelect([
+        'companyDistrictUpdateHistories',
+        'amenities',
+        // 'promotions',
+      ])
       .orderBy('companyDistrictUpdateHistories.no', ORDER_BY_VALUE.DESC)
       .where('companyDistrict.no = :no', { no: companyDistrictNo })
       .andWhere('company.no = :companyNo', { companyNo: companyNo })
+      // .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
+      // .AndWhereJoinBetweenDate('promotions', new Date())
       .getOne();
     const latestUpdates = await this.__find_one_company_district_update_history(
       companyDistrictNo,
@@ -251,6 +259,30 @@ export class CompanyDistrictService extends BaseService {
         NewDataDuplicateKeyRemover(latestUpdates),
       ];
     }
+
+    const promotionIds = [];
+    const promotions = await this.entityManager
+      .getRepository(CompanyDistrictPromotionMapper)
+      .createQueryBuilder('mapper')
+      .where('mapper.companyDistrictNo = :companyDistrictNo', {
+        companyDistrictNo: companyDistrictNo,
+      })
+      .select(['mapper.promotionNo'])
+      .getMany();
+
+    if (promotions && promotions.length > 0) {
+      promotions.map(promotion => {
+        promotionIds.push(promotion.promotionNo);
+      });
+      companyDistrict.promotions = await this.entityManager
+        .getRepository(CompanyDistrictPromotion)
+        .createQueryBuilder('promotions')
+        .whereInIds(promotionIds)
+        .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
+        .AndWhereBetweenDate(new Date())
+        .getMany();
+    }
+
     return companyDistrict;
   }
 
