@@ -160,6 +160,17 @@ export class NanudaDeliverySpaceService extends BaseService {
       qb.AndWhereJoinBetweenDate('promotions', new Date());
       qb.andWhere('promotions.showYn = :showYn', { showYn: YN.YES });
     }
+    if (deliverySpaceListDto.promotionType) {
+      qb.leftJoinAndSelect('companyDistrict.promotions', 'promotions');
+      qb.AndWhereEqual(
+        'promotions',
+        'promotionType',
+        deliverySpaceListDto.promotionType,
+        deliverySpaceListDto.exclude('promotionType'),
+      );
+      qb.AndWhereJoinBetweenDate('promotions', new Date());
+      qb.andWhere('promotions.showYn = :showYn', { showYn: YN.YES });
+    }
     if (
       deliverySpaceListDto.amenityIds &&
       deliverySpaceListDto.amenityIds.length > 0
