@@ -329,6 +329,8 @@ export class DeliverySpaceService extends BaseService {
         // TODO: 정책 정해야함
         newDeliverySpace.picStatus = SPACE_PIC_STATUS.INCOMPLETE;
       }
+      // 남은 공실 컬럼
+      newDeliverySpace.remainingCount = adminDeliverySpaceCreateDto.quantity;
       newDeliverySpace = await entityManager.save(newDeliverySpace);
 
       /**
@@ -724,6 +726,7 @@ export class DeliverySpaceService extends BaseService {
       newDeliverySpace.images = await this.fileUploadService.moveS3File(
         deliverySpaceCreateDto.images,
       );
+      newDeliverySpace.remainingCount = deliverySpaceCreateDto.quantity;
       newDeliverySpace = await entityManager.save(newDeliverySpace);
       //   create mapper for amenity
       if (
@@ -800,13 +803,9 @@ export class DeliverySpaceService extends BaseService {
         if (!space) {
           throw new NotFoundException();
         }
-        if (
-          space.contracts.length &&
-          space.contracts.length > 0 &&
-          deliverySpaceUpdateDto.quantity < space.contracts.length
-        ) {
+        if (deliverySpaceUpdateDto.quantity < space.remainingCount) {
           throw new BadRequestException({
-            message: `공실은 ${space.contracts.length}이상이어야합니다.`,
+            message: `공실은 ${space.remainingCount}이상이어야합니다.`,
           });
         }
         if (

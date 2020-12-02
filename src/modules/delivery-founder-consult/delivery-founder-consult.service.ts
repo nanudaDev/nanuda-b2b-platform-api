@@ -33,6 +33,9 @@ import { DeliverySpaceService } from '../delivery-space/delivery-space.service';
 import { DeliveryFounderConsultContract } from '../delivery-founder-consult-contract/delivery-founder-consult-contract.entity';
 import { Brand } from '../brand/brand.entity';
 import { Request } from 'express';
+import { DeliverySpace } from '../delivery-space/delivery-space.entity';
+import { CompanyDistrictPromotionMapper } from '../company-district-promotion-mapper/company-district-promotion-mapper.entity';
+import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 
 @Injectable()
 export class DeliveryFounderConsultService extends BaseService {
@@ -358,6 +361,7 @@ export class DeliveryFounderConsultService extends BaseService {
             'deliverySpace.companyDistrict',
             'companyDistrict',
           )
+          .innerJoinAndSelect('companyDistrict.company', 'company')
           .where('deliveryConsult.no = :no', { no: deliveryFounderConsultNo })
           .getOne();
         if (!deliveryFounderConsult) {
@@ -509,8 +513,11 @@ export class DeliveryFounderConsultService extends BaseService {
       .leftJoinAndSelect('nanudaUser.genderInfo', 'genderInfo')
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .leftJoinAndSelect('deliverySpace.contracts', 'contracts')
+      // .leftJoinAndSelect('companyDistrict.promotions', 'promotions')
       .addSelect(['nanudaUser.name', 'nanudaUser.gender'])
       .where('company.no = :no', { no: companyNo })
+      // .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
+      // .AndWhereJoinBetweenDate('promotions', new Date())
       .AndWhereLike(
         'companyDistrict',
         'nameKr',
@@ -596,10 +603,13 @@ export class DeliveryFounderConsultService extends BaseService {
         'deliverySpaceOptions',
       )
       .leftJoinAndSelect('companyDistrict.company', 'company')
+      // .leftJoinAndSelect('companyDistrict.promotions', 'promotions')
       .leftJoinAndSelect('deliveryConsult.nanudaUser', 'nanudaUser')
       .leftJoinAndSelect('nanudaUser.genderInfo', 'genderInfo')
       .where('deliveryConsult.no = :no', { no: deliveryFounderConsultNo })
       .andWhere('company.no = :companyNo', { companyNo: companyNo })
+      // .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
+      // .AndWhereJoinBetweenDate('promotions', new Date())
       .getOne();
 
     if (!qb) {
@@ -650,6 +660,28 @@ export class DeliveryFounderConsultService extends BaseService {
         .where('deliveryConsult.no = :no', { no: deliveryFounderConsultNo })
         .andWhere('company.no = :companyNo', { companyNo: companyNo })
         .getOne();
+    }
+    const promotionIds = [];
+    const promotions = await this.entityManager
+      .getRepository(CompanyDistrictPromotionMapper)
+      .createQueryBuilder('mapper')
+      .where('mapper.companyDistrictNo = :companyDistrictNo', {
+        companyDistrictNo: qb.deliverySpace.companyDistrict.no,
+      })
+      .select(['mapper.promotionNo'])
+      .getMany();
+
+    if (promotions && promotions.length > 0) {
+      promotions.map(promotion => {
+        promotionIds.push(promotion.promotionNo);
+      });
+      qb.deliverySpace.companyDistrict.promotions = await this.entityManager
+        .getRepository(CompanyDistrictPromotion)
+        .createQueryBuilder('promotion')
+        .whereInIds(promotionIds)
+        .andWhere('promotion.showYn = :showYn', { showYn: YN.YES })
+        .AndWhereBetweenDate(new Date())
+        .getMany();
     }
     return qb;
   }
@@ -843,6 +875,16 @@ export class DeliveryFounderConsultService extends BaseService {
     contract.companyNo =
       founderConsult.deliverySpace.companyDistrict.company.no;
     contract.nanudaUserNo = founderConsult.nanudaUserNo;
+    // update remaining count for delivery space
+    let updateDeliverySpace = await this.entityManager
+      .getRepository(DeliverySpace)
+      .createQueryBuilder('deliverySpace')
+      .where('deliverySpace.no = :no', { no: founderConsult.deliverySpaceNo })
+      .getOne();
+    updateDeliverySpace.remainingCount = updateDeliverySpace.remainingCount - 1;
+    updateDeliverySpace = await this.entityManager
+      .getRepository(DeliverySpace)
+      .save(updateDeliverySpace);
     return contract;
   }
 }
