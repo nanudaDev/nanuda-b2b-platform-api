@@ -33,6 +33,11 @@ export class AdminBestSpaceListDto extends BaseDto<AdminBestSpaceListDto> {
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  companyNo?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   companyDistrictNameKr?: string;
 
   @ApiPropertyOptional({ enum: YN })

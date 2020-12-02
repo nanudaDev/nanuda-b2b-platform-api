@@ -87,6 +87,12 @@ export class NanudaBestSpaceService extends BaseService {
         nanudaBestSpaceListDto.companyNameKr,
         nanudaBestSpaceListDto.exclude('companyNameKr'),
       )
+      .AndWhereEqual(
+        'company',
+        'no',
+        nanudaBestSpaceListDto.companyNo,
+        nanudaBestSpaceListDto.exclude('companyNo'),
+      )
       .AndWhereLike(
         'companyDistrict',
         'nameKr',
