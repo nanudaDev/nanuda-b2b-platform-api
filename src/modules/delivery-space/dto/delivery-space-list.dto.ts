@@ -166,4 +166,3 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @Expose()
   maxMonthlyRentFee?: number;
 }
-``;
