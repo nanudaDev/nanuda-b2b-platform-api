@@ -188,18 +188,19 @@ export class NanudaDeliverySpaceService extends BaseService {
       qb.having(`COUNT(DISTINCT amenities.NO) = ${amenityIdsLength}`);
     }
     if (deliverySpaceListDto.orderByDeposit) {
-      console.log('test');
       qb.addOrderBy(
         'deliverySpace.deposit',
         deliverySpaceListDto.orderByDeposit,
       );
+      delete deliverySpaceListDto.orderByDeposit;
     }
     if (deliverySpaceListDto.orderByMonthlyRentFee) {
-      console.log('test');
+      console.log('test', deliverySpaceListDto.orderByMonthlyRentFee);
       qb.addOrderBy(
         'deliverySpace.monthlyRentFee',
         deliverySpaceListDto.orderByMonthlyRentFee,
       );
+      delete deliverySpaceListDto.orderByMonthlyRentFee;
     }
     qb.Paginate(pagination);
     qb.WhereAndOrder(deliverySpaceListDto);

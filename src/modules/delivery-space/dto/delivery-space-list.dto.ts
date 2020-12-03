@@ -127,14 +127,12 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsOptional()
   @IsEnum(ORDER_BY_VALUE)
-  @Default(ORDER_BY_VALUE.ASC)
   @Expose()
   orderByMonthlyRentFee?: ORDER_BY_VALUE;
 
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsOptional()
   @IsEnum(ORDER_BY_VALUE)
-  @Default(ORDER_BY_VALUE.ASC)
   @Expose()
   orderByDeposit?: ORDER_BY_VALUE;
 
