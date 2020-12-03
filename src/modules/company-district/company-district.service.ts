@@ -710,24 +710,95 @@ export class CompanyDistrictService extends BaseService {
    * create update history
    */
   async createUpdateHistory() {
-    const districts = await this.entityManager.transaction(
-      async entityManager => {
-        const districts = await this.companyDistrictRepo.find();
-        await Promise.all(
-          districts.map(async district => {
-            const histories = await this.companyDistrictUpdateHistoryRepo.find({
-              where: { companyDistrictNo: district.no },
-            });
-            if (histories && histories.length > 0) {
-              return;
-            } else {
-              let history = this.__company_district_update_history(district);
-              history = await entityManager.save(history);
-            }
-          }),
-        );
-      },
-    );
+    await this.entityManager.transaction(async entityManager => {
+      const districts = await this.companyDistrictRepo.find();
+      await Promise.all(
+        districts.map(async district => {
+          const histories = await this.companyDistrictUpdateHistoryRepo.find({
+            where: { companyDistrictNo: district.no },
+          });
+          if (histories && histories.length > 0) {
+            return;
+          } else {
+            let history = this.__company_district_update_history(district);
+            history = await entityManager.save(history);
+          }
+        }),
+      );
+    });
+  }
+
+  /**
+   * find ongoing promotions for company districts
+   * @param companyDistrictNo
+   * @param pagination
+   */
+  async findOngoingPromotions(
+    companyDistrictNo: number,
+    pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<CompanyDistrictPromotion>> {
+    const qb = await this.entityManager
+      .getRepository(CompanyDistrictPromotion)
+      .createQueryBuilder('promotions')
+      .CustomLeftJoinAndSelect(['companyDistricts'])
+      .CustomInnerJoinAndSelect(['codeManagement'])
+      .where('companyDistricts.no = :no', { no: companyDistrictNo })
+      .AndWhereBetweenDate(new Date())
+      .orderBy('promotions.createdAt', ORDER_BY_VALUE.DESC)
+      .Paginate(pagination);
+
+    const [items, totalCount] = await qb.getManyAndCount();
+
+    return { items, totalCount };
+  }
+
+  /**
+   * find expired promotions for company districts
+   * @param companyDistrictNo
+   * @param pagination
+   */
+  async findExpiredPromotions(
+    companyDistrictNo: number,
+    pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<CompanyDistrictPromotion>> {
+    const qb = await this.entityManager
+      .getRepository(CompanyDistrictPromotion)
+      .createQueryBuilder('promotions')
+      .CustomLeftJoinAndSelect(['companyDistricts'])
+      .CustomInnerJoinAndSelect(['codeManagement'])
+      .where('companyDistricts.no = :no', { no: companyDistrictNo })
+      .andWhere('promotions.ended < :date', { date: new Date() })
+      .orderBy('promotions.createdAt', ORDER_BY_VALUE.DESC)
+      .Paginate(pagination);
+
+    const [items, totalCount] = await qb.getManyAndCount();
+
+    return { items, totalCount };
+  }
+
+  /**
+   * find for select
+   * @param pagination
+   */
+  async findForSelect(
+    pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<CompanyDistrict>> {
+    const qb = await this.companyDistrictRepo
+      .createQueryBuilder('companyDistrict')
+      .CustomInnerJoinAndSelect(['company'])
+      .innerJoin('companyDistrict.deliverySpaces', 'deliverySpaces')
+      .where('company.companyStatus = :companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere(
+        'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
+        { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
+      )
+      .Paginate(pagination);
+
+    const [items, totalCount] = await qb.getManyAndCount();
+
+    return { items, totalCount };
   }
 
   /**

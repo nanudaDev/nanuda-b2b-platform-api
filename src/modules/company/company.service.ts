@@ -475,6 +475,7 @@ export class CompanyService extends BaseService {
       .getRepository(CompanyDistrictPromotion)
       .createQueryBuilder('promotion')
       .CustomLeftJoinAndSelect(['company'])
+      .CustomInnerJoinAndSelect(['codeManagement'])
       .where('company.no = :no', { no: companyNo })
       .andWhere('promotion.ended < :date', { date: new Date() })
       .orderBy('promotion.createdAt', ORDER_BY_VALUE.DESC)

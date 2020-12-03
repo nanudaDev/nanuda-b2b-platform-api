@@ -40,7 +40,7 @@ export class NanudaDeliverySpaceService extends BaseService {
   ): Promise<PaginatedResponse<DeliverySpace>> {
     // passing nanuda user token from old server
     // amenity ids length because of exclude dto
-
+    console.log(pagination);
     let nanudaUserNo = null;
     if (deliverySpaceListDto.nanudaUserNo) {
       nanudaUserNo = deliverySpaceListDto.nanudaUserNo;
@@ -176,6 +176,7 @@ export class NanudaDeliverySpaceService extends BaseService {
       deliverySpaceListDto.amenityIds.length > 0
     ) {
       const amenityIdsLength = deliverySpaceListDto.amenityIds.length;
+      console.log(amenityIdsLength);
       qb.innerJoinAndSelect('deliverySpace.amenities', 'amenities');
       qb.AndWhereIn(
         'amenities',
@@ -184,12 +185,29 @@ export class NanudaDeliverySpaceService extends BaseService {
         deliverySpaceListDto.exclude('amenityIds'),
       );
       qb.groupBy('deliverySpace.no');
-      qb.having(`COUNT(DISTINCT amenities.no) = ${amenityIdsLength}`);
+      qb.having(`COUNT(DISTINCT amenities.NO) = ${amenityIdsLength}`);
     }
-    qb.WhereAndOrder(deliverySpaceListDto);
+    if (deliverySpaceListDto.orderByDeposit) {
+      console.log('test');
+      qb.addOrderBy(
+        'deliverySpace.deposit',
+        deliverySpaceListDto.orderByDeposit,
+      );
+    }
+    if (deliverySpaceListDto.orderByMonthlyRentFee) {
+      console.log('test');
+      qb.addOrderBy(
+        'deliverySpace.monthlyRentFee',
+        deliverySpaceListDto.orderByMonthlyRentFee,
+      );
+    }
     qb.Paginate(pagination);
+    qb.WhereAndOrder(deliverySpaceListDto);
 
     let [items, totalCount] = await qb.getManyAndCount();
+    // if(deliverySpaceListDto.amenityIds && deliverySpaceListDto.amenityIds.length > 1) {
+    //   totalCount
+    // }
     // add favorite mark
     await Promise.all(
       items.map(async item => {
@@ -237,7 +255,8 @@ export class NanudaDeliverySpaceService extends BaseService {
         }),
       );
     }
-
+    console.log(items.length);
+    console.log(totalCount);
     return { items, totalCount };
   }
 
