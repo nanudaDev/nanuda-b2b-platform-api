@@ -160,6 +160,17 @@ export class NanudaDeliverySpaceService extends BaseService {
       qb.AndWhereJoinBetweenDate('promotions', new Date());
       qb.andWhere('promotions.showYn = :showYn', { showYn: YN.YES });
     }
+    if (deliverySpaceListDto.promotionType) {
+      qb.leftJoinAndSelect('companyDistrict.promotions', 'promotions');
+      qb.AndWhereEqual(
+        'promotions',
+        'promotionType',
+        deliverySpaceListDto.promotionType,
+        deliverySpaceListDto.exclude('promotionType'),
+      );
+      qb.AndWhereJoinBetweenDate('promotions', new Date());
+      qb.andWhere('promotions.showYn = :showYn', { showYn: YN.YES });
+    }
     if (
       deliverySpaceListDto.amenityIds &&
       deliverySpaceListDto.amenityIds.length > 0
@@ -247,7 +258,7 @@ export class NanudaDeliverySpaceService extends BaseService {
         'contracts',
       ])
       .leftJoinAndSelect('companyDistrict.amenities', 'commonAmenities')
-      // .leftJoinAndSelect('companyDistrict.promotions', 'promotions')
+
       .leftJoinAndSelect('deliverySpace.brands', 'brands')
       .leftJoinAndSelect('companyDistrict.company', 'company')
       .where('deliverySpace.no = :no', { no: deliverySpaceNo })
@@ -256,19 +267,10 @@ export class NanudaDeliverySpaceService extends BaseService {
       .andWhere('brands.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.remainingCount > 0')
       .addOrderBy('brands.isRecommendedYn', ORDER_BY_VALUE.DESC)
-      // .AndWhereJoinBetweenDate('promotions', new Date())
-      // .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
       .getOne();
     if (!space) {
       throw new NotFoundException();
     }
-    // filter out brands
-    // space.brands.map(brand => {
-    //   const index = space.brands.indexOf(brand);
-    //   if (brand.showYn === YN.NO) {
-    //     space.brands.splice(index, 1);
-    //   }
-    // });
     const likedCount = await this.entityManager
       .getRepository(FavoriteSpaceMapper)
       .find({ where: { deliverySpaceNo: deliverySpaceNo } });
@@ -313,7 +315,6 @@ export class NanudaDeliverySpaceService extends BaseService {
       })
       .select(['mapper.promotionNo'])
       .getMany();
-    console.log(promotionIds);
     if (promotions && promotions.length > 0) {
       promotions.map(promotion => {
         promotionIds.push(promotion.promotionNo);
@@ -321,6 +322,7 @@ export class NanudaDeliverySpaceService extends BaseService {
       space.companyDistrict.promotions = await this.entityManager
         .getRepository(CompanyDistrictPromotion)
         .createQueryBuilder('promotion')
+        .CustomInnerJoinAndSelect(['codeManagement'])
         .whereInIds(promotionIds)
         .andWhere('promotion.showYn = :showYn', { showYn: YN.YES })
         .AndWhereBetweenDate(new Date())

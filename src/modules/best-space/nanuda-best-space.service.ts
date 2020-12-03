@@ -56,6 +56,7 @@ export class NanudaBestSpaceService extends BaseService {
     nanudaBestSpaceListDto: NanudaBestSpaceListDto,
     pagination: PaginatedRequest,
   ): Promise<PaginatedResponse<DeliverySpace>> {
+    console.log(nanudaBestSpaceListDto);
     const qb = this.entityManager
       .getRepository(DeliverySpace)
       .createQueryBuilder('deliverySpace')
@@ -86,6 +87,12 @@ export class NanudaBestSpaceService extends BaseService {
         'nameKr',
         nanudaBestSpaceListDto.companyNameKr,
         nanudaBestSpaceListDto.exclude('companyNameKr'),
+      )
+      .AndWhereEqual(
+        'company',
+        'no',
+        nanudaBestSpaceListDto.companyNo,
+        nanudaBestSpaceListDto.exclude('companyNo'),
       )
       .AndWhereLike(
         'companyDistrict',

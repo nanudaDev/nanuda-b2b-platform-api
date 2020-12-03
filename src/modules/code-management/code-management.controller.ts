@@ -1,4 +1,4 @@
-import { Controller, Query, Get } from '@nestjs/common';
+import { Controller, Query, Get, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { BaseController } from 'src/core';
 import { CodeManagementService } from './code-management.service';
@@ -68,5 +68,12 @@ export class CodeManagementController extends BaseController {
   @Get('/code-management/account-status')
   async findNoticeApprovalCodes(): Promise<CodeManagement[]> {
     return await this.codeManagementService.findAnyTypes('APPROVAL_STATUS');
+  }
+
+  @Get('/code-management/get-any/:category')
+  async findAnyCodes(
+    @Param('category') category: string,
+  ): Promise<CodeManagement[]> {
+    return await this.codeManagementService.findAnyTypes(category);
   }
 }
