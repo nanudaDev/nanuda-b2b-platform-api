@@ -184,6 +184,17 @@ export class AdminCompanyDistrictController extends BaseController {
   }
 
   /**
+   * find for select
+   * @param pagination
+   */
+  @Get('/admin/company-district/find-for-select')
+  async findForSelect(
+    @Query() pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<CompanyDistrict>> {
+    return await this.companyDistrictService.findForSelect(pagination);
+  }
+
+  /**
    * create history
    */
   @Get('/admin/company-district/create-history')

@@ -10,6 +10,11 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  no?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   typeName?: string;
 
   @ApiPropertyOptional()

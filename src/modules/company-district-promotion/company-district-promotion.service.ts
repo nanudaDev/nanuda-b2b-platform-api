@@ -65,6 +65,7 @@ export class CompanyDistrictPromotionService extends BaseService {
     let qb = await this.promotionRepo
       .createQueryBuilder('promotion')
       .CustomInnerJoinAndSelect(['codeManagement'])
+      .CustomLeftJoinAndSelect(['companyDistricts'])
       .where('promotion.no = :no', { no: promotionNo })
       .getOne();
 

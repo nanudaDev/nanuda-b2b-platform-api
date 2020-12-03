@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -17,6 +18,7 @@ import { CompanyDistrictPromotionService } from './company-district-promotion.se
 import {
   AdminCompanyDistrictPromotionCreateDto,
   AdminCompanyDistrictPromotionListDto,
+  AdminCompanyDistrictPromotionUpdateDto,
 } from './dto';
 
 @Controller()
@@ -87,6 +89,23 @@ export class AdminCompanyDistrictPromotionController extends BaseController {
   ): Promise<CompanyDistrictPromotion> {
     return await this.companyDistrictPromotionService.createForAdmin(
       adminCompanyDistrictPromotionCreateDto,
+    );
+  }
+
+  /**
+   * update for admin
+   * @param promotionNo
+   * @param adminCompanyDistrictPromotionUpdateDto
+   */
+  @Patch('/admin/delivery-promotion/:id([0-9]+)')
+  async update(
+    @Param('id', ParseIntPipe) promotionNo: number,
+    @Body()
+    adminCompanyDistrictPromotionUpdateDto: AdminCompanyDistrictPromotionUpdateDto,
+  ): Promise<CompanyDistrictPromotion> {
+    return await this.companyDistrictPromotionService.updateForAdmin(
+      promotionNo,
+      adminCompanyDistrictPromotionUpdateDto,
     );
   }
 }
