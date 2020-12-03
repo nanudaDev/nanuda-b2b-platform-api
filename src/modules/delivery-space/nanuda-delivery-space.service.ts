@@ -1,5 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { BaseService, FOUNDER_CONSULT, APPROVAL_STATUS } from 'src/core';
+import {
+  BaseService,
+  FOUNDER_CONSULT,
+  APPROVAL_STATUS,
+  SPACE_TYPE,
+} from 'src/core';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { DeliverySpace } from './delivery-space.entity';
 import { Repository, EntityManager, In } from 'typeorm';
@@ -52,8 +57,8 @@ export class NanudaDeliverySpaceService extends BaseService {
       .CustomInnerJoinAndSelect(['companyDistrict'])
       .CustomLeftJoinAndSelect([
         'deliverySpaceOptions',
-        'favoritedUsers',
         'contracts',
+        'amenities',
       ])
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
@@ -80,7 +85,12 @@ export class NanudaDeliverySpaceService extends BaseService {
       //   deliverySpaceListDto.promotionType,
       //   deliverySpaceListDto.exclude('promotionType'),
       // )
-
+      .AndWhereEqual(
+        'deliverySpace',
+        'no',
+        deliverySpaceListDto.no,
+        deliverySpaceListDto.exclude('no'),
+      )
       .AndWhereLike(
         'deliverySpaceOptions',
         'deliverySpaceOptionName',
@@ -148,7 +158,22 @@ export class NanudaDeliverySpaceService extends BaseService {
         deliverySpaceListDto.maxMonthlyRentFee,
         deliverySpaceListDto.exclude('minMonthlyRentFee'),
         deliverySpaceListDto.exclude('maxMonthlyRentFee'),
+      )
+      .AndWhereIn(
+        'amenities',
+        'no',
+        deliverySpaceListDto.amenityIds,
+        deliverySpaceListDto.exclude('amenityIds'),
+      )
+      .groupBy('deliverySpace.no');
+    if (
+      deliverySpaceListDto.amenityIds &&
+      deliverySpaceListDto.amenityIds.length > 0
+    ) {
+      qb.having(
+        `COUNT(DISTINCT amenities.no) = ${deliverySpaceListDto.amenityIds.length}`,
       );
+    }
     if (deliverySpaceListDto.promotionNo) {
       qb.leftJoinAndSelect('companyDistrict.promotions', 'promotions');
       qb.AndWhereEqual(
@@ -171,22 +196,22 @@ export class NanudaDeliverySpaceService extends BaseService {
       qb.AndWhereJoinBetweenDate('promotions', new Date());
       qb.andWhere('promotions.showYn = :showYn', { showYn: YN.YES });
     }
-    if (
-      deliverySpaceListDto.amenityIds &&
-      deliverySpaceListDto.amenityIds.length > 0
-    ) {
-      const amenityIdsLength = deliverySpaceListDto.amenityIds.length;
-      console.log(amenityIdsLength);
-      qb.innerJoinAndSelect('deliverySpace.amenities', 'amenities');
-      qb.AndWhereIn(
-        'amenities',
-        'no',
-        deliverySpaceListDto.amenityIds,
-        deliverySpaceListDto.exclude('amenityIds'),
-      );
-      qb.groupBy('deliverySpace.no');
-      qb.having(`COUNT(DISTINCT amenities.NO) = ${amenityIdsLength}`);
-    }
+    // if (
+    //   deliverySpaceListDto.amenityIds &&
+    //   deliverySpaceListDto.amenityIds.length > 0
+    // ) {
+    //   const amenityIdsLength = deliverySpaceListDto.amenityIds.length;
+    //   console.log(amenityIdsLength);
+    //   qb.innerJoinAndSelect('deliverySpace.amenities', 'amenities');
+    //   qb.AndWhereIn(
+    //     'amenities',
+    //     'no',
+    //     deliverySpaceListDto.amenityIds,
+    //     deliverySpaceListDto.exclude('amenityIds'),
+    //   );
+    //   qb.groupBy('deliverySpace.no');
+    //   qb.having(`COUNT(DISTINCT amenities.NO) = ${amenityIdsLength}`);
+    // }
     if (deliverySpaceListDto.orderByDeposit) {
       qb.addOrderBy(
         'deliverySpace.deposit',
@@ -212,8 +237,15 @@ export class NanudaDeliverySpaceService extends BaseService {
     // add favorite mark
     await Promise.all(
       items.map(async item => {
-        item.likedCount = item.favoritedUsers.length;
-        delete item.favoritedUsers;
+        const likedCount = await this.entityManager
+          .getRepository(FavoriteSpaceMapper)
+          .find({
+            where: {
+              deliverySpaceNo: item.no,
+              spaceTypeNo: SPACE_TYPE.ONLY_DELIVERY,
+            },
+          });
+        item.likedCount = likedCount.length;
         const consults = await this.entityManager
           .getRepository(DeliveryFounderConsult)
           .find({
@@ -256,8 +288,6 @@ export class NanudaDeliverySpaceService extends BaseService {
         }),
       );
     }
-    console.log(items.length);
-    console.log(totalCount);
     return { items, totalCount };
   }
 
@@ -293,7 +323,12 @@ export class NanudaDeliverySpaceService extends BaseService {
     }
     const likedCount = await this.entityManager
       .getRepository(FavoriteSpaceMapper)
-      .find({ where: { deliverySpaceNo: deliverySpaceNo } });
+      .find({
+        where: {
+          deliverySpaceNo: deliverySpaceNo,
+          spaceTypeNo: SPACE_TYPE.ONLY_DELIVERY,
+        },
+      });
 
     space.likedCount = likedCount.length;
 
