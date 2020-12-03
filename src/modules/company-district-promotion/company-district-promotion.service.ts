@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
-import { BaseService } from 'src/core';
+import { APPROVAL_STATUS, BaseService } from 'src/core';
 import { EntityManager, Repository } from 'typeorm';
 import { CompanyDistrictPromotionMapper } from '../company-district-promotion-mapper/company-district-promotion-mapper.entity';
 import { CompanyDistrict } from '../company-district/company-district.entity';
@@ -118,10 +118,39 @@ export class CompanyDistrictPromotionService extends BaseService {
     let newPromotion = new CompanyDistrictPromotion(
       adminCompanyDistrictPromotionCreateDto,
     );
-    console.log(newPromotion);
     newPromotion = await this.entityManager
       .getRepository(CompanyDistrictPromotion)
       .save(newPromotion);
+
+    // if adding through promotions create district mapper
+    if (
+      adminCompanyDistrictPromotionCreateDto.companyDistrictIds &&
+      adminCompanyDistrictPromotionCreateDto.companyDistrictIds.length > 0
+    ) {
+      await Promise.all(
+        adminCompanyDistrictPromotionCreateDto.companyDistrictIds.map(
+          async id => {
+            const district = await this.entityManager
+              .getRepository(CompanyDistrict)
+              .createQueryBuilder('district')
+              .andWhere(
+                'district.companyDistrictStatus = :companyDistrictStatus',
+                { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
+              )
+              .where('district.no = :no', { no: id })
+              .getOne();
+
+            let newMapper = new CompanyDistrictPromotionMapper();
+            newMapper.promotionNo = newPromotion.no;
+            newMapper.companyNo = district.companyNo;
+            newMapper.companyDistrictNo = district.no;
+            newMapper = await this.entityManager
+              .getRepository(CompanyDistrictPromotionMapper)
+              .save(newMapper);
+          },
+        ),
+      );
+    }
     return newPromotion;
   }
 
@@ -137,7 +166,43 @@ export class CompanyDistrictPromotionService extends BaseService {
     let promotion = await this.promotionRepo.findOne(promotionNo);
     promotion = promotion.set(adminCompanyDistrictPromotionUpdateDto);
     promotion = await this.promotionRepo.save(promotion);
+    if (
+      adminCompanyDistrictPromotionUpdateDto.companyDistrictIds &&
+      adminCompanyDistrictPromotionUpdateDto.companyDistrictIds.length > 0
+    ) {
+      // delete first
+      await this.entityManager
+        .getRepository(CompanyDistrictPromotionMapper)
+        .createQueryBuilder()
+        .delete()
+        .from(CompanyDistrictPromotionMapper)
+        .where('promotionNo = :promotionNo', { promotionNo: promotionNo })
+        .execute();
 
+      await Promise.all(
+        adminCompanyDistrictPromotionUpdateDto.companyDistrictIds.map(
+          async id => {
+            const district = await this.entityManager
+              .getRepository(CompanyDistrict)
+              .createQueryBuilder('district')
+              .andWhere(
+                'district.companyDistrictStatus = :companyDistrictStatus',
+                { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
+              )
+              .where('district.no = :no', { no: id })
+              .getOne();
+
+            let newMapper = new CompanyDistrictPromotionMapper();
+            newMapper.promotionNo = promotionNo;
+            newMapper.companyNo = district.companyNo;
+            newMapper.companyDistrictNo = district.no;
+            newMapper = await this.entityManager
+              .getRepository(CompanyDistrictPromotionMapper)
+              .save(newMapper);
+          },
+        ),
+      );
+    }
     return promotion;
   }
 }

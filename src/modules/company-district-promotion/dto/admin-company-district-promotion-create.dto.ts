@@ -52,4 +52,14 @@ export class AdminCompanyDistrictPromotionCreateDto
   @Expose()
   @Default(YN.NO)
   showYn?: YN;
+
+  @ApiPropertyOptional({
+    name: 'companyDistrictIds[]',
+    type: Number,
+    isArray: true,
+  })
+  @IsOptional()
+  @IsArray()
+  @Expose()
+  companyDistrictIds?: number[];
 }

@@ -29,7 +29,11 @@ export class NanudaCompanyService extends BaseService {
     return qb;
   }
 
-  async findOne(companyNo): Promise<Company> {
+  /**
+   * find one
+   * @param companyNo
+   */
+  async findOne(companyNo: number): Promise<Company> {
     const qb = await this.companyRepo
       .createQueryBuilder('company')
       .where('company.companyStatus = :companyStatus', {
@@ -37,7 +41,7 @@ export class NanudaCompanyService extends BaseService {
       })
       .andWhere('company.no = :no', { no: companyNo })
       .getOne();
-
+    console.log(qb);
     return qb;
   }
 
