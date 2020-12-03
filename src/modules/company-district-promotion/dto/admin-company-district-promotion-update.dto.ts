@@ -43,7 +43,7 @@ export class AdminCompanyDistrictPromotionUpdateDto
 
   @ApiPropertyOptional({ type: 'date' })
   @IsOptional()
-  @IsDate()
+  //   @IsDate()
   @Expose()
   ended?: Date;
 
