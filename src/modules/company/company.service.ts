@@ -32,6 +32,8 @@ import { CompanyDistrict } from '../company-district/company-district.entity';
 import { CompanyDistrictUpdateHistory } from '../company-district-update-history/company-district-update-history.entity';
 import { CompanyUserUpdateHistory } from '../company-user-update-history/company-user-update-history.entity';
 import { FileUploadService } from '../file-upload/file-upload.service';
+import { CompanyDistrictPromotionMapper } from '../company-district-promotion-mapper/company-district-promotion-mapper.entity';
+import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 
 @Injectable()
 export class CompanyService extends BaseService {
@@ -461,6 +463,56 @@ export class CompanyService extends BaseService {
   }
 
   /**
+   * find expired promotions
+   * @param companyNo
+   * @param pagination
+   */
+  async findExpiredPromotion(
+    companyNo: number,
+    pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<CompanyDistrictPromotion>> {
+    const promotions = this.entityManager
+      .getRepository(CompanyDistrictPromotion)
+      .createQueryBuilder('promotion')
+      .CustomLeftJoinAndSelect(['company'])
+      .CustomInnerJoinAndSelect(['codeManagement'])
+      .where('company.no = :no', { no: companyNo })
+      .andWhere('promotion.ended < :date', { date: new Date() })
+      .orderBy('promotion.createdAt', ORDER_BY_VALUE.DESC)
+      .Paginate(pagination);
+
+    const [items, totalCount] = await promotions.getManyAndCount();
+
+    return { items, totalCount };
+  }
+
+  /**
+   * find ongoing promotions
+   * @param companyNo
+   * @param pagination
+   */
+  async findOngoingPromotions(
+    companyNo: number,
+    pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<CompanyDistrictPromotion>> {
+    const promotions = this.entityManager
+      .getRepository(CompanyDistrictPromotion)
+      .createQueryBuilder('promotion')
+      .CustomLeftJoinAndSelect(['company'])
+      .CustomInnerJoinAndSelect(['codeManagement'])
+      .where('company.no = :no', { no: companyNo })
+      .AndWhereBetweenDate(new Date())
+      .orderBy('promotion.createdAt', ORDER_BY_VALUE.DESC)
+      .Paginate(pagination);
+
+    let [items, totalCount] = await promotions.getManyAndCount();
+    items = this.__remove_duplicate(items);
+    const diff = totalCount - items.length;
+    totalCount = totalCount - diff;
+    return { items, totalCount };
+  }
+
+  /**
    * delete company
    * @param companyNo
    */
@@ -511,6 +563,15 @@ export class CompanyService extends BaseService {
           .createQueryBuilder()
           .delete()
           .from(CompanyUserUpdateHistory)
+          .where('companyNo = :companyNo', { companyNo: companyNo })
+          .execute();
+
+        // delete promotion mapper
+        await entityManager
+          .getRepository(CompanyDistrictPromotionMapper)
+          .createQueryBuilder()
+          .delete()
+          .from(CompanyDistrictPromotionMapper)
           .where('companyNo = :companyNo', { companyNo: companyNo })
           .execute();
         return company;
@@ -575,5 +636,9 @@ export class CompanyService extends BaseService {
     newCompanyUpdateHistory.companyNo = companyNo;
 
     return newCompanyUpdateHistory;
+  }
+
+  private __remove_duplicate(array: any) {
+    return array.filter((a: string, b: string) => array.indexOf(a) === b);
   }
 }

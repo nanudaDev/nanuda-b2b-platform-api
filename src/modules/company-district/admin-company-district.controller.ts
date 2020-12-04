@@ -23,6 +23,7 @@ import {
 import { PaginatedRequest, PaginatedResponse, UserInfo } from 'src/common';
 import { CompanyDistrict } from './company-district.entity';
 import { Admin } from '..';
+import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 
 @Controller()
 @ApiTags('ADMIN COMPANY DISTRICT')
@@ -148,6 +149,49 @@ export class AdminCompanyDistrictController extends BaseController {
       companyDistrictNo,
       latLonDto,
     );
+  }
+
+  /**
+   * find ongoing promotions
+   * @param companyDistrictNo
+   * @param pagination
+   */
+  @Get('/admin/company-district/:id([0-9]+)/ongoing-promotions')
+  async findOngoingPromotions(
+    @Param('id', ParseIntPipe) companyDistrictNo: number,
+    @Query() pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<CompanyDistrictPromotion>> {
+    return await this.companyDistrictService.findOngoingPromotions(
+      companyDistrictNo,
+      pagination,
+    );
+  }
+
+  /**
+   * find expired promotions
+   * @param companyDistrictNo
+   * @param pagination
+   */
+  @Get('/admin/company-district/:id([0-9]+)/expired-promotions')
+  async findExpiredPromotions(
+    @Param('id', ParseIntPipe) companyDistrictNo: number,
+    @Query() pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<CompanyDistrictPromotion>> {
+    return await this.companyDistrictService.findExpiredPromotions(
+      companyDistrictNo,
+      pagination,
+    );
+  }
+
+  /**
+   * find for select
+   * @param pagination
+   */
+  @Get('/admin/company-district/find-for-select')
+  async findForSelect(
+    @Query() pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<CompanyDistrict>> {
+    return await this.companyDistrictService.findForSelect(pagination);
   }
 
   /**

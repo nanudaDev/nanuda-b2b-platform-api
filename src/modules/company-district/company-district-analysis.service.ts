@@ -10,7 +10,7 @@ export class CompanyDistrictAnalysisService extends BaseService {
     @InjectRepository(CompanyDistrict)
     private readonly spaceRepo: Repository<CompanyDistrict>,
     // analysis는 분석 데이터베이스 alias입니다. app.module.ts참조
-    @InjectEntityManager('analysis')
+    @InjectEntityManager('wq')
     private readonly entityManager: EntityManager,
   ) {
     super();

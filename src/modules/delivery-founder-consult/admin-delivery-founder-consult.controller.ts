@@ -143,6 +143,24 @@ export class AdminDeliveryFounderConsultController extends BaseController {
   }
 
   /**
+   * find own consult
+   * @param admin
+   * @param pagination
+   */
+  @Get('/admin/my-delivery-founder-consults')
+  async findMyConsult(
+    @UserInfo() admin: Admin,
+    @Query() pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<DeliveryFounderConsult>> {
+    const dto = new AdminDeliveryFounderConsultListDto();
+    dto.adminNo = admin.no;
+    return await this.deliveryFounderConsultService.findAllForAdmin(
+      dto,
+      pagination,
+    );
+  }
+
+  /**
    * send message for admin
    * @param deliveryFounderConsultNo
    */

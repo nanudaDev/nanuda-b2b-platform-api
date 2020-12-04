@@ -46,6 +46,10 @@ export class NanudaCompanyDistrictController extends BaseController {
     );
   }
 
+  /**
+   * dropwdown test
+   * @param companyDistrictListDto
+   */
   @Get('/nanuda/company-district/dropdown-test')
   async dropdown2(@Query() companyDistrictListDto: CompanyDistrictListDto) {
     return await this.companyDistrictService.companyDistrictDown2(
@@ -62,5 +66,13 @@ export class NanudaCompanyDistrictController extends BaseController {
     return await this.companyDistrictService.getCenterForMap(
       companyDistrictListDto,
     );
+  }
+
+  /**
+   * find available districts
+   */
+  @Get('/nanuda/company-district/available-districts')
+  async findAvailableDistricts(): Promise<CompanyDistrict[]> {
+    return await this.companyDistrictService.findAllAvailableDistricts();
   }
 }

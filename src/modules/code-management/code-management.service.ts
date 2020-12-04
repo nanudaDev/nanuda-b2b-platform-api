@@ -184,7 +184,7 @@ export class CodeManagementService extends BaseService {
     return codes;
   }
 
-  async findAnyTypes(category: string): Promise<CodeManagement[]> {
+  async findAnyTypes(category?: string): Promise<CodeManagement[]> {
     const codes = await this.codeManagementRepo.find({
       where: {
         category1: category,

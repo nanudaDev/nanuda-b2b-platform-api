@@ -1,5 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { BaseService, FOUNDER_CONSULT, APPROVAL_STATUS } from 'src/core';
+import {
+  BaseService,
+  FOUNDER_CONSULT,
+  APPROVAL_STATUS,
+  SPACE_TYPE,
+} from 'src/core';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { DeliverySpace } from './delivery-space.entity';
 import { Repository, EntityManager, In } from 'typeorm';
@@ -13,6 +18,8 @@ import {
 } from 'src/common';
 import { FavoriteSpaceMapper } from '../favorite-space-mapper/favorite-space-mapper.entity';
 import { DeliveryFounderConsult } from '../delivery-founder-consult/delivery-founder-consult.entity';
+import { CompanyDistrictPromotionMapper } from '../company-district-promotion-mapper/company-district-promotion-mapper.entity';
+import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 
 @Injectable()
 export class NanudaDeliverySpaceService extends BaseService {
@@ -38,7 +45,6 @@ export class NanudaDeliverySpaceService extends BaseService {
   ): Promise<PaginatedResponse<DeliverySpace>> {
     // passing nanuda user token from old server
     // amenity ids length because of exclude dto
-
     let nanudaUserNo = null;
     if (deliverySpaceListDto.nanudaUserNo) {
       nanudaUserNo = deliverySpaceListDto.nanudaUserNo;
@@ -47,15 +53,13 @@ export class NanudaDeliverySpaceService extends BaseService {
     }
     const qb = this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
-      .CustomInnerJoinAndSelect(['companyDistrict'])
-      .CustomLeftJoinAndSelect([
-        'deliverySpaceOptions',
-        'favoritedUsers',
-        'contracts',
-      ])
+      .CustomInnerJoinAndSelect(['companyDistrict', 'amenities'])
+      .CustomLeftJoinAndSelect(['deliverySpaceOptions', 'contracts'])
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      // remaining count > 0
+      .andWhere('deliverySpace.remainingCount > 0')
       //   .andWhere('deliveryFounderConsults.status != :status', {
       //     status: FOUNDER_CONSULT.F_DIST_COMPLETE,
       //   })
@@ -72,6 +76,18 @@ export class NanudaDeliverySpaceService extends BaseService {
       //   deliverySpaceListDto.amenityName,
       //   deliverySpaceListDto.exclude('amenityName'),
       // )
+      // .AndWhereEqual(
+      //   'promotions',
+      //   'promotionType',
+      //   deliverySpaceListDto.promotionType,
+      //   deliverySpaceListDto.exclude('promotionType'),
+      // )
+      .AndWhereEqual(
+        'deliverySpace',
+        'no',
+        deliverySpaceListDto.no,
+        deliverySpaceListDto.exclude('no'),
+      )
       .AndWhereLike(
         'deliverySpaceOptions',
         'deliverySpaceOptionName',
@@ -83,6 +99,18 @@ export class NanudaDeliverySpaceService extends BaseService {
         'monthlyRentFee',
         deliverySpaceListDto.monthlyRentFee,
         deliverySpaceListDto.exclude('monthlyRentFee'),
+      )
+      .AndWhereLike(
+        'company',
+        'nameKr',
+        deliverySpaceListDto.companyNameKr,
+        deliverySpaceListDto.exclude('companyNameKr'),
+      )
+      .AndWhereEqual(
+        'company',
+        'no',
+        deliverySpaceListDto.companyNo,
+        deliverySpaceListDto.exclude('companyNo'),
       )
       .AndWhereLike(
         'companyDistrict',
@@ -101,31 +129,117 @@ export class NanudaDeliverySpaceService extends BaseService {
         'address',
         deliverySpaceListDto.address,
         deliverySpaceListDto.exclude('address'),
-      );
-    if (
-      deliverySpaceListDto.amenityIds &&
-      deliverySpaceListDto.amenityIds.length > 0
-    ) {
-      const amenityIdsLength = deliverySpaceListDto.amenityIds.length;
-      qb.innerJoinAndSelect('deliverySpace.amenities', 'amenities');
-      qb.AndWhereIn(
+      )
+      .AndWhereBetweenValues(
+        'deliverySpace',
+        'size',
+        deliverySpaceListDto.minSize,
+        deliverySpaceListDto.maxSize,
+        deliverySpaceListDto.exclude('minSize'),
+        deliverySpaceListDto.exclude('maxSize'),
+      )
+      .AndWhereBetweenValues(
+        'deliverySpace',
+        'deposit',
+        deliverySpaceListDto.minDeposit,
+        deliverySpaceListDto.maxDeposit,
+        deliverySpaceListDto.exclude('minDeposit'),
+        deliverySpaceListDto.exclude('maxDeposit'),
+      )
+      .AndWhereBetweenValues(
+        'deliverySpace',
+        'monthlyRentFee',
+        deliverySpaceListDto.minMonthlyRentFee,
+        deliverySpaceListDto.maxMonthlyRentFee,
+        deliverySpaceListDto.exclude('minMonthlyRentFee'),
+        deliverySpaceListDto.exclude('maxMonthlyRentFee'),
+      )
+      .AndWhereIn(
         'amenities',
         'no',
         deliverySpaceListDto.amenityIds,
         deliverySpaceListDto.exclude('amenityIds'),
+      )
+      .groupBy('deliverySpace.no');
+    if (
+      deliverySpaceListDto.amenityIds &&
+      deliverySpaceListDto.amenityIds.length > 0
+    ) {
+      qb.having(
+        `COUNT(DISTINCT amenities.NO) = ${deliverySpaceListDto.amenityIds.length}`,
       );
-      qb.groupBy('deliverySpace.no');
-      qb.having(`COUNT(DISTINCT amenities.no) = ${amenityIdsLength}`);
     }
-    qb.WhereAndOrder(deliverySpaceListDto);
+    if (deliverySpaceListDto.promotionNo) {
+      qb.leftJoinAndSelect('companyDistrict.promotions', 'promotions');
+      qb.AndWhereEqual(
+        'promotions',
+        'no',
+        deliverySpaceListDto.promotionNo,
+        deliverySpaceListDto.exclude('promotionNo'),
+      );
+      qb.AndWhereJoinBetweenDate('promotions', new Date());
+      qb.andWhere('promotions.showYn = :showYn', { showYn: YN.YES });
+    }
+    if (deliverySpaceListDto.promotionType) {
+      qb.leftJoinAndSelect('companyDistrict.promotions', 'promotions');
+      qb.AndWhereEqual(
+        'promotions',
+        'promotionType',
+        deliverySpaceListDto.promotionType,
+        deliverySpaceListDto.exclude('promotionType'),
+      );
+      qb.AndWhereJoinBetweenDate('promotions', new Date());
+      qb.andWhere('promotions.showYn = :showYn', { showYn: YN.YES });
+    }
+    // if (
+    //   deliverySpaceListDto.amenityIds &&
+    //   deliverySpaceListDto.amenityIds.length > 0
+    // ) {
+    //   const amenityIdsLength = deliverySpaceListDto.amenityIds.length;
+    //   console.log(amenityIdsLength);
+    //   qb.innerJoinAndSelect('deliverySpace.amenities', 'amenities');
+    //   qb.AndWhereIn(
+    //     'amenities',
+    //     'no',
+    //     deliverySpaceListDto.amenityIds,
+    //     deliverySpaceListDto.exclude('amenityIds'),
+    //   );
+    //   qb.groupBy('deliverySpace.no');
+    //   qb.having(`COUNT(DISTINCT amenities.NO) = ${amenityIdsLength}`);
+    // }
+    if (deliverySpaceListDto.orderByDeposit) {
+      qb.addOrderBy(
+        'deliverySpace.deposit',
+        deliverySpaceListDto.orderByDeposit,
+      );
+      delete deliverySpaceListDto.orderByDeposit;
+    }
+    if (deliverySpaceListDto.orderByMonthlyRentFee) {
+      qb.addOrderBy(
+        'deliverySpace.monthlyRentFee',
+        deliverySpaceListDto.orderByMonthlyRentFee,
+      );
+      delete deliverySpaceListDto.orderByMonthlyRentFee;
+    }
     qb.Paginate(pagination);
+    qb.WhereAndOrder(deliverySpaceListDto);
 
-    const [items, totalCount] = await qb.getManyAndCount();
+    let [items, totalCount] = await qb.getManyAndCount();
+    // if(deliverySpaceListDto.amenityIds && deliverySpaceListDto.amenityIds.length > 1) {
+    //   totalCount
+    // }
     // add favorite mark
     await Promise.all(
       items.map(async item => {
-        item.likedCount = item.favoritedUsers.length;
-        delete item.favoritedUsers;
+        const likedCount = await this.entityManager
+          .getRepository(FavoriteSpaceMapper)
+          .find({
+            where: {
+              deliverySpaceNo: item.no,
+              spaceTypeNo: SPACE_TYPE.ONLY_DELIVERY,
+            },
+          });
+        item.likedCount = likedCount.length;
         const consults = await this.entityManager
           .getRepository(DeliveryFounderConsult)
           .find({
@@ -138,12 +252,13 @@ export class NanudaDeliverySpaceService extends BaseService {
             },
           });
         item.consultCount = consults.length;
-        item.remainingCount = item.quantity - item.contracts.length;
-        // splice and remove unwanted delivery spaces
-        if (item.remainingCount === 0) {
-          const index = items.indexOf(item);
-          items.splice(index, 1);
-        }
+        // item.remainingCount = item.quantity - item.contracts.length;
+        // // splice and remove unwanted delivery spaces
+        // if (item.remainingCount === 0) {
+        //   const index = items.indexOf(item);
+        //   items.splice(index, 1);
+        //   totalCount - 1;
+        // }
         delete item.contracts;
       }),
     );
@@ -167,7 +282,6 @@ export class NanudaDeliverySpaceService extends BaseService {
         }),
       );
     }
-
     return { items, totalCount };
   }
 
@@ -188,26 +302,27 @@ export class NanudaDeliverySpaceService extends BaseService {
         'contracts',
       ])
       .leftJoinAndSelect('companyDistrict.amenities', 'commonAmenities')
+
       .leftJoinAndSelect('deliverySpace.brands', 'brands')
-      .innerJoinAndSelect('companyDistrict.company', 'company')
+      .leftJoinAndSelect('companyDistrict.company', 'company')
       .where('deliverySpace.no = :no', { no: deliverySpaceNo })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('brands.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('deliverySpace.remainingCount > 0')
       .addOrderBy('brands.isRecommendedYn', ORDER_BY_VALUE.DESC)
       .getOne();
     if (!space) {
       throw new NotFoundException();
     }
-    // filter out brands
-    space.brands.map(brand => {
-      const index = space.brands.indexOf(brand);
-      if (brand.showYn === YN.NO) {
-        space.brands.splice(index, 1);
-      }
-    });
     const likedCount = await this.entityManager
       .getRepository(FavoriteSpaceMapper)
-      .find({ where: { deliverySpaceNo: deliverySpaceNo } });
+      .find({
+        where: {
+          deliverySpaceNo: deliverySpaceNo,
+          spaceTypeNo: SPACE_TYPE.ONLY_DELIVERY,
+        },
+      });
 
     space.likedCount = likedCount.length;
 
@@ -235,11 +350,34 @@ export class NanudaDeliverySpaceService extends BaseService {
         space.likedYn = false;
       }
     }
-    space.remainingCount = space.quantity - space.contracts.length;
+    // space.remainingCount = space.quantity - space.contracts.length;
     delete space.contracts;
-    if (space.remainingCount === 0) {
-      throw new NotFoundException({ message: 'Full delivery space' });
+    // if (space.remainingCount < 1) {
+    //   throw new NotFoundException({ message: 'Full delivery space' });
+    // }
+    const promotionIds = [];
+    const promotions = await this.entityManager
+      .getRepository(CompanyDistrictPromotionMapper)
+      .createQueryBuilder('mapper')
+      .where('mapper.companyDistrictNo = :companyDistrictNo', {
+        companyDistrictNo: space.companyDistrict.no,
+      })
+      .select(['mapper.promotionNo'])
+      .getMany();
+    if (promotions && promotions.length > 0) {
+      promotions.map(promotion => {
+        promotionIds.push(promotion.promotionNo);
+      });
+      space.companyDistrict.promotions = await this.entityManager
+        .getRepository(CompanyDistrictPromotion)
+        .createQueryBuilder('promotion')
+        .CustomInnerJoinAndSelect(['codeManagement'])
+        .whereInIds(promotionIds)
+        .andWhere('promotion.showYn = :showYn', { showYn: YN.YES })
+        .AndWhereBetweenDate(new Date())
+        .getMany();
     }
+
     return space;
   }
 
@@ -273,6 +411,7 @@ export class NanudaDeliverySpaceService extends BaseService {
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.quantity > 0')
+      .andWhere('deliverySpace.remainingCount > 0')
       .limit(5)
       .Paginate(pagination);
 
@@ -284,11 +423,11 @@ export class NanudaDeliverySpaceService extends BaseService {
         items.splice(index, 1);
         totalCount - 1;
       }
-      if (item.quantity - item.contracts.length < 1) {
-        const index = items.indexOf(item);
-        items.splice(index, 1);
-        totalCount - 1;
-      }
+      // if (item.quantity - item.contracts.length < 1) {
+      //   const index = items.indexOf(item);
+      //   items.splice(index, 1);
+      //   totalCount - 1;
+      // }
     });
     return { items, totalCount };
   }
@@ -314,5 +453,45 @@ export class NanudaDeliverySpaceService extends BaseService {
     return await qb;
   }
 
-  // TODO: 마감 임박 엔드포인트 필요
+  async findMaxValues() {
+    const maxDepositValue = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.quantity > 0')
+      .andWhere('deliverySpace.remainingCount > 0')
+      .select(['deliverySpace.deposit'])
+      .limit(1)
+      .orderBy('deliverySpace.deposit', ORDER_BY_VALUE.DESC)
+      .getMany();
+
+    const maxSizeValue = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.quantity > 0')
+      .andWhere('deliverySpace.remainingCount > 0')
+      .select(['deliverySpace.size'])
+      .limit(1)
+      .orderBy('deliverySpace.size', ORDER_BY_VALUE.DESC)
+      .getMany();
+
+    const maxRentValue = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.quantity > 0')
+      .andWhere('deliverySpace.remainingCount > 0')
+      .select(['deliverySpace.monthlyRentFee'])
+      .limit(1)
+      .orderBy('deliverySpace.monthlyRentFee', ORDER_BY_VALUE.DESC)
+      .getMany();
+
+    const results = {
+      maxDeposit: maxDepositValue[0].deposit,
+      maxSize: maxSizeValue[0].size,
+      maxMonthlyRentFee: maxRentValue[0].monthlyRentFee,
+    };
+    return results;
+  }
 }

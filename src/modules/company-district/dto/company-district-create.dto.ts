@@ -85,10 +85,17 @@ export class CompanyDistrictCreateDto extends BaseDto<CompanyDistrictCreateDto>
   @ValidateNested()
   image?: FileAttachmentDto[];
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ name: 'amenityIds[]', type: Number, isArray: true })
   @IsOptional()
   @Expose()
+  @IsArray()
   amenityIds?: number[];
+
+  @ApiPropertyOptional({ name: 'promotionIds[]', type: Number, isArray: true })
+  @IsOptional()
+  @Expose()
+  @IsArray()
+  promotionNos?: number[];
 
   @ApiPropertyOptional()
   @IsOptional()

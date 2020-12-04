@@ -14,12 +14,6 @@ export class AdminCompanyDistrictCreateDto extends CompanyDistrictCreateDto {
   @Default(APPROVAL_STATUS.APPROVAL)
   companyDistrictStatus?: APPROVAL_STATUS;
 
-  @ApiPropertyOptional({ name: 'amenityIds[]', type: Number, isArray: true })
-  @IsOptional()
-  @Expose()
-  @IsArray()
-  amenityIds?: number[];
-
   // @ApiPropertyOptional()
   // @IsOptional()
   // @Expose()

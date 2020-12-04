@@ -93,6 +93,8 @@ export class NanudaCompanyDistrictService extends BaseService {
       })
       .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpaces.quantity > 0')
+      .andWhere('deliverySpaces.remainingCount > 0')
       // removed excludedDto
       .AndWhereIn('amenities', 'no', nanudaCompanyDistrictSearchDto.amenityIds)
       // .AndWhereIn('brands', 'no', nanudaCompanyDistrictSearchDto.brandIds)
@@ -112,16 +114,16 @@ export class NanudaCompanyDistrictService extends BaseService {
     }
     const cities = await qb.getMany();
     // TODO: typeorm subquery로 해결
-    cities.map(city => {
-      city.deliverySpaces.map(deliverySpace => {
-        const remaining =
-          deliverySpace.quantity - deliverySpace.contracts.length;
-        if (remaining === 0) {
-          const index = city.deliverySpaces.indexOf(deliverySpace);
-          city.deliverySpaces.splice(index, 1);
-        }
-      });
-    });
+    // cities.map(city => {
+    //   city.deliverySpaces.map(deliverySpace => {
+    //     const remaining =
+    //       deliverySpace.quantity - deliverySpace.contracts.length;
+    //     if (remaining === 0) {
+    //       const index = city.deliverySpaces.indexOf(deliverySpace);
+    //       city.deliverySpaces.splice(index, 1);
+    //     }
+    //   });
+    // });
     searchResults.cities = cities;
     searchResults.cities.map(city => {
       if (city.deliverySpaces.length < 1) {
@@ -197,6 +199,7 @@ export class NanudaCompanyDistrictService extends BaseService {
       })
       .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
       .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('deliverySpaces.remainingCount > 0')
       .andWhere(
         'companyDistrict.region1DepthName like :keyword or companyDistrict.region2DepthName like :keyword or companyDistrict.region3DepthName like :keyword or companyDistrict.address like :keyword',
         {
@@ -341,6 +344,35 @@ export class NanudaCompanyDistrictService extends BaseService {
     });
 
     return [...topResults, ...secondResults, ...thirdResulsts];
+  }
+
+  /**
+   * find available districts
+   */
+  async findAllAvailableDistricts(): Promise<CompanyDistrict[]> {
+    const qb = await this.companyDistrictRepo
+      .createQueryBuilder('companyDistrict')
+      // .CustomInnerJoinAndSelect(['company'])
+      .innerJoin('companyDistrict.deliverySpaces', 'deliverySpaces')
+      .innerJoin('companyDistrict.company', 'company')
+      .where('companyDistrict.companyDistrictStatus = :companyDistrictStatus', {
+        companyDistrictStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere('company.companyStatus = :companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('deliverySpaces.remainingCount > 0')
+      .select([
+        'companyDistrict.no',
+        'companyDistrict.region1DepthName',
+        'companyDistrict.region2DepthName',
+        'companyDistrict.region3DepthName',
+      ])
+      .getMany();
+
+    return qb;
   }
 
   private __remove_duplicate(array: any, key: string) {

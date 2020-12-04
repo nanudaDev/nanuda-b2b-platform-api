@@ -35,7 +35,6 @@ import {
   MenuModule,
   ArticleModule,
   BestSpaceMapperModule,
-  SurveyQuesionAnswerMapperModule,
   BrandKioskMapperModule,
   CredentialModule,
   NanudaHomepageModule,
@@ -44,6 +43,7 @@ import {
   PresentationEventModule,
   AttendeesModule,
   MessageDeliverySpaceModule,
+  CompanyDistrictPromotionModule,
 } from './modules';
 import { AdminModule } from './modules/admin/admin.module';
 import { PaymentList } from './modules/payment-list/payment-list.entity';
@@ -130,6 +130,7 @@ const env = process.env;
     CodeManagementModule,
     CompanyModule,
     CompanyDistrictModule,
+    CompanyDistrictPromotionModule,
     CompanyUserModule,
     CredentialModule,
     DashboardModule,
@@ -157,7 +158,6 @@ const env = process.env;
     SearchModule,
     SmsAuthModule,
     SpaceTypeModule,
-    SurveyQuesionAnswerMapperModule,
   ],
   controllers: [AppController],
   providers: [
