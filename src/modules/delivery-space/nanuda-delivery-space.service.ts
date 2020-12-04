@@ -45,7 +45,6 @@ export class NanudaDeliverySpaceService extends BaseService {
   ): Promise<PaginatedResponse<DeliverySpace>> {
     // passing nanuda user token from old server
     // amenity ids length because of exclude dto
-    console.log(pagination);
     let nanudaUserNo = null;
     if (deliverySpaceListDto.nanudaUserNo) {
       nanudaUserNo = deliverySpaceListDto.nanudaUserNo;
@@ -59,6 +58,8 @@ export class NanudaDeliverySpaceService extends BaseService {
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      // remaining count > 0
+      .andWhere('deliverySpace.remainingCount > 0')
       //   .andWhere('deliveryFounderConsults.status != :status', {
       //     status: FOUNDER_CONSULT.F_DIST_COMPLETE,
       //   })
@@ -129,8 +130,6 @@ export class NanudaDeliverySpaceService extends BaseService {
         deliverySpaceListDto.address,
         deliverySpaceListDto.exclude('address'),
       )
-      // remaining count > 0
-      .andWhere('deliverySpace.remainingCount > 0')
       .AndWhereBetweenValues(
         'deliverySpace',
         'size',
@@ -216,7 +215,6 @@ export class NanudaDeliverySpaceService extends BaseService {
       delete deliverySpaceListDto.orderByDeposit;
     }
     if (deliverySpaceListDto.orderByMonthlyRentFee) {
-      console.log('test', deliverySpaceListDto.orderByMonthlyRentFee);
       qb.addOrderBy(
         'deliverySpace.monthlyRentFee',
         deliverySpaceListDto.orderByMonthlyRentFee,
