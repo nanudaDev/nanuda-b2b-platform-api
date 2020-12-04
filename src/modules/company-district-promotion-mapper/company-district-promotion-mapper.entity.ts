@@ -17,19 +17,19 @@ export class CompanyDistrictPromotionMapper extends BaseMapperEntity<
     name: 'COMPANY_NO',
     nullable: false,
   })
-  companyNo: number;
+  companyNo?: number;
 
   @Column({
     type: 'int',
     name: 'COMPANY_DISTRICT_NO',
     nullable: false,
   })
-  companyDistrictNo: number;
+  companyDistrictNo?: number;
 
   @Column({
     type: 'int',
     name: 'PROMOTION_NO',
     nullable: false,
   })
-  promotionNo: number;
+  promotionNo?: number;
 }
