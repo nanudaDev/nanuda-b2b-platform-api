@@ -67,4 +67,12 @@ export class NanudaCompanyDistrictController extends BaseController {
       companyDistrictListDto,
     );
   }
+
+  /**
+   * find available districts
+   */
+  @Get('/nanuda/company-district/available-districts')
+  async findAvailableDistricts(): Promise<CompanyDistrict[]> {
+    return await this.companyDistrictService.findAllAvailableDistricts();
+  }
 }

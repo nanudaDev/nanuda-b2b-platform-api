@@ -9,6 +9,7 @@ import {
   DeliveryFounderConsultContractListDto,
 } from './dto';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
+import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 
 @Injectable()
 export class DeliveryFounderConsultContractService extends BaseService {
@@ -310,6 +311,14 @@ export class DeliveryFounderConsultContractService extends BaseService {
           .from(DeliveryFounderConsultContract)
           .where('no = :no', { no: contractNo })
           .execute();
+        // update delivery space remaining count
+        let space = await this.entityManager
+          .getRepository(DeliverySpace)
+          .findOne(contract.deliverySpaceNo);
+        space.remainingCount = space.remainingCount + 1;
+        space = await this.entityManager
+          .getRepository(DeliverySpace)
+          .save(space);
 
         return contract;
       },

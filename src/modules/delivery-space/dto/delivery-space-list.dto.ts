@@ -116,6 +116,21 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @Expose()
   promotionNo?: number;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  region2DepthName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  region1DepthName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  region3DepthName?: string;
+
   @ApiPropertyOptional({ enum: B2B_EVENT_TYPE })
   @IsOptional()
   @IsEnum(B2B_EVENT_TYPE)
