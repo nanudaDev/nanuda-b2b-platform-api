@@ -27,6 +27,11 @@ export class AdminCompanyDistrictPromotionUpdateDto
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  summary?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   displayTitle?: string;
 
   @ApiPropertyOptional({ enum: B2B_EVENT_TYPE })
