@@ -187,7 +187,6 @@ export class DeliverySpaceService extends BaseService {
     adminDeliverySpaceListDto: AdminDeliverySpaceListDto,
     pagination?: PaginatedRequest,
   ): Promise<PaginatedResponse<DeliverySpace>> {
-    console.log(adminDeliverySpaceListDto);
     const qb = this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
@@ -461,7 +460,6 @@ export class DeliverySpaceService extends BaseService {
     adminDeliverySpaceUpdateDto: AdminDeliverySpaceUpdateDto,
     adminNo: number,
   ): Promise<DeliverySpace> {
-    console.log(adminDeliverySpaceUpdateDto);
     const deliverySpace = await this.entityManager.transaction(
       async entityManager => {
         let deliverySpace = await this.deliverySpaceRepo.findOne(

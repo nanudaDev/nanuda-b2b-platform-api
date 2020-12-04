@@ -45,6 +45,12 @@ export class CompanyDistrictPromotion extends BaseEntity<
   desc?: string;
 
   @Column({
+    type: 'text',
+    name: 'SUMMARY',
+  })
+  summary?: string;
+
+  @Column({
     type: 'varchar',
     name: 'PROMOTION_TYPE',
   })

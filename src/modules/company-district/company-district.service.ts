@@ -277,6 +277,7 @@ export class CompanyDistrictService extends BaseService {
       companyDistrict.promotions = await this.entityManager
         .getRepository(CompanyDistrictPromotion)
         .createQueryBuilder('promotions')
+        .CustomInnerJoinAndSelect(['codeManagement'])
         .whereInIds(promotionIds)
         .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
         .AndWhereBetweenDate(new Date())
