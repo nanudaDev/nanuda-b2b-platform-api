@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CompanyDistrictModule } from '../company-district/company-disctrict.module';
+import { CompanyDistrictModule } from '../company-district/company-district.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DeliverySpace } from './delivery-space.entity';
 import { DeliverySpaceOptionSpaceMapper } from '../delivery-space-option-space-mapper/delivery-space-option-space-mapper.entity';

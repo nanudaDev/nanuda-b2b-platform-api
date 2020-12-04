@@ -54,12 +54,8 @@ export class NanudaDeliverySpaceService extends BaseService {
     }
     const qb = this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
-      .CustomInnerJoinAndSelect(['companyDistrict'])
-      .CustomLeftJoinAndSelect([
-        'deliverySpaceOptions',
-        'contracts',
-        'amenities',
-      ])
+      .CustomInnerJoinAndSelect(['companyDistrict', 'amenities'])
+      .CustomLeftJoinAndSelect(['deliverySpaceOptions', 'contracts'])
       .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
@@ -171,7 +167,7 @@ export class NanudaDeliverySpaceService extends BaseService {
       deliverySpaceListDto.amenityIds.length > 0
     ) {
       qb.having(
-        `COUNT(DISTINCT amenities.no) = ${deliverySpaceListDto.amenityIds.length}`,
+        `COUNT(DISTINCT amenities.NO) = ${deliverySpaceListDto.amenityIds.length}`,
       );
     }
     if (deliverySpaceListDto.promotionNo) {
