@@ -69,15 +69,12 @@ export class NanudaCompanyDistrictPromotionService extends BaseService {
     const ids = [];
     const qb = await this.entityManager
       .getRepository(CompanyDistrictPromotionMapper)
-      .createQueryBuilder('mapper')
-      .where('mapper.promotionNo = :promotionNo', { promotionNo: promotionNo })
-      .select(['mapper.companyNo'])
-      .getMany();
-
+      .find({ where: { promotionNo: promotionNo } });
+    console.log(qb);
     qb.map(q => {
       ids.push(q.companyNo);
     });
-
+    console.log(ids);
     const companies = this.entityManager
       .getRepository(Company)
       .createQueryBuilder('company')

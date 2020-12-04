@@ -42,7 +42,7 @@ export class NanudaCompanyDistrictPromotionController extends BaseController {
    * @param promotionNo
    * @param pagination
    */
-  @Get('/nanuda/promotions/:id([0-9+])/companies')
+  @Get('/nanuda/promotions/:id([0-9]+)/companies')
   async findCompanies(
     @Param('id', ParseIntPipe) promotionNo: number,
     @Query() pagination: PaginatedRequest,
