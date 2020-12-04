@@ -40,11 +40,11 @@ export class AdminCompanyDistrictPromotionUpdateDto
   @IsEnum(B2B_EVENT_TYPE)
   promotionType?: B2B_EVENT_TYPE;
 
-  //   @ApiPropertyOptional({ type: 'date' })
-  //   @IsOptional()
-  //   @IsDate()
-  //   @Expose()
-  //   started?: Date;
+  @ApiPropertyOptional({ type: 'date' })
+  @IsOptional()
+  // @IsDate()
+  @Expose()
+  started?: Date;
 
   @ApiPropertyOptional({ type: 'date' })
   @IsOptional()
