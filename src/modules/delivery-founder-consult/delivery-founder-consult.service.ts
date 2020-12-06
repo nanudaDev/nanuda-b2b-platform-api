@@ -921,6 +921,9 @@ export class DeliveryFounderConsultService extends BaseService {
           deliveryFounderConsultNo,
         );
         const prevDeliverySpaceNo = consult.deliverySpaceNo;
+        if (prevDeliverySpaceNo === newDeliverySpaceNo) {
+          throw new BadRequestException('이미 이 공간에 등록 된 상담입니다.');
+        }
         consult.deliverySpaceNo = newDeliverySpaceNo;
         consult = await this.deliveryFounderConsultRepo.save(consult);
 
