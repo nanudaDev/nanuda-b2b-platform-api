@@ -44,6 +44,7 @@ import {
   AttendeesModule,
   MessageDeliverySpaceModule,
   CompanyDistrictPromotionModule,
+  DeliveryFounderConsultRecordModule,
 } from './modules';
 import { AdminModule } from './modules/admin/admin.module';
 import { PaymentList } from './modules/payment-list/payment-list.entity';
@@ -136,6 +137,7 @@ const env = process.env;
     DashboardModule,
     DeliveryFounderConsultModule,
     DeliveryFounderConsultContractModule,
+    DeliveryFounderConsultRecordModule,
     DeliverySpaceModule,
     DeliverySpaceOptionModule,
     FavoriteSpaceMapperModule,

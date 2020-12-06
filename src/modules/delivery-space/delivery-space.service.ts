@@ -3,7 +3,12 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { BaseService, SPACE_TYPE, SPACE_PIC_STATUS } from 'src/core';
+import {
+  BaseService,
+  SPACE_TYPE,
+  SPACE_PIC_STATUS,
+  APPROVAL_STATUS,
+} from 'src/core';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { DeliverySpace } from './delivery-space.entity';
 import { Repository, EntityManager } from 'typeorm';
@@ -914,6 +919,44 @@ export class DeliverySpaceService extends BaseService {
       },
     );
     return deliverySpace;
+  }
+
+  /**
+   * find available for delivery spaces select option
+   * @param adminDeiverySpaceListDto
+   */
+  async findAvailableSpacesForSelect(
+    adminDeiverySpaceListDto: AdminDeliverySpaceListDto,
+  ): Promise<DeliverySpace[]> {
+    const qb = this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .CustomInnerJoin(['companyDistrict'])
+      .innerJoin('companyDistrict.company', 'company')
+      .where('company.companyStatus = :companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere(
+        'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
+        { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
+      )
+      .AndWhereEqual(
+        'company',
+        'no',
+        adminDeiverySpaceListDto.companyNo,
+        adminDeiverySpaceListDto.exclude('companyNo'),
+      )
+      .AndWhereEqual(
+        'companyDistrict',
+        'no',
+        adminDeiverySpaceListDto.companyDistrictNo,
+        adminDeiverySpaceListDto.exclude('companyDistrictNo'),
+      )
+      .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+      .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.remainingCount > 0')
+      .getMany();
+
+    return await qb;
   }
 
   // create new amenity

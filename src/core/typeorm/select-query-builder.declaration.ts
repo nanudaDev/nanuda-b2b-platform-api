@@ -85,6 +85,15 @@ declare module 'typeorm/query-builder/SelectQueryBuilder' {
       RELATIONS: string[],
     ): SelectQueryBuilder<Entity>;
     /**
+     * inner join
+     * @param this
+     * @param RELATIONS
+     */
+    CustomInnerJoin(
+      this: SelectQueryBuilder<Entity>,
+      RELATIONS: string[],
+    ): SelectQueryBuilder<Entity>;
+    /**
      * WhereAndOrder 보다 앞에 사용해야한다.
      *
      * excludedRequestDto 는 WhereAndOrder 에서 사용되지않도록 컬럼을 제거하는 용도로 사용한다.
@@ -490,6 +499,16 @@ SelectQueryBuilder.prototype.CustomLeftJoinAndSelect = function<Entity>(
 ): SelectQueryBuilder<Entity> {
   return RELATIONS.reduce((acc: any, item: any): any => {
     acc = acc.leftJoinAndSelect(`${this.alias}.${item}`, `${item}`);
+    return acc;
+  }, this);
+};
+
+SelectQueryBuilder.prototype.CustomInnerJoin = function<Entity>(
+  this: SelectQueryBuilder<Entity>,
+  RELATIONS: string[],
+): SelectQueryBuilder<Entity> {
+  return RELATIONS.reduce((acc: any, item: any): any => {
+    acc = acc.innerJoin(`${this.alias}.${item}`, `${item}`);
     return acc;
   }, this);
 };
