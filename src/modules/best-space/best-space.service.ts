@@ -53,6 +53,9 @@ export class BestSpaceService extends BaseService {
         adminBestSpaceListDto.deliverySpaceDeposit,
         adminBestSpaceListDto.exclude('deliverySpaceDeposit'),
       )
+      .andWhere('companyDistrict.region1DepthName = :region1DepthName', {
+        region1DepthName: '서울',
+      })
       .WhereAndOrder(adminBestSpaceListDto)
       .Paginate(pagination);
 

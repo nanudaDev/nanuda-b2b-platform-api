@@ -12,6 +12,7 @@ import {
   BaseDto,
   B2B_FOUNDER_CONSULT,
   SPACE_TYPE,
+  APPROVAL_STATUS,
 } from '../../core';
 import {
   PaginatedRequest,
@@ -36,6 +37,7 @@ import { Request } from 'express';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 import { CompanyDistrictPromotionMapper } from '../company-district-promotion-mapper/company-district-promotion-mapper.entity';
 import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
+import { DeliveryFounderConsultRecord } from '../delivery-founder-consult-record/delivery-founder-consult-record.entity';
 
 @Injectable()
 export class DeliveryFounderConsultService extends BaseService {
@@ -393,6 +395,41 @@ export class DeliveryFounderConsultService extends BaseService {
           nanudaUserUpdateHistory.nanudaUserNo = nanudaUser.no;
           await entityManager.save(nanudaUserUpdateHistory);
         }
+        // change delivery space no
+        if (adminDeliveryFounderConsultUpdateDto.newDeliverySpaceNo) {
+          // check if delivery space is ok
+          const checkDeliverySpace = await entityManager
+            .getRepository(DeliverySpace)
+            .createQueryBuilder('deliverySpace')
+            .CustomInnerJoinAndSelect(['companyDistrict'])
+            .innerJoinAndSelect('companyDistrict.company', 'company')
+            .where(
+              'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
+              { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
+            )
+            .andWhere('company.companyStatus = :companyStatus', {
+              companyStatus: APPROVAL_STATUS.APPROVAL,
+            })
+            .andWhere('deliverySpace.no = :no', {
+              no: adminDeliveryFounderConsultUpdateDto.newDeliverySpaceNo,
+            })
+            .andWhere('deliverySpace.delYn', { delYn: YN.NO })
+            .andWhere('deliverySpace.showYn', { showYn: YN.YES })
+            .andWhere('deliverySpace.remainingCount > 0')
+            .getOne();
+
+          if (!checkDeliverySpace) {
+            throw new BadRequestException('등록할 수 없는 공간입니다.');
+          }
+          // create new record of change
+          let newRecord = new DeliveryFounderConsultRecord();
+          newRecord.prevDeliverySpaceNo =
+            deliveryFounderConsult.deliverySpaceNo;
+          newRecord.deliveryFounderConsultNo = deliveryFounderConsult.no;
+          newRecord.newDeliverySpaceNo =
+            adminDeliveryFounderConsultUpdateDto.newDeliverySpaceNo;
+          await entityManager.save(newRecord);
+        }
         // do not need to check off gender anymore Friday 11/22/2020
         // const nanudaUser = await this.nanudaUserRepo.findOne(
         //   deliveryFounderConsult.nanudaUserNo,
@@ -516,6 +553,9 @@ export class DeliveryFounderConsultService extends BaseService {
       // .leftJoinAndSelect('companyDistrict.promotions', 'promotions')
       .addSelect(['nanudaUser.name', 'nanudaUser.gender'])
       .where('company.no = :no', { no: companyNo })
+      .andWhere('deliveryConsult.status = :status', {
+        status: FOUNDER_CONSULT.F_DIST_COMPLETE,
+      })
       // .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
       // .AndWhereJoinBetweenDate('promotions', new Date())
       .AndWhereLike(
@@ -561,7 +601,7 @@ export class DeliveryFounderConsultService extends BaseService {
         deliveryFounderConsultListDto.exclude('created'),
       )
       // .WhereAndOrder(founderConsultListDto)
-      .orderBy('deliveryConsult.no', ORDER_BY_VALUE.DESC)
+      // .orderBy('deliveryConsult.no', ORDER_BY_VALUE.DESC)
       .Paginate(pagination)
       .AndWhereBetweenOpenedAt(
         deliveryFounderConsultListDto.started,
@@ -862,6 +902,41 @@ export class DeliveryFounderConsultService extends BaseService {
       })
       .getMany();
     return qb;
+  }
+
+  /**
+   * update delivery space for consult
+   * @param adminNo
+   * @param deliveryFounderConsultNo
+   * @param newDeliverySpaceNo
+   */
+  async changeDeliverySpace(
+    adminNo: number,
+    deliveryFounderConsultNo: number,
+    newDeliverySpaceNo: number,
+  ): Promise<DeliveryFounderConsult> {
+    const deliveryFounderConsult = await this.entityManager.transaction(
+      async entityManager => {
+        let consult = await this.deliveryFounderConsultRepo.findOne(
+          deliveryFounderConsultNo,
+        );
+        const prevDeliverySpaceNo = consult.deliverySpaceNo;
+        consult.deliverySpaceNo = newDeliverySpaceNo;
+        consult = await this.deliveryFounderConsultRepo.save(consult);
+
+        // create new record
+        let newRecord = new DeliveryFounderConsultRecord();
+        newRecord.deliveryFounderConsultNo = deliveryFounderConsultNo;
+        newRecord.prevDeliverySpaceNo = prevDeliverySpaceNo;
+        newRecord.newDeliverySpaceNo = newDeliverySpaceNo;
+        newRecord.adminNo = adminNo;
+        newRecord = await entityManager.save(newRecord);
+
+        return consult;
+      },
+    );
+
+    return deliveryFounderConsult;
   }
 
   private async __create_contract(

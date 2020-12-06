@@ -782,8 +782,8 @@ export class CompanyDistrictService extends BaseService {
    * @param pagination
    */
   async findForSelect(
-    pagination: PaginatedRequest,
-  ): Promise<PaginatedResponse<CompanyDistrict>> {
+    adminCompanyDistrictListDto: AdminCompanyDistrictListDto,
+  ): Promise<CompanyDistrict[]> {
     const qb = await this.companyDistrictRepo
       .createQueryBuilder('companyDistrict')
       .CustomInnerJoinAndSelect(['company'])
@@ -795,15 +795,33 @@ export class CompanyDistrictService extends BaseService {
         'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
         { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
       )
-      .andWhere('deliverySpaces.remainingCount > 0')
-      .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
-      .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
-      .addOrderBy('company.nameKr', ORDER_BY_VALUE.ASC)
-      .Paginate(pagination);
+      .AndWhereEqual(
+        'company',
+        'no',
+        adminCompanyDistrictListDto.companyNo,
+        adminCompanyDistrictListDto.exclude('companyNo'),
+      )
+      // .andWhere('deliverySpaces.remainingCount > 0')
+      // .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
+      // .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
+      .addOrderBy('company.nameKr', ORDER_BY_VALUE.ASC);
 
-    const [items, totalCount] = await qb.getManyAndCount();
+    return qb.getMany();
+  }
 
-    return { items, totalCount };
+  /**
+   * find all districts with no where clause
+   */
+  async findAllForSelect(): Promise<CompanyDistrict[]> {
+    const qb = await this.companyDistrictRepo
+      .createQueryBuilder('companyDistrict')
+      .CustomInnerJoinAndSelect(['company'])
+      // .andWhere('deliverySpaces.remainingCount > 0')
+      // .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
+      // .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
+      .addOrderBy('companyDistrict.nameKr', ORDER_BY_VALUE.ASC);
+
+    return qb.getMany();
   }
 
   /**
