@@ -17,6 +17,7 @@ export * from './delivery-space/delivery-space.module';
 export * from './delivery-space-option/delivery-space-option.module';
 export * from './delivery-founder-consult/delivery-founder-consult.module';
 export * from './delivery-founder-consult-contract/delivery-founder-consult-contract.module';
+export * from './delivery-founder-consult-record/delivery-founder-consult-record.module';
 export * from './favorite-space-mapper/favorite-space-mapper.module';
 export * from './file-upload/file-upload.module';
 export * from './food-category/food-category.module';

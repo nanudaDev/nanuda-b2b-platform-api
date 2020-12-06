@@ -172,4 +172,19 @@ export class AdminDeliveryFounderConsultController extends BaseController {
       deliveryFounderConsultNo,
     );
   }
+
+  @Patch(
+    '/admin/delivery-founder-consult/:id([0-9]+)/new-delivery-space/:newSpaceNo([0-9]+)',
+  )
+  async changeDeliverySpace(
+    @Param('id', ParseIntPipe) deliveryFounderConsultNo: number,
+    @Param('newSpaceNo', ParseIntPipe) newDeliverySpaceNo: number,
+    @UserInfo() admin: Admin,
+  ): Promise<DeliveryFounderConsult> {
+    return await this.deliveryFounderConsultService.changeDeliverySpace(
+      admin.no,
+      deliveryFounderConsultNo,
+      newDeliverySpaceNo,
+    );
+  }
 }

@@ -142,8 +142,12 @@ GROUP BY hdongCode
         'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
         { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
       )
+      .andWhere('companyDistrict.region1DepthName = :region1DepthName', {
+        region1DepthName: '서울',
+      })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.remainingCount > 0')
       .limit(3)
       .getMany();
 
@@ -184,10 +188,9 @@ GROUP BY hdongCode
       );
       // get first three elements of array
       message[1].length = 3;
-      if (message[1][0].medium_category_nm === '패스트푸드') {
-        console.log('');
-        message[1][0].medium_category_nm = '한식';
-      }
+      // if (message[1][0].medium_category_nm === '패스트푸드') {
+      //   message[1][0].medium_category_nm = '한식';
+      // }
       message[1].push({ type: '업태별' });
 
       const furnitureRatioData = message[2];

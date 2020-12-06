@@ -61,9 +61,17 @@ export class AdminCompanyController extends BaseController {
   /**
    * for select box
    */
-  @Get('/admin/company/select-option')
+  @Get('/admin/company/find-for-select')
   async findCompanySelect(): Promise<Company[]> {
     return await this.companyService.findCompanyForSelect();
+  }
+
+  /**
+   * find all companies no where clause
+   */
+  @Get('/admin/company/find-all-for-select')
+  async findAllForSelect(): Promise<Company[]> {
+    return await this.companyService.findAllCompanyForSelect();
   }
 
   /**
