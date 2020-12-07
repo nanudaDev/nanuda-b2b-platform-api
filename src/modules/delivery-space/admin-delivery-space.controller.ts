@@ -105,7 +105,6 @@ export class AdminDeliverySpaceController extends BaseController {
       deliverySpaceNo,
     );
   }
-
   /**
    * find next by district
    * @param deliverySpaceNo
@@ -140,6 +139,20 @@ export class AdminDeliverySpaceController extends BaseController {
   ): Promise<number> {
     return await this.deliverySpaceService.findPreviousForAdmin(
       deliverySpaceNo,
+    );
+  }
+
+  /**
+   * find space for select
+   * available spaces
+   * @param adminDeliverySpaceListDto
+   */
+  @Get('/admin/delivery-space/find-for-select')
+  async findForSelect(
+    @Query() adminDeliverySpaceListDto: AdminDeliverySpaceListDto,
+  ): Promise<DeliverySpace[]> {
+    return await this.deliverySpaceService.findAvailableSpacesForSelect(
+      adminDeliverySpaceListDto,
     );
   }
 

@@ -189,9 +189,19 @@ export class AdminCompanyDistrictController extends BaseController {
    */
   @Get('/admin/company-district/find-for-select')
   async findForSelect(
-    @Query() pagination: PaginatedRequest,
-  ): Promise<PaginatedResponse<CompanyDistrict>> {
-    return await this.companyDistrictService.findForSelect(pagination);
+    @Query() adminCompanyDistrictListDto?: AdminCompanyDistrictListDto,
+  ): Promise<CompanyDistrict[]> {
+    return await this.companyDistrictService.findForSelect(
+      adminCompanyDistrictListDto,
+    );
+  }
+
+  /**
+   * find all with no where clause
+   */
+  @Get('/admin/company-district/find-all-for-select')
+  async findAllForSelect(): Promise<CompanyDistrict[]> {
+    return await this.companyDistrictService.findAllForSelect();
   }
 
   /**

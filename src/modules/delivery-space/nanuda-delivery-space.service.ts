@@ -153,21 +153,20 @@ export class NanudaDeliverySpaceService extends BaseService {
         deliverySpaceListDto.maxMonthlyRentFee,
         deliverySpaceListDto.exclude('minMonthlyRentFee'),
         deliverySpaceListDto.exclude('maxMonthlyRentFee'),
-      )
-      .AndWhereIn(
-        'amenities',
-        'no',
-        deliverySpaceListDto.amenityIds,
-        deliverySpaceListDto.exclude('amenityIds'),
-      )
-      .groupBy('deliverySpace.no');
+      );
     if (
       deliverySpaceListDto.amenityIds &&
       deliverySpaceListDto.amenityIds.length > 0
     ) {
-      qb.having(
-        `COUNT(DISTINCT amenities.NO) = ${deliverySpaceListDto.amenityIds.length}`,
+      const length = deliverySpaceListDto.amenityIds.length;
+      qb.AndWhereIn(
+        'amenities',
+        'no',
+        deliverySpaceListDto.amenityIds,
+        deliverySpaceListDto.exclude('amenityIds'),
       );
+      qb.groupBy('deliverySpace.no');
+      qb.having(`count (distinct amenities.no) = ${length}`);
     }
     if (deliverySpaceListDto.promotionNo) {
       qb.leftJoinAndSelect('companyDistrict.promotions', 'promotions');

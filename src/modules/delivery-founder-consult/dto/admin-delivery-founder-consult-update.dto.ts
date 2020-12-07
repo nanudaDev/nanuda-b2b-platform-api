@@ -73,4 +73,9 @@ export class AdminDeliveryFounderConsultUpdateDto
   @Expose()
   @IsEnum(B2B_FOUNDER_CONSULT)
   companyDecisionStatus?: B2B_FOUNDER_CONSULT;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  newDeliverySpaceNo?: number;
 }

@@ -453,12 +453,30 @@ export class CompanyService extends BaseService {
   }
 
   /**
+   * find all companies with no where clause
+   */
+  async findAllCompanyForSelect(): Promise<Company[]> {
+    const companies = await this.companyRepo
+      .createQueryBuilder('company')
+      // .where('company.companyStatus = :companyStatus', {
+      //   companyStatus: APPROVAL_STATUS.APPROVAL,
+      // })
+      .orderBy('company.nameKr', ORDER_BY_VALUE.ASC)
+      .getMany();
+    return companies;
+  }
+
+  /**
    * return for select
    */
   async findCompanyForSelect(): Promise<Company[]> {
-    const companies = await this.companyRepo.find({
-      order: { no: ORDER_BY_VALUE.DESC },
-    });
+    const companies = await this.companyRepo
+      .createQueryBuilder('company')
+      .where('company.companyStatus = :companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .orderBy('company.nameKr', ORDER_BY_VALUE.ASC)
+      .getMany();
     return companies;
   }
 
@@ -581,24 +599,22 @@ export class CompanyService extends BaseService {
   }
 
   async createHistories() {
-    const company = await this.entityManager.transaction(
-      async entityManager => {
-        const companies = await this.companyRepo.find();
-        await Promise.all(
-          companies.map(async company => {
-            const histories = await this.companyUpdateHistoryRepo.find({
-              where: { companyNo: company.no },
-            });
-            if (histories && histories.length > 0) {
-              return;
-            } else {
-              let history = this.__company_update_history(company.no, company);
-              history = await entityManager.save(history);
-            }
-          }),
-        );
-      },
-    );
+    await this.entityManager.transaction(async entityManager => {
+      const companies = await this.companyRepo.find();
+      await Promise.all(
+        companies.map(async company => {
+          const histories = await this.companyUpdateHistoryRepo.find({
+            where: { companyNo: company.no },
+          });
+          if (histories && histories.length > 0) {
+            return;
+          } else {
+            let history = this.__company_update_history(company.no, company);
+            history = await entityManager.save(history);
+          }
+        }),
+      );
+    });
   }
 
   /**
