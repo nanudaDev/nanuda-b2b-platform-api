@@ -12,6 +12,8 @@ import { BestSpaceMapper } from '../best-space/best-space.entity';
 import { CompanyDistrict } from '../company-district/company-district.entity';
 import { DeliveryFounderConsult } from '../delivery-founder-consult/delivery-founder-consult.entity';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
+import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
+import { EditedMessageDto } from './dto';
 import { IndexMessage } from './index-message.entity';
 
 @Injectable()
@@ -110,10 +112,7 @@ GROUP BY hdongCode
    * send text message
    * @param companyDistrictNo
    */
-  async sendMessageAndPlaceInIndex(
-    deliveryFounderConsultNo: number,
-    req: Request,
-  ) {
+  async sendMessageAndPlaceInIndex(deliveryFounderConsultNo: number) {
     const consult = await this.entityManager
       .getRepository(DeliveryFounderConsult)
       .createQueryBuilder('deliveryFounderConsult')
@@ -157,19 +156,18 @@ GROUP BY hdongCode
         where: { hCode: consult.deliverySpace.companyDistrict.hCode },
       });
     if (checkIndex) {
-      await this.nanudaSmsNotificationService.sendVicinityInformation(
+      const payload = await this.nanudaSmsNotificationService.sendVicinityInformation(
         consult,
         checkIndex.message[0],
         checkIndex.message[1],
         checkIndex.message[2],
         bestDeliverySpace,
-        req,
       );
       checkIndex.queryCount = checkIndex.queryCount + 1;
       checkIndex = await this.wqEntityManager
         .getRepository(IndexMessage)
         .save(checkIndex);
-      return checkIndex.message;
+      return payload.msg;
     } else {
       const message = await Promise.all([
         await this.findFloatingPopulation(
@@ -201,15 +199,35 @@ GROUP BY hdongCode
       newIndex = await this.wqEntityManager
         .getRepository(IndexMessage)
         .save(newIndex);
-      await this.nanudaSmsNotificationService.sendVicinityInformation(
+      const payload = await this.nanudaSmsNotificationService.sendVicinityInformation(
         consult,
         message[0],
         message[1],
         furnitureRatioData,
         bestDeliverySpace,
-        req,
       );
-      return message;
+      return payload.msg;
     }
+  }
+
+  /**
+   * send edited message
+   * @param nanudaUserNo
+   * @param message
+   * @param req
+   */
+  async sendEditedMessage(
+    nanudaUserNo: number,
+    editedMessageDto: EditedMessageDto,
+    req: Request,
+  ) {
+    const nanudaUser = await this.entityManager
+      .getRepository(NanudaUser)
+      .findOne(nanudaUserNo);
+    await this.nanudaSmsNotificationService.sendEditedMessage(
+      nanudaUser.phone,
+      editedMessageDto.message,
+      req,
+    );
   }
 }

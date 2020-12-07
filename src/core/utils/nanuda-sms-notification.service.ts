@@ -94,7 +94,6 @@ export class NanudaSmsNotificationService {
     category: any[],
     furniture: any[],
     bestSpaces: BestSpaceMapper[],
-    req: Request,
   ) {
     const payload = await this.__send_vicinity_info(
       deliveryFounderConsult,
@@ -103,9 +102,26 @@ export class NanudaSmsNotificationService {
       furniture,
       bestSpaces,
     );
-    req.body = payload.body;
-    await aligoapi.send(req, payload.auth);
-    return;
+    return payload;
+  }
+
+  /**
+   * send edited message
+   * @param phoneNo
+   * @param message
+   * @param req
+   */
+  async sendEditedMessage(phoneNo: string, message: string, req: Request) {
+    const auth = await this.__get_auth();
+    const body = {
+      receiver: phoneNo,
+      sender: process.env.ALIGO_SENDER_PHONE,
+      msg: message,
+      title: '[나누다키친 희망지역 상권 정보 안내]',
+    };
+    req.body = body;
+    const sms = await aligoapi.send(req, auth);
+    console.log(sms);
   }
 
   /**
@@ -196,8 +212,7 @@ export class NanudaSmsNotificationService {
     category: any[],
     furnitureRatio: any[],
     bestSpace: BestSpaceMapper[],
-  ): Promise<MessageObject> {
-    const auth = await this.__get_auth();
+  ): Promise<any> {
     let furnitureRatioUpAndDown = '';
     if (parseInt(furnitureRatio[0].max_value_column_name) === 1) {
       furnitureRatioUpAndDown = '1인 가구';
@@ -205,11 +220,8 @@ export class NanudaSmsNotificationService {
       furnitureRatioUpAndDown = '2인 이상 가구';
     }
     const body = {
-      receiver: deliveryFounderConsult.nanudaUser.phone,
-      sender: process.env.ALIGO_SENDER_PHONE,
       msg: `안녕하세요. 나누다키친입니다. \n\n1차 유선상담을 통해서 ${deliveryFounderConsult.nanudaUser.name}님의 희망창업지역 기준 상권분석을 \n안내드립니다. \n\n${deliveryFounderConsult.nanudaUser.name}님이 희망하신 ${deliveryFounderConsult.deliverySpace.companyDistrict.region3DepthName} 기준 상권분석 내용은 아래와 같습니다. \n\n1) 창업 희망 지역 내 주요 인구분포 \n${genderAge[0].max_value_column_name}/${furnitureRatioUpAndDown} \n\n2) 창업 희망 지역 내 업태별 BEST 3 \n${category[0].medium_category_nm}/${category[1].medium_category_nm}/${category[2].medium_category_nm} \n\n3) 추천 창업 공간 BEST 3 \n${bestSpace[0].deliverySpace.companyDistrict.company.nameKr} ${bestSpace[0].deliverySpace.companyDistrict.nameKr} \n${bestSpace[1].deliverySpace.companyDistrict.company.nameKr} ${bestSpace[1].deliverySpace.companyDistrict.nameKr} \n${bestSpace[2].deliverySpace.companyDistrict.company.nameKr} ${bestSpace[2].deliverySpace.companyDistrict.nameKr} \n\n자세한 상담은 2차 대면 미팅 시 안내해드리겠습니다. \n해당 상권에서 최고의 전문가와 안전한 배달 창업에 도전하세요!`,
-      title: '[나누다키친 희망지역 상권 정보 안내]',
     };
-    return { body, auth };
+    return body;
   }
 }
