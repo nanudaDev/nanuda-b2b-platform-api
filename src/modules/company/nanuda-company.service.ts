@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { PaginatedRequest, PaginatedResponse } from 'src/common';
 import { APPROVAL_STATUS, BaseService } from 'src/core';
 import { EntityManager, Repository } from 'typeorm';
 import { CompanyDistrict } from '../company-district/company-district.entity';
@@ -27,6 +28,25 @@ export class NanudaCompanyService extends BaseService {
       .getMany();
 
     return qb;
+  }
+
+  /**
+   * find all with pagination
+   * @param pagination
+   */
+  async findWithPagination(
+    pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<Company>> {
+    const qb = await this.companyRepo
+      .createQueryBuilder('company')
+      .where('company.companyStatus = :companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .Paginate(pagination);
+
+    const [items, totalCount] = await qb.getManyAndCount();
+
+    return { items, totalCount };
   }
 
   /**

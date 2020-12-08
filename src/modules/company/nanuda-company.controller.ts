@@ -27,6 +27,17 @@ export class NanudaCompanyController extends BaseController {
   }
 
   /**
+   * find all with pagination
+   * @param pagination
+   */
+  @Get('/nanuda/company/with-pagination')
+  async findAllWithPagination(
+    @Query() pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<Company>> {
+    return await this.nanudaCompanyService.findWithPagination(pagination);
+  }
+
+  /**
    * find districts by company no
    * @param companyNo
    */
