@@ -22,6 +22,7 @@ import {
   ORDER_BY_VALUE,
   PaginatedRequest,
   PaginatedResponse,
+  YN,
 } from 'src/common';
 import { take } from 'rxjs/operators';
 import {
@@ -519,6 +520,7 @@ export class CompanyService extends BaseService {
       .CustomLeftJoinAndSelect(['company'])
       .CustomInnerJoinAndSelect(['codeManagement'])
       .where('company.no = :no', { no: companyNo })
+      .andWhere('promotion.showYn = :showYn', { showYn: YN.YES })
       .AndWhereBetweenDate(new Date())
       .orderBy('promotion.createdAt', ORDER_BY_VALUE.DESC)
       .Paginate(pagination);
