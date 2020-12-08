@@ -129,31 +129,101 @@ export class NanudaDeliverySpaceService extends BaseService {
         'address',
         deliverySpaceListDto.address,
         deliverySpaceListDto.exclude('address'),
-      )
-      .AndWhereBetweenValues(
-        'deliverySpace',
-        'size',
-        deliverySpaceListDto.minSize,
-        deliverySpaceListDto.maxSize,
-        deliverySpaceListDto.exclude('minSize'),
-        deliverySpaceListDto.exclude('maxSize'),
-      )
-      .AndWhereBetweenValues(
-        'deliverySpace',
-        'deposit',
-        deliverySpaceListDto.minDeposit,
-        deliverySpaceListDto.maxDeposit,
-        deliverySpaceListDto.exclude('minDeposit'),
-        deliverySpaceListDto.exclude('maxDeposit'),
-      )
-      .AndWhereBetweenValues(
-        'deliverySpace',
-        'monthlyRentFee',
-        deliverySpaceListDto.minMonthlyRentFee,
-        deliverySpaceListDto.maxMonthlyRentFee,
-        deliverySpaceListDto.exclude('minMonthlyRentFee'),
-        deliverySpaceListDto.exclude('maxMonthlyRentFee'),
       );
+    // .AndWhereBetweenValues(
+    //   'deliverySpace',
+    //   'size',
+    //   deliverySpaceListDto.minSize,
+    //   deliverySpaceListDto.maxSize,
+    //   deliverySpaceListDto.exclude('minSize'),
+    //   deliverySpaceListDto.exclude('maxSize'),
+    // )
+    // .AndWhereBetweenValues(
+    //   'deliverySpace',
+    //   'deposit',
+    //   deliverySpaceListDto.minDeposit,
+    //   deliverySpaceListDto.maxDeposit,
+    //   deliverySpaceListDto.exclude('minDeposit'),
+    //   deliverySpaceListDto.exclude('maxDeposit'),
+    // )
+    // .AndWhereBetweenValues(
+    //   'deliverySpace',
+    //   'monthlyRentFee',
+    //   deliverySpaceListDto.minMonthlyRentFee,
+    //   deliverySpaceListDto.maxMonthlyRentFee,
+    //   deliverySpaceListDto.exclude('minMonthlyRentFee'),
+    //   deliverySpaceListDto.exclude('maxMonthlyRentFee'),
+    // );
+    // size
+    if (deliverySpaceListDto.minSize && !deliverySpaceListDto.maxSize) {
+      qb.andWhere('deliverySpace.size >= :minSize', {
+        minSize: deliverySpaceListDto.minSize,
+      });
+      delete deliverySpaceListDto.minSize;
+    } else if (!deliverySpaceListDto.minSize && deliverySpaceListDto.maxSize) {
+      qb.andWhere('deliverySpace.size <= :maxSize', {
+        maxSize: deliverySpaceListDto.maxSize,
+      });
+      delete deliverySpaceListDto.maxSize;
+    } else if (deliverySpaceListDto.minSize && deliverySpaceListDto.maxSize) {
+      qb.andWhere(
+        `deliverySpace.size between ${deliverySpaceListDto.minSize} and ${deliverySpaceListDto.maxSize}`,
+      );
+      delete deliverySpaceListDto.minSize;
+      delete deliverySpaceListDto.maxSize;
+    }
+    // deposit
+    if (deliverySpaceListDto.minDeposit && !deliverySpaceListDto.maxDeposit) {
+      qb.andWhere('deliverySpace.deposit >= :minDeposit', {
+        minDeposit: deliverySpaceListDto.minDeposit,
+      });
+      delete deliverySpaceListDto.minDeposit;
+    } else if (
+      !deliverySpaceListDto.minDeposit &&
+      deliverySpaceListDto.maxDeposit
+    ) {
+      qb.andWhere('deliverySpace.deposit <= :maxDeposit', {
+        maxDeposit: deliverySpaceListDto.maxDeposit,
+      });
+      delete deliverySpaceListDto.maxDeposit;
+    } else if (
+      deliverySpaceListDto.minDeposit &&
+      deliverySpaceListDto.maxDeposit
+    ) {
+      qb.andWhere(
+        `deliverySpace.deposit between ${deliverySpaceListDto.minDeposit} and ${deliverySpaceListDto.maxDeposit}`,
+      );
+      delete deliverySpaceListDto.minDeposit;
+      delete deliverySpaceListDto.maxDeposit;
+    }
+    // monthly rent
+    if (
+      deliverySpaceListDto.minMonthlyRentFee &&
+      !deliverySpaceListDto.maxMonthlyRentFee
+    ) {
+      qb.andWhere('deliverySpace.monthlyRentFee >= :minMonthlyRentFee', {
+        minMonthlyRentFee: deliverySpaceListDto.minMonthlyRentFee,
+      });
+      delete deliverySpaceListDto.minMonthlyRentFee;
+    } else if (
+      !deliverySpaceListDto.minMonthlyRentFee &&
+      deliverySpaceListDto.maxMonthlyRentFee
+    ) {
+      qb.andWhere('deliverySpace.monthlyRentFee <= :maxMonthlyRentFee', {
+        maxMonthlyRentFee: deliverySpaceListDto.maxMonthlyRentFee,
+      });
+      delete deliverySpaceListDto.maxMonthlyRentFee;
+    } else if (
+      deliverySpaceListDto.minMonthlyRentFee &&
+      deliverySpaceListDto.maxMonthlyRentFee
+    ) {
+      qb.andWhere(
+        `deliverySpace.monthlyRentFee between ${deliverySpaceListDto.minMonthlyRentFee} and ${deliverySpaceListDto.maxMonthlyRentFee}`,
+      );
+      delete deliverySpaceListDto.minMonthlyRentFee;
+      delete deliverySpaceListDto.maxMonthlyRentFee;
+    }
+    // amenities
     if (
       deliverySpaceListDto.amenityIds &&
       deliverySpaceListDto.amenityIds.length > 0
