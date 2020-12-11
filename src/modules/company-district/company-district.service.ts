@@ -801,6 +801,30 @@ export class CompanyDistrictService extends BaseService {
         adminCompanyDistrictListDto.companyNo,
         adminCompanyDistrictListDto.exclude('companyNo'),
       )
+      .AndWhereEqual(
+        'companyDistrict',
+        'region1DepthName',
+        adminCompanyDistrictListDto.region1DepthName,
+        adminCompanyDistrictListDto.exclude('region1DepthName'),
+      )
+      .AndWhereEqual(
+        'companyDistrict',
+        'region2DepthName',
+        adminCompanyDistrictListDto.region2DepthName,
+        adminCompanyDistrictListDto.exclude('region2DepthName'),
+      )
+      .AndWhereEqual(
+        'companyDistrict',
+        'hCode',
+        adminCompanyDistrictListDto.hCode,
+        adminCompanyDistrictListDto.exclude('hCode'),
+      )
+      .AndWhereEqual(
+        'companyDistrict',
+        'bCode',
+        adminCompanyDistrictListDto.bCode,
+        adminCompanyDistrictListDto.exclude('bCode'),
+      )
       // .andWhere('deliverySpaces.remainingCount > 0')
       // .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
       // .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
