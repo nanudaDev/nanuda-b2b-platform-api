@@ -362,7 +362,7 @@ export class NanudaDeliverySpaceService extends BaseService {
     deliverySpaceNo: number,
     nanudaUserNo?: number,
   ): Promise<DeliverySpace> {
-    const space = await this.deliverySpaceRepo
+    let space = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
       .CustomLeftJoinAndSelect([
@@ -446,6 +446,13 @@ export class NanudaDeliverySpaceService extends BaseService {
         .AndWhereBetweenDate(new Date())
         .getMany();
     }
+    // update space count
+    await this.deliverySpaceRepo
+      .createQueryBuilder()
+      .update(DeliverySpace)
+      .set({ viewCount: space.viewCount + 1 })
+      .where('no = :no', { no: deliverySpaceNo })
+      .execute();
 
     return space;
   }
