@@ -102,4 +102,14 @@ export class CompanyDistrictCreateDto extends BaseDto<CompanyDistrictCreateDto>
   @Expose()
   @Default(1000)
   radius?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  hCode?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  bCode?: string;
 }
