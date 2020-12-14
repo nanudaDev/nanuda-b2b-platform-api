@@ -90,6 +90,13 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
   })
   deposit?: number;
 
+  @Column({
+    type: 'int',
+    name: 'VIEW_COUNT',
+    default: 0,
+  })
+  viewCount?: number;
+
   @Column('int', {
     name: 'MONTHLY_UTILITY_FEE',
   })
