@@ -207,7 +207,7 @@ export class AdminCompanyDistrictController extends BaseController {
   /**
    * find all with no where clause
    */
-  @Get('/admin/company-district/find-all-for-select-analysis')
+  @Get('/admin/company-district/find-for-select-analysis')
   async findAllForSelectAnalysis(
     @Query() adminCompanyDistrictListDto?: AdminCompanyDistrictListDto,
   ): Promise<CompanyDistrict[]> {
