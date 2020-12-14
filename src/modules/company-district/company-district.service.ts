@@ -784,7 +784,7 @@ export class CompanyDistrictService extends BaseService {
   async findForSelect(
     adminCompanyDistrictListDto: AdminCompanyDistrictListDto,
   ): Promise<CompanyDistrict[]> {
-    const qb = await this.companyDistrictRepo
+    const qb = this.companyDistrictRepo
       .createQueryBuilder('companyDistrict')
       .CustomInnerJoinAndSelect(['company'])
       .innerJoin('companyDistrict.deliverySpaces', 'deliverySpaces')
@@ -830,14 +830,14 @@ export class CompanyDistrictService extends BaseService {
       // .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
       .addOrderBy('company.nameKr', ORDER_BY_VALUE.ASC);
 
-    return qb.getMany();
+    return await qb.getMany();
   }
 
   /**
    * find all districts with no where clause
    */
   async findAllForSelect(): Promise<CompanyDistrict[]> {
-    const qb = await this.companyDistrictRepo
+    const qb = this.companyDistrictRepo
       .createQueryBuilder('companyDistrict')
       .CustomInnerJoinAndSelect(['company'])
       // .andWhere('deliverySpaces.remainingCount > 0')
@@ -845,7 +845,65 @@ export class CompanyDistrictService extends BaseService {
       // .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
       .addOrderBy('companyDistrict.nameKr', ORDER_BY_VALUE.ASC);
 
-    return qb.getMany();
+    return await qb.getMany();
+  }
+
+  /**
+   * find for select
+   * @param pagination
+   */
+  async findForSelectAnalysis(
+    adminCompanyDistrictListDto: AdminCompanyDistrictListDto,
+  ): Promise<CompanyDistrict[]> {
+    const qb = this.companyDistrictRepo
+      .createQueryBuilder('companyDistrict')
+      .CustomInnerJoinAndSelect(['company'])
+      .innerJoin('companyDistrict.deliverySpaces', 'deliverySpaces')
+      .where('company.companyStatus = :companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere(
+        'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
+        { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
+      )
+      .AndWhereEqual(
+        'company',
+        'no',
+        adminCompanyDistrictListDto.companyNo,
+        adminCompanyDistrictListDto.exclude('companyNo'),
+      )
+      .AndWhereEqual(
+        'companyDistrict',
+        'region1DepthName',
+        adminCompanyDistrictListDto.region1DepthName,
+        adminCompanyDistrictListDto.exclude('region1DepthName'),
+      )
+      .AndWhereEqual(
+        'companyDistrict',
+        'region2DepthName',
+        adminCompanyDistrictListDto.region2DepthName,
+        adminCompanyDistrictListDto.exclude('region2DepthName'),
+      )
+      .AndWhereEqual(
+        'companyDistrict',
+        'hCode',
+        adminCompanyDistrictListDto.hCode,
+        adminCompanyDistrictListDto.exclude('hCode'),
+      )
+      .AndWhereEqual(
+        'companyDistrict',
+        'bCode',
+        adminCompanyDistrictListDto.bCode,
+        adminCompanyDistrictListDto.exclude('bCode'),
+      )
+      // .andWhere('deliverySpaces.remainingCount > 0')
+      // .andWhere('deliverySpaces.showYn = :showYn', { showYn: YN.YES })
+      // .andWhere('deliverySpaces.delYn = :delYn', { delYn: YN.NO })
+      .addOrderBy('company.nameKr', ORDER_BY_VALUE.ASC)
+      .select(['companyDistrict.no', 'companyDistrict.region3DepthName']);
+
+    const districts = await qb.getMany();
+    return this.__remove_duplicate(districts, 'region3DepthName');
   }
 
   /**
@@ -885,5 +943,9 @@ export class CompanyDistrictService extends BaseService {
       },
     });
     return history;
+  }
+
+  private __remove_duplicate(array: any[], key: string) {
+    return [...new Map(array.map(item => [item[key], item])).values()];
   }
 }
