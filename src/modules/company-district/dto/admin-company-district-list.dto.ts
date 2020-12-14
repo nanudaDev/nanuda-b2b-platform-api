@@ -40,4 +40,14 @@ export class AdminCompanyDistrictListDto extends CompanyDistrictListDto {
   @Expose()
   @IsEnum(B2B_EVENT_TYPE)
   promotionType?: B2B_EVENT_TYPE;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  bCode?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  hCode?: string;
 }
