@@ -14,12 +14,7 @@ import {
   SPACE_TYPE,
   APPROVAL_STATUS,
 } from '../../core';
-import {
-  PaginatedRequest,
-  PaginatedResponse,
-  YN,
-  ORDER_BY_VALUE,
-} from 'src/common';
+import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
 import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 import { NanudaUserUpdateHistory } from '../nanuda-user-update-history/nanuda-user-update-history.entity';
 import { NanudaSlackNotificationService } from 'src/core/utils';
