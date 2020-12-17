@@ -23,6 +23,7 @@ export class NanudaLandingPageRecordController extends BaseController {
   @Get('/nanuda/landing-page-record')
   async record(@Query() landingPageRecordDto: LandingPageRecordDto) {
     const address = ip.address();
+    // 임시 아이피
     return await this.nanudaLandingPageRecordService.recordView(
       landingPageRecordDto,
       address,
