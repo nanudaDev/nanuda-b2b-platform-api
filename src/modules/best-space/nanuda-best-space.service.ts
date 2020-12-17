@@ -80,6 +80,9 @@ export class NanudaBestSpaceService extends BaseService {
       // })
       .andWhere('deliverySpace.quantity > 0')
       .andWhere('deliverySpace.remainingCount > 0')
+      .andWhere('deliverySpace.isOpenedYn = :isOpenedYn', {
+        isOpenedYn: YN.YES,
+      })
       .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
       .AndWhereJoinBetweenDate('promotions', new Date())
       .AndWhereLike(
@@ -105,7 +108,7 @@ export class NanudaBestSpaceService extends BaseService {
       .addOrderBy('company.nameKr', ORDER_BY_VALUE.ASC)
       .Paginate(pagination);
 
-    let [items, totalCount] = await qb.getManyAndCount();
+    const [items, totalCount] = await qb.getManyAndCount();
 
     // items.map(deliverySpace => {
     //   const remaining = deliverySpace.quantity - deliverySpace.contracts.length;
