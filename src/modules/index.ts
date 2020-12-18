@@ -24,6 +24,7 @@ export * from './food-category/food-category.module';
 export * from './founder-consult/founder-consult.module';
 export * from './inquiry/inquiry.module';
 export * from './landing-page-record/landing-page-record.module';
+export * from './landing-page-success-record/landing-page-success-record.module';
 export * from './menu/menu.module';
 export * from './payment-list/payment-list.module';
 export * from './popup/popup.module';

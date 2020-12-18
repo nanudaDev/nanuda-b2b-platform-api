@@ -21,15 +21,15 @@ export class NanudaLandingPageRecordService extends BaseService {
    * @param landingPageRecordDto
    * @param ip
    */
-  async recordView(landingPageRecordDto: LandingPageRecordDto, ip: string) {
+  async recordView(landingPageRecordDto: LandingPageRecordDto) {
     const checkIfIpExists = await this.landingPageRecordRepo.findOne({
-      where: { ip: ip },
+      where: { ip: landingPageRecordDto.ip },
     });
     if (checkIfIpExists) {
       return null;
     }
     let newRecord = new LandingPageRecord(landingPageRecordDto);
-    newRecord.ip = ip;
+    newRecord.ip = landingPageRecordDto.ip;
     newRecord = await this.landingPageRecordRepo.save(newRecord);
     return newRecord;
   }
