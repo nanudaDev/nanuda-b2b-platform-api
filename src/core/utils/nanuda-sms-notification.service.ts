@@ -9,6 +9,7 @@ import { DeliveryFounderConsult } from 'src/modules/delivery-founder-consult/del
 import { Admin } from 'src/modules/admin';
 import { ENVIRONMENT } from 'src/config';
 import { BestSpaceMapper } from 'src/modules/best-space/best-space.entity';
+import { LandingPageSuccessRecord } from 'src/modules/landing-page-success-record/landing-page-success-record.entity';
 
 @Injectable()
 export class NanudaSmsNotificationService {
@@ -125,6 +126,27 @@ export class NanudaSmsNotificationService {
   }
 
   /**
+   * landing page send message
+   * @param landingPageSuccess
+   * @param req
+   */
+  async sendLandingMessage(
+    landingPageSuccess: LandingPageSuccessRecord,
+    req: Request,
+  ) {
+    const payload = await this.__landing_page_notify_user(landingPageSuccess);
+    req.body = payload.body;
+    const sms = await aligoapi.send(req, payload.auth);
+    if (
+      process.env.NODE_ENV === ENVIRONMENT.DEVELOPMENT ||
+      ENVIRONMENT.STAGING
+    ) {
+      console.log(sms);
+    }
+    return;
+  }
+
+  /**
    * aligo api authentication
    */
   private async __get_auth(): Promise<AligoAuth> {
@@ -202,6 +224,20 @@ export class NanudaSmsNotificationService {
       sender: process.env.ALIGO_SENDER_PHONE,
       msg: `${deliveryFounderConsult.nanudaUser.name}님께서 ${deliveryFounderConsult.deliverySpace.companyDistrict.company.nameKr}의 공유주방 상담 문의가 들어왔습니다. \n지점: ${deliveryFounderConsult.deliverySpace.companyDistrict.region2DepthName}. \n빠른 대응 부탁드립니다.`,
       title: '[나누다키친 공유주방 유선상담 안내]',
+    };
+    return { body, auth };
+  }
+
+  // landing page sms
+  private async __landing_page_notify_user(
+    landingPageSuccess: LandingPageSuccessRecord,
+  ): Promise<MessageObject> {
+    const auth = await this.__get_auth();
+    const body = {
+      receiver: landingPageSuccess.nonNanudaUserPhone,
+      sender: process.env.ALIGO_SENDER_PHONE,
+      msg: `안녕하세요, ${landingPageSuccess.nonNanudaUserName}님. 나누다키친입니다. \n신청해주셔서 감사합니다. \n현재 전문 상담사가 배정되어 빠른 시간 내로 연락드리겠습니다.`,
+      title: '공유주방 플랫폼 [나누다키친]',
     };
     return { body, auth };
   }

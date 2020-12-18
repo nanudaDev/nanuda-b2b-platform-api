@@ -45,6 +45,8 @@ import {
   MessageDeliverySpaceModule,
   CompanyDistrictPromotionModule,
   DeliveryFounderConsultRecordModule,
+  LandingPageRecordModule,
+  LandingPageSuccessRecordModule,
 } from './modules';
 import { AdminModule } from './modules/admin/admin.module';
 import { PaymentList } from './modules/payment-list/payment-list.entity';
@@ -146,6 +148,8 @@ const env = process.env;
     FounderConsultModule,
     FounderConsultManagementModule,
     InquiryModule,
+    LandingPageRecordModule,
+    LandingPageSuccessRecordModule,
     MenuModule,
     MessageDeliverySpaceModule,
     NanudaHomepageModule,
