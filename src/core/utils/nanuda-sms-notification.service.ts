@@ -236,7 +236,7 @@ export class NanudaSmsNotificationService {
     const body = {
       receiver: landingPageSuccess.nonNanudaUserPhone,
       sender: process.env.ALIGO_SENDER_PHONE,
-      msg: `test`,
+      msg: `안녕하세요, ${landingPageSuccess.nonNanudaUserName}님. 나누다키친입니다. \n신청해주셔서 감사합니다. \n현재 전문 상담사가 배정되어 빠른 시간 내로 연락드리겠습니다.`,
       title: '[나누다키친 공유주방 유선상담 안내]',
     };
     return { body, auth };
