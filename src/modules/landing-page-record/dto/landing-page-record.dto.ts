@@ -16,4 +16,9 @@ export class LandingPageRecordDto extends BaseDto<LandingPageRecordDto> {
   @IsEnum(AdvType)
   @Default(AdvType.NONE)
   advType?: AdvType;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @Expose()
+  ip?: string;
 }
