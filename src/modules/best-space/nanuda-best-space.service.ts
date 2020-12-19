@@ -80,9 +80,9 @@ export class NanudaBestSpaceService extends BaseService {
       // })
       .andWhere('deliverySpace.quantity > 0')
       .andWhere('deliverySpace.remainingCount > 0')
-      .andWhere('deliverySpace.isOpenedYn = :isOpenedYn', {
-        isOpenedYn: YN.YES,
-      })
+      // .andWhere('deliverySpace.isOpenedYn = :isOpenedYn', {
+      //   isOpenedYn: YN.YES,
+      // })
       .andWhere('promotions.showYn = :showYn', { showYn: YN.YES })
       .AndWhereJoinBetweenDate('promotions', new Date())
       .AndWhereLike(
