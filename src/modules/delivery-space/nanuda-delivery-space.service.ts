@@ -290,8 +290,8 @@ export class NanudaDeliverySpaceService extends BaseService {
       );
       delete deliverySpaceListDto.orderByMonthlyRentFee;
     }
-    qb.Paginate(pagination);
     qb.WhereAndOrder(deliverySpaceListDto);
+    qb.Paginate(pagination);
 
     let [items, totalCount] = await qb.getManyAndCount();
     // if(deliverySpaceListDto.amenityIds && deliverySpaceListDto.amenityIds.length > 1) {
