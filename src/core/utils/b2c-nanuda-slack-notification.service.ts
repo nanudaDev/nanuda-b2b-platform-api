@@ -94,6 +94,10 @@ export class B2CNanudaSlackNotificationService extends BaseService {
                 landingPageSuccessDto.nonNanudaUserPhone
               } \n - 기존 사용자: ${
                 landingPageSuccessDto.isNanudaUser === YN.YES ? '예' : '아니오'
+              } \n - 희망 지역: ${
+                landingPageSuccessDto.hopeArea
+                  ? landingPageSuccessDto.hopeArea
+                  : '없음'
               }`,
             },
           ],

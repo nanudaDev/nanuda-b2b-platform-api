@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsNotEmpty, IsPhoneNumber } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsPhoneNumber } from 'class-validator';
 import { BaseDto } from 'src/core';
 import { LandingPageSuccessRecord } from '../landing-page-success-record.entity';
 
@@ -22,4 +22,9 @@ export class LandingPageSuccessRecordDto
   @IsNotEmpty()
   @Expose()
   landingPageName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  hopeArea?: string;
 }

@@ -39,4 +39,12 @@ export class LandingPageSuccessRecord extends BaseMapperEntity<
     default: YN.NO,
   })
   isNanudaUser?: YN;
+
+  @Column({
+    type: 'varchar',
+    name: 'HOPE_AREA',
+    nullable: true,
+    default: 'NONE',
+  })
+  hopeArea?: string;
 }
