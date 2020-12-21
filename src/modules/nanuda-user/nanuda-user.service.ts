@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { BaseService } from 'src/core';
 import {
   AdminNanudaUserCreateDto,
@@ -31,6 +31,21 @@ export class NanudaUserService extends BaseService {
   async createForAdmin(
     adminNanudaUserCreateDto: AdminNanudaUserCreateDto,
   ): Promise<NanudaUser> {
+    if (
+      adminNanudaUserCreateDto.phone &&
+      adminNanudaUserCreateDto.phone.includes('-')
+    ) {
+      adminNanudaUserCreateDto.phone = adminNanudaUserCreateDto.phone.replace(
+        /-/g,
+        '',
+      );
+    }
+    const checkUser = await this.nanudaUserRepo.findOne({
+      where: { phone: adminNanudaUserCreateDto.phone },
+    });
+    if (checkUser) {
+      throw new BadRequestException({ message: 'Already Exists!' });
+    }
     let nanudaUser = new NanudaUser(adminNanudaUserCreateDto);
     nanudaUser = await this.nanudaUserRepo.save(nanudaUser);
     return nanudaUser;
