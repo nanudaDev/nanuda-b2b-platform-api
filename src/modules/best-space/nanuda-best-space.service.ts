@@ -104,6 +104,7 @@ export class NanudaBestSpaceService extends BaseService {
         nanudaBestSpaceListDto.exclude('companyDistrictNameKr'),
       )
       .orderBy('deliverySpace.remainingCount', ORDER_BY_VALUE.DESC)
+      .addOrderBy('deliverySpace.viewCount', ORDER_BY_VALUE.DESC)
       .addOrderBy('deliverySpace.quantity', ORDER_BY_VALUE.DESC)
       .addOrderBy('company.nameKr', ORDER_BY_VALUE.ASC)
       .Paginate(pagination);
