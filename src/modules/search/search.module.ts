@@ -14,7 +14,10 @@ import { Space } from '../space/space.entity';
 import { AdminSearchController } from './admin-search.controller';
 import { CompanyUserService } from '../company-user/company-user.service';
 import { PasswordService } from '../auth';
-import { NanudaSlackNotificationService } from 'src/core/utils';
+import {
+  NanudaSlackNotificationService,
+  SmsNotificationService,
+} from 'src/core/utils';
 import { FounderConsultService } from '../founder-consult/founder-consult.service';
 import { CompanyDistrictUpdateHistory } from '../company-district-update-history/company-district-update-history.entity';
 import { DeliveryFounderConsultContract } from '../delivery-founder-consult-contract/delivery-founder-consult-contract.entity';
@@ -59,6 +62,7 @@ import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/deliver
     DeliveryFounderConsultService,
     DeliverySpaceService,
     NanudaSlackNotificationService,
+    SmsNotificationService,
     PasswordService,
     SpaceService,
   ],

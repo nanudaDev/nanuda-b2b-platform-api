@@ -3,7 +3,7 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
-import { BaseService, APPROVAL_STATUS } from 'src/core';
+import { BaseService, APPROVAL_STATUS, COMPANY_USER } from 'src/core';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { CompanyUser } from './company-user.entity';
 import { Repository, EntityManager } from 'typeorm';
@@ -90,6 +90,23 @@ export class CompanyUserService extends BaseService {
             message: 'User already exists',
           });
         }
+        // if (
+        //   adminCompanyUserCreateDto.authCode === COMPANY_USER.ADMIN_COMPANY_USER
+        // ) {
+        //   const checkIfMasterExists = await this.companyUserRepo
+        //     .createQueryBuilder('companyUser')
+        //     .where('companyUser.authCode = :authCode', {
+        //       authCode: COMPANY_USER.ADMIN_COMPANY_USER,
+        //     })
+        //     .andWhere('companyUser.companyNo = :companyNo', {
+        //       companyNo: adminCompanyUserCreateDto.companyNo,
+        //     })
+        //     .getMany();
+
+        //   if (checkIfMasterExists && checkIfMasterExists.length > 0) {
+        //     throw new BadRequestException('Master already exists.');
+        //   }
+        // }
         companyUser = await entityManager.save(companyUser);
         // create update history
         let companyUserUpdateHistory = new CompanyUserUpdateHistory(
