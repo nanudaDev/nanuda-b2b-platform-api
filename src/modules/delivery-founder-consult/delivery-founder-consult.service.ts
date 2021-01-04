@@ -13,11 +13,15 @@ import {
   B2B_FOUNDER_CONSULT,
   SPACE_TYPE,
   APPROVAL_STATUS,
+  COMPANY_USER,
 } from '../../core';
 import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
 import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 import { NanudaUserUpdateHistory } from '../nanuda-user-update-history/nanuda-user-update-history.entity';
-import { NanudaSlackNotificationService } from 'src/core/utils';
+import {
+  NanudaSlackNotificationService,
+  SmsNotificationService,
+} from 'src/core/utils';
 import {
   AdminDeliveryFounderConsultListDto,
   AdminDeliveryFounderConsultUpdateDto,
@@ -33,6 +37,7 @@ import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 import { CompanyDistrictPromotionMapper } from '../company-district-promotion-mapper/company-district-promotion-mapper.entity';
 import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 import { DeliveryFounderConsultRecord } from '../delivery-founder-consult-record/delivery-founder-consult-record.entity';
+import { CompanyUser } from '../company-user/company-user.entity';
 
 @Injectable()
 export class DeliveryFounderConsultService extends BaseService {
@@ -46,6 +51,7 @@ export class DeliveryFounderConsultService extends BaseService {
     private readonly nanudaUserRepo: Repository<NanudaUser>,
     @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly nanudaSlackNotificationService: NanudaSlackNotificationService,
+    private readonly smsNotificationService: SmsNotificationService,
   ) {
     super();
   }
@@ -374,6 +380,26 @@ export class DeliveryFounderConsultService extends BaseService {
           FOUNDER_CONSULT.F_DIST_COMPLETE
         ) {
           deliveryFounderConsult.deliveredAt = new Date();
+          // 문자 발송
+          // find master account for company
+          const user = await this.entityManager
+            .getRepository(CompanyUser)
+            .createQueryBuilder('companyUser')
+            .where('companyUser.companyNo = :companyNo', {
+              companyNo:
+                deliveryFounderConsult.deliverySpace.companyDistrict.companyNo,
+            })
+            .andWhere('companyUser.authCode = :authCode', {
+              authCode: COMPANY_USER.ADMIN_COMPANY_USER,
+            })
+            .getOne();
+          // send message
+          await this.smsNotificationService.sendConsultMessage(
+            user.phone,
+            deliveryFounderConsult.deliverySpace.companyDistrict.company.nameKr,
+            deliveryFounderConsult.deliverySpace.companyDistrict.nameKr,
+            req,
+          );
         }
         deliveryFounderConsult = await entityManager.save(
           deliveryFounderConsult,
@@ -439,6 +465,7 @@ export class DeliveryFounderConsultService extends BaseService {
         //     error: 400,
         //   });
         // }
+        // when contracted
         if (
           adminDeliveryFounderConsultUpdateDto.companyDecisionStatus ===
           B2B_FOUNDER_CONSULT.B2B_F_CONTRACT_COMPLETE

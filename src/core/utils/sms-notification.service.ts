@@ -5,6 +5,7 @@ import { Request } from 'express';
 import * as aligoapi from 'aligoapi';
 import { YN } from 'src/common';
 import { AdminSendMessageDto } from 'src/modules/sms-auth/dto';
+import { ENVIRONMENT } from 'src/config';
 export class AligoAuth {
   key: string;
   user_id: string;
@@ -31,6 +32,32 @@ export class SmsNotificationService extends BaseService {
     const payload = await this.__login_prompt_message(req.body.phone, code);
     req.body = payload.body;
     await aligoapi.send(req, payload.auth);
+    return;
+  }
+
+  /**
+   * 1차 상담 완료 문자
+   * @param phone
+   * @param companyName
+   * @param companyDistrictName
+   * @param req
+   */
+  async sendConsultMessage(
+    phone: string,
+    companyName: string,
+    companyDistrictName: string,
+    req: Request,
+  ) {
+    const payload = await this.__send_consult_message(
+      phone,
+      companyName,
+      companyDistrictName,
+    );
+    req.body = payload.body;
+    const sms = await aligoapi.send(req, payload.auth);
+    if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
+      console.log(sms);
+    }
     return;
   }
 
@@ -73,10 +100,7 @@ export class SmsNotificationService extends BaseService {
     phone: string,
     code: number,
     title?: string,
-  ): Promise<{
-    body: object;
-    auth: object;
-  }> {
+  ): Promise<MessageObject> {
     const auth = await this.__get_auth();
     const body = {
       receiver: phone,
@@ -84,6 +108,22 @@ export class SmsNotificationService extends BaseService {
       msg: `[위대한상사] 로그인하기 위해 인증번호 ${code}를 입력해주세요.`,
       title: '안녕하세요 위대한상사입니다.',
     };
+    return { body, auth };
+  }
+
+  private async __send_consult_message(
+    phone: string,
+    companyName: string,
+    companyDistrictName: string,
+  ): Promise<MessageObject> {
+    const auth = await this.__get_auth();
+    const body = {
+      receiver: phone,
+      sender: process.env.ALIGO_SENDER_PHONE,
+      msg: `[위대한상사] 나누다키친에서 ${companyName}에 대한 1차 상담 DB를 전달하였습니다. \n지점명 : ${companyDistrictName} \n2차 상담 부탁드립니다.`,
+      title: '안녕하세요 위대한상사입니다.',
+    };
+
     return { body, auth };
   }
 }
