@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   Req,
@@ -47,7 +48,7 @@ export class AdminDeliveryFounderConsultReplyController extends BaseController {
     adminDeliveryFounderConsultReplyListDto: AdminDeliveryFounderConsultReplyListDto,
     @Query() pagination: PaginatedRequest,
   ): Promise<PaginatedResponse<DeliveryFounderConsultReply>> {
-    return await this.deliveryFounderConsultReplyService.findAll(
+    return await this.deliveryFounderConsultReplyService.findAllForAdmin(
       deliveryFounderConsultNo,
       adminDeliveryFounderConsultReplyListDto,
       pagination,
@@ -74,6 +75,34 @@ export class AdminDeliveryFounderConsultReplyController extends BaseController {
       deliveryFounderConsultNo,
       adminDeliveryFounderConsultReplyCreateDto,
       admin.no,
+      req,
+    );
+  }
+
+  /**
+   * update for admin
+   * @param deliveryFounderConsultNo
+   * @param deliveryFounderConsultReplyNo
+   * @param adminDeliveryFounderConsultReplyCreateDto
+   * @param req
+   * @param admin
+   */
+  @Patch(
+    '/admin/delivery-founder-consult/:id([0-9]+)/delivery-founder-consult-reply/:reply-id([0-9]+)',
+  )
+  async updateForAdmin(
+    @Param('id', ParseIntPipe) deliveryFounderConsultNo: number,
+    @Param('reply-id') deliveryFounderConsultReplyNo: number,
+    @Body()
+    adminDeliveryFounderConsultReplyCreateDto: AdminDeliveryFounderConsultReplyCreateDto,
+    @Req() req: Request,
+    @UserInfo() admin: Admin,
+  ): Promise<DeliveryFounderConsultReply> {
+    return await this.deliveryFounderConsultReplyService.updateForAdmin(
+      adminDeliveryFounderConsultReplyCreateDto,
+      admin.no,
+      deliveryFounderConsultNo,
+      deliveryFounderConsultReplyNo,
       req,
     );
   }

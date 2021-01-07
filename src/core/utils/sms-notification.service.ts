@@ -84,6 +84,28 @@ export class SmsNotificationService extends BaseService {
   }
 
   /**
+   * send reply message for delivery consult
+   * @param companyUserPhone
+   * @param deliveryFounderConsultReply
+   * @param req
+   */
+  async sendConsultReplyMessage(
+    companyUserPhone: string,
+    deliveryFounderConsultReply: DeliveryFounderConsultReply,
+    req: Request,
+  ): Promise<any> {
+    const payload = await this.__send_consult_reply_message(
+      companyUserPhone,
+      deliveryFounderConsultReply,
+    );
+    req.body = payload.body;
+    if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
+      console.log(payload);
+    }
+    await aligoapi.send(req, payload.auth);
+  }
+
+  /**
    * aligo api authentication
    */
   private async __get_auth(): Promise<AligoAuth> {
@@ -128,16 +150,18 @@ export class SmsNotificationService extends BaseService {
     return { body, auth };
   }
 
-  // jenny랑 이야기 나눈 후
-  // private async __send_consult_reply_message(
-  //   phone: string,
-  //   deliveryFounderConsultReply: DeliveryFounderConsultReply
-  // ): Promise<MessageObject> {
-  //   const auth = await this.__get_auth()
-  //   const body = {
-  //     receiver: phone,
-  //     sender: process.env.ALIGO_SENDER_PHONE,
-  //     msg: `[위대한상사] 안녕하세요. `
-  //   }
-  // }
+  private async __send_consult_reply_message(
+    phone: string,
+    deliveryFounderConsultReply: DeliveryFounderConsultReply,
+  ): Promise<MessageObject> {
+    const auth = await this.__get_auth();
+    const body = {
+      receiver: phone,
+      sender: process.env.ALIGO_SENDER_PHONE,
+      msg: `[위대한상사] 안녕하세요 나누다키친입니다. 신청서 번호 ${deliveryFounderConsultReply.deliveryFounderConsultNo}에 관한 새로운 정보가 추가되었습니다. 확인 부탁드립니다. \n해당 링크: ${process.env.B2B_BASE_URL}founder-consult/${deliveryFounderConsultReply.deliveryFounderConsultNo}`,
+      title: '안녕하세요 위대한상사입니다.',
+    };
+
+    return { auth, body };
+  }
 }
