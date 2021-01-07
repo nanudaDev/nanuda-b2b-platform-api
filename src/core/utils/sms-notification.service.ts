@@ -6,6 +6,7 @@ import * as aligoapi from 'aligoapi';
 import { YN } from 'src/common';
 import { AdminSendMessageDto } from 'src/modules/sms-auth/dto';
 import { ENVIRONMENT } from 'src/config';
+import { DeliveryFounderConsultReply } from 'src/modules/delivery-founder-consult-reply/delivery-founder-consult-reply.entity';
 export class AligoAuth {
   key: string;
   user_id: string;
@@ -126,4 +127,17 @@ export class SmsNotificationService extends BaseService {
 
     return { body, auth };
   }
+
+  // jenny랑 이야기 나눈 후
+  // private async __send_consult_reply_message(
+  //   phone: string,
+  //   deliveryFounderConsultReply: DeliveryFounderConsultReply
+  // ): Promise<MessageObject> {
+  //   const auth = await this.__get_auth()
+  //   const body = {
+  //     receiver: phone,
+  //     sender: process.env.ALIGO_SENDER_PHONE,
+  //     msg: `[위대한상사] 안녕하세요. `
+  //   }
+  // }
 }
