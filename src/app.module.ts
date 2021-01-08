@@ -163,7 +163,7 @@ const env = process.env;
     PresentationEventModule,
     ProductConsultModule,
     SpaceModule,
-    SearchModule,
+    // SearchModule,
     SmsAuthModule,
     SpaceTypeModule,
   ],

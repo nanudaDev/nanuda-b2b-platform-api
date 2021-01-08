@@ -88,11 +88,11 @@ export class AdminDeliveryFounderConsultReplyController extends BaseController {
    * @param admin
    */
   @Patch(
-    '/admin/delivery-founder-consult/:id([0-9]+)/delivery-founder-consult-reply/:reply-id([0-9]+)',
+    '/admin/delivery-founder-consult/:id([0-9]+)/delivery-founder-consult-reply/:replyId([0-9]+)',
   )
   async updateForAdmin(
     @Param('id', ParseIntPipe) deliveryFounderConsultNo: number,
-    @Param('reply-id') deliveryFounderConsultReplyNo: number,
+    @Param('replyId') deliveryFounderConsultReplyNo: number,
     @Body()
     adminDeliveryFounderConsultReplyCreateDto: AdminDeliveryFounderConsultReplyCreateDto,
     @Req() req: Request,

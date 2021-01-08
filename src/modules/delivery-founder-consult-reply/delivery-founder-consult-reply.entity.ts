@@ -48,6 +48,12 @@ export class DeliveryFounderConsultReply extends BaseEntity<
   isUpdatedYn?: YN;
 
   @Column({
+    type: 'varchar',
+    name: 'TITLE',
+  })
+  title?: string;
+
+  @Column({
     type: 'text',
     name: 'DESC',
   })
