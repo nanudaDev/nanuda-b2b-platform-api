@@ -1,5 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { BaseEntity } from 'src/core';
+import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 
 @Entity({ name: 'B2B_DELIVERY_SPACE_NND_OP_RECORD' })
 export class DeliverySpaceNndOpRecord extends BaseEntity<
@@ -29,4 +37,13 @@ export class DeliverySpaceNndOpRecord extends BaseEntity<
     name: 'END_DATE',
   })
   ended?: Date;
+
+  @ManyToOne(
+    type => DeliverySpace,
+    deliverySpace => deliverySpace.nndOpRecord,
+  )
+  @JoinColumn({ name: 'DELIVERY_SPACE_NO' })
+  deliverySpace?: DeliverySpace;
+
+  //   @OneToMany(type => DeliverySpaceNndOpRecord =>)
 }
