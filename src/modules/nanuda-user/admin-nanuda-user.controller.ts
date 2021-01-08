@@ -9,10 +9,15 @@ import {
   Delete,
   Patch,
   Body,
+  Post,
 } from '@nestjs/common';
 import { AuthRolesGuard, CONST_ADMIN_USER, BaseController } from 'src/core';
 import { NanudaUserService } from './nanuda-user.service';
-import { AdminNanudaUserListDto, AdminNanudaUserUpdateDto } from './dto';
+import {
+  AdminNanudaUserCreateDto,
+  AdminNanudaUserListDto,
+  AdminNanudaUserUpdateDto,
+} from './dto';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
 import { NanudaUser } from './nanuda-user.entity';
 
@@ -74,6 +79,15 @@ export class AdminNanudaUserController extends BaseController {
     return await this.nanudaUserService.updateForAdmin(
       nanudaUserNo,
       adminNanudaUserUpdateDto,
+    );
+  }
+
+  @Post('/admin/nanuda-user')
+  async createForAdmin(
+    @Body() adminNanudaUserCreateDto: AdminNanudaUserCreateDto,
+  ): Promise<NanudaUser> {
+    return await this.nanudaUserService.createForAdmin(
+      adminNanudaUserCreateDto,
     );
   }
 }

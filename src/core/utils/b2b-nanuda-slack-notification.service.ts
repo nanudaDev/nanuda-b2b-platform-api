@@ -39,7 +39,7 @@ export class NanudaSlackNotificationService extends BaseService {
           fields: [
             {
               title: `${SLACK_NOTIFICATION_PROPERTY.founderConsultUsername}`,
-              value: `${founderConsult.deliverySpace.companyDistrict.company.nameKr}에서 방문자 신청 ID ${founderConsult.no} 상태값을 ${founderConsult.companyDecisionStatusCode.value}로 변경했습니다.`,
+              value: `${founderConsult.deliverySpace.companyDistrict.company.nameKr}에서 방문자 신청 ID ${founderConsult.no} 상태값을 ${founderConsult.companyDecisionStatusCode.value}(으)로 변경했습니다.`,
               short: false,
             },
           ],

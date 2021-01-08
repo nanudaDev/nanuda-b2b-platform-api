@@ -45,6 +45,9 @@ import {
   MessageDeliverySpaceModule,
   CompanyDistrictPromotionModule,
   DeliveryFounderConsultRecordModule,
+  LandingPageRecordModule,
+  LandingPageSuccessRecordModule,
+  DeliveryFounderConsultReplyModule,
 } from './modules';
 import { AdminModule } from './modules/admin/admin.module';
 import { PaymentList } from './modules/payment-list/payment-list.entity';
@@ -138,6 +141,7 @@ const env = process.env;
     DeliveryFounderConsultModule,
     DeliveryFounderConsultContractModule,
     DeliveryFounderConsultRecordModule,
+    DeliveryFounderConsultReplyModule,
     DeliverySpaceModule,
     DeliverySpaceOptionModule,
     FavoriteSpaceMapperModule,
@@ -146,6 +150,8 @@ const env = process.env;
     FounderConsultModule,
     FounderConsultManagementModule,
     InquiryModule,
+    LandingPageRecordModule,
+    LandingPageSuccessRecordModule,
     MenuModule,
     MessageDeliverySpaceModule,
     NanudaHomepageModule,
@@ -157,7 +163,7 @@ const env = process.env;
     PresentationEventModule,
     ProductConsultModule,
     SpaceModule,
-    SearchModule,
+    // SearchModule,
     SmsAuthModule,
     SpaceTypeModule,
   ],

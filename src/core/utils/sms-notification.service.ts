@@ -5,6 +5,8 @@ import { Request } from 'express';
 import * as aligoapi from 'aligoapi';
 import { YN } from 'src/common';
 import { AdminSendMessageDto } from 'src/modules/sms-auth/dto';
+import { ENVIRONMENT } from 'src/config';
+import { DeliveryFounderConsultReply } from 'src/modules/delivery-founder-consult-reply/delivery-founder-consult-reply.entity';
 export class AligoAuth {
   key: string;
   user_id: string;
@@ -35,6 +37,32 @@ export class SmsNotificationService extends BaseService {
   }
 
   /**
+   * 1차 상담 완료 문자
+   * @param phone
+   * @param companyName
+   * @param companyDistrictName
+   * @param req
+   */
+  async sendConsultMessage(
+    phone: string,
+    companyName: string,
+    companyDistrictName: string,
+    req: Request,
+  ) {
+    const payload = await this.__send_consult_message(
+      phone,
+      companyName,
+      companyDistrictName,
+    );
+    req.body = payload.body;
+    const sms = await aligoapi.send(req, payload.auth);
+    if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
+      console.log(sms);
+    }
+    return;
+  }
+
+  /**
    * send message from admin
    * @param adminSendMessageDto
    * @param req
@@ -56,6 +84,28 @@ export class SmsNotificationService extends BaseService {
   }
 
   /**
+   * send reply message for delivery consult
+   * @param companyUserPhone
+   * @param deliveryFounderConsultReply
+   * @param req
+   */
+  async sendConsultReplyMessage(
+    companyUserPhone: string,
+    deliveryFounderConsultReply: DeliveryFounderConsultReply,
+    req: Request,
+  ): Promise<any> {
+    const payload = await this.__send_consult_reply_message(
+      companyUserPhone,
+      deliveryFounderConsultReply,
+    );
+    req.body = payload.body;
+    if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
+      console.log(payload);
+    }
+    await aligoapi.send(req, payload.auth);
+  }
+
+  /**
    * aligo api authentication
    */
   private async __get_auth(): Promise<AligoAuth> {
@@ -73,10 +123,7 @@ export class SmsNotificationService extends BaseService {
     phone: string,
     code: number,
     title?: string,
-  ): Promise<{
-    body: object;
-    auth: object;
-  }> {
+  ): Promise<MessageObject> {
     const auth = await this.__get_auth();
     const body = {
       receiver: phone,
@@ -85,5 +132,36 @@ export class SmsNotificationService extends BaseService {
       title: '안녕하세요 위대한상사입니다.',
     };
     return { body, auth };
+  }
+
+  private async __send_consult_message(
+    phone: string,
+    companyName: string,
+    companyDistrictName: string,
+  ): Promise<MessageObject> {
+    const auth = await this.__get_auth();
+    const body = {
+      receiver: phone,
+      sender: process.env.ALIGO_SENDER_PHONE,
+      msg: `[위대한상사] 나누다키친에서 ${companyName}에 대한 1차 상담 DB를 전달하였습니다. \n지점명 : ${companyDistrictName} \n2차 상담 부탁드립니다.`,
+      title: '안녕하세요 위대한상사입니다.',
+    };
+
+    return { body, auth };
+  }
+
+  private async __send_consult_reply_message(
+    phone: string,
+    deliveryFounderConsultReply: DeliveryFounderConsultReply,
+  ): Promise<MessageObject> {
+    const auth = await this.__get_auth();
+    const body = {
+      receiver: phone,
+      sender: process.env.ALIGO_SENDER_PHONE,
+      msg: `[위대한상사] 안녕하세요 나누다키친입니다. 신청서 번호 ${deliveryFounderConsultReply.deliveryFounderConsultNo}에 관한 새로운 정보가 추가되었습니다. 확인 부탁드립니다. \n해당 링크: ${process.env.B2B_BASE_URL}founder-consult/${deliveryFounderConsultReply.deliveryFounderConsultNo}`,
+      title: '안녕하세요 위대한상사입니다.',
+    };
+
+    return { auth, body };
   }
 }
