@@ -24,6 +24,7 @@ import { DeliveryFounderConsultContractHistory } from '../delivery-founder-consu
 import { Brand } from '../brand/brand.entity';
 import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 import { BestSpaceMapper } from '../best-space/best-space.entity';
+import { DeliverySpaceNndOpRecord } from '../delivery-space-nnd-op-record/delivery-space-nnd-op-record.entity';
 
 @Entity({ name: 'B2B_DELIVERY_SPACE' })
 export class DeliverySpace extends BaseEntity<DeliverySpace> {
@@ -252,4 +253,10 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
   @OneToOne(type => BestSpaceMapper)
   @JoinColumn({ name: 'NO', referencedColumnName: 'spaceNo' })
   isBested?: BestSpaceMapper;
+
+  @OneToMany(
+    type => DeliverySpaceNndOpRecord,
+    nndRecord => nndRecord.deliverySpace,
+  )
+  nndOpRecord?: DeliverySpaceNndOpRecord;
 }

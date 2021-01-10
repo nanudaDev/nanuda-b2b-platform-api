@@ -804,7 +804,7 @@ export class DeliveryFounderConsultService extends BaseService {
               .getOne(),
           );
         }
-        qb = await this.deliveryFounderConsultRepo
+        const updatedQb = await this.deliveryFounderConsultRepo
           .createQueryBuilder('deliveryConsult')
           .CustomLeftJoinAndSelect([
             'deliverySpace',
@@ -819,9 +819,9 @@ export class DeliveryFounderConsultService extends BaseService {
           .andWhere('company.no = :companyNo', { companyNo: companyNo })
           .getOne();
         await this.nanudaSlackNotificationService.founderConsultStatusChange(
-          qb,
+          updatedQb,
         );
-        return qb;
+        return updatedQb;
       },
     );
     return deliveryConsult;
