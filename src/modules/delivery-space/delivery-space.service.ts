@@ -592,6 +592,12 @@ export class DeliverySpaceService extends BaseService {
             })
             .execute();
         }
+        if (
+          adminDeliverySpaceUpdateDto.isOperatedYn === YN.YES &&
+          adminDeliverySpaceUpdateDto.operatingBrandNos &&
+          adminDeliverySpaceUpdateDto.operatingBrandNos.length > 0
+        ) {
+        }
         deliverySpace = await entityManager.save(deliverySpace);
         return deliverySpace;
       },

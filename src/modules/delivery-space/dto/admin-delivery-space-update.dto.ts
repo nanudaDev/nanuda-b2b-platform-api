@@ -79,4 +79,26 @@ export class AdminDeliverySpaceUpdateDto extends DeliverySpaceUpdateDto {
   @IsEnum(SPACE_PIC_STATUS)
   @Expose()
   picStatus?: SPACE_PIC_STATUS;
+
+  // 직영점 운영 플래그
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  isOperatedYn?: YN;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  operatingStartDate?: Date;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  operatingEndDate?: Date;
+
+  @ApiPropertyOptional({ name: 'brandNos[]', type: Number, isArray: true })
+  @IsOptional()
+  @Expose()
+  @IsArray()
+  operatingBrandNos?: number[];
 }
