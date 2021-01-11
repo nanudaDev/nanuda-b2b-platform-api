@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from 'src/core';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
+import { DeliverySpaceNndBrandOpRecord } from '../delivery-space-nnd-brand-op-record/delivery-space-nnd-brand-op-record.entity';
 
 @Entity({ name: 'B2B_DELIVERY_SPACE_NND_OP_RECORD' })
 export class DeliverySpaceNndOpRecord extends BaseEntity<
@@ -45,5 +46,9 @@ export class DeliverySpaceNndOpRecord extends BaseEntity<
   @JoinColumn({ name: 'DELIVERY_SPACE_NO' })
   deliverySpace?: DeliverySpace;
 
-  //   @OneToMany(type => DeliverySpaceNndOpRecord =>)
+  @OneToMany(
+    type => DeliverySpaceNndBrandOpRecord,
+    nndBrandRecord => nndBrandRecord.nndOpRecord,
+  )
+  nndBrandOpRecord?: DeliverySpaceNndBrandOpRecord;
 }
