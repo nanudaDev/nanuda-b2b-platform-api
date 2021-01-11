@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
-import { CompanyDistrictModule } from '../company-district/company-district.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DeliverySpace } from './delivery-space.entity';
-import { DeliverySpaceOptionSpaceMapper } from '../delivery-space-option-space-mapper/delivery-space-option-space-mapper.entity';
 import { DeliverySpaceAmenityMapper } from '../delivery-space-amenity-mapper/delivery-space-amenity-mapper.entity';
 import { DeliverySpaceService } from './delivery-space.service';
 import { AdminDeliverySpaceController } from './admin-delivery-space.controller';
@@ -19,6 +17,8 @@ import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/deliver
 import { NanudaDeliverySpaceController } from './nanuda-delivery-space.controller';
 import { NanudaDeliverySpaceService } from './nanuda-delivery-space.service';
 import { FavoriteSpaceMapper } from '../favorite-space-mapper/favorite-space-mapper.entity';
+import { DeliverySpaceNndRecordModule } from '../delivery-space-nnd-op-record/delivery-space-nnd-op-record.module';
+import { DeliverySpaceNndBrandOpRecordModule } from '../delivery-space-nnd-brand-op-record/delivery-space-nnd-brand-op-record.module';
 
 @Module({
   imports: [
@@ -35,6 +35,8 @@ import { FavoriteSpaceMapper } from '../favorite-space-mapper/favorite-space-map
       FavoriteSpaceMapper,
     ]),
     FileUploadModule,
+    DeliverySpaceNndRecordModule,
+    DeliverySpaceNndBrandOpRecordModule
   ],
   controllers: [
     AdminDeliverySpaceController,
