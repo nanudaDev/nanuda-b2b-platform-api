@@ -24,6 +24,8 @@ import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/deliver
 import { NanudaDeliveryFounderConsultService } from './nanuda-delivery-founder-consult.service';
 import { NanudaDeliveryFounderConsultController } from './nanuda-delivery-founder-consult.controller';
 import { B2CNanudaSlackNotificationService } from 'src/core/utils/b2c-nanuda-slack-notification.service';
+import { DeliverySpaceNndRecordModule } from '../delivery-space-nnd-op-record/delivery-space-nnd-op-record.module';
+import { DeliverySpaceNndBrandOpRecordModule } from '../delivery-space-nnd-brand-op-record/delivery-space-nnd-brand-op-record.module';
 
 @Module({
   imports: [
@@ -42,6 +44,8 @@ import { B2CNanudaSlackNotificationService } from 'src/core/utils/b2c-nanuda-sla
       CompanyDistrict,
     ]),
     FileUploadModule,
+    DeliverySpaceNndRecordModule,
+    DeliverySpaceNndBrandOpRecordModule
   ],
   controllers: [
     AdminDeliveryFounderConsultController,

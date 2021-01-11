@@ -33,6 +33,9 @@ import { BestSpaceMapper } from '../best-space/best-space.entity';
 import { DeliverySpaceOptionSpaceMapper } from '../delivery-space-option-space-mapper/delivery-space-option-space-mapper.entity';
 import { CompanyDistrictPromotionMapper } from '../company-district-promotion-mapper/company-district-promotion-mapper.entity';
 import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
+import { DeliverySpaceNndOpRecordService } from '../delivery-space-nnd-op-record/delivery-space-nnd-op-record.service';
+import { DeliverySpaceNndBrandOpRecordService } from '../delivery-space-nnd-brand-op-record/delivery-space-nnd-brand-op-record.service';
+import { AdminDeliverySpaceNndOpRecordCreateDto } from '../delivery-space-nnd-op-record/dto';
 
 @Injectable()
 export class DeliverySpaceService extends BaseService {
@@ -60,6 +63,8 @@ export class DeliverySpaceService extends BaseService {
     @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly fileUploadService: FileUploadService,
     private readonly nanudaSlackNotificationService: NanudaSlackNotificationService,
+    private readonly deliverySpaceNndRecordService: DeliverySpaceNndOpRecordService,
+    private readonly deliverySpaceNndBrandService: DeliverySpaceNndBrandOpRecordService
   ) {
     super();
   }
@@ -597,6 +602,11 @@ export class DeliverySpaceService extends BaseService {
           adminDeliverySpaceUpdateDto.operatingBrandNos &&
           adminDeliverySpaceUpdateDto.operatingBrandNos.length > 0
         ) {
+          // create new record for delivery space operation for NND
+            const newRecordDto = new AdminDeliverySpaceNndOpRecordCreateDto({deliverySpaceNo: deliverySpaceNo, started: adminDeliverySpaceUpdateDto.operatingStartDate, ended: adminDeliverySpaceUpdateDto.operatingEndDate})
+            const newRecord = await this.deliverySpaceNndRecordService.createRecord(newRecordDto)
+            // create brand records 
+            await this.deliverySpaceNndBrandService.createBrandRecord(adminDeliverySpaceUpdateDto.operatingBrandNos, newRecord.no)
         }
         deliverySpace = await entityManager.save(deliverySpace);
         return deliverySpace;
