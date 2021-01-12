@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { YN } from 'src/common';
 import { BaseDto, BaseService } from 'src/core';
 import { Repository } from 'typeorm';
 import { DeliverySpaceNndBrandOpRecord } from './delivery-space-nnd-brand-op-record.entity';
@@ -32,5 +33,48 @@ export class DeliverySpaceNndBrandOpRecordService extends BaseService {
     });
 
     return brandRecords;
+  }
+
+  /**
+   * 특정한 기록에 해당하는 브랜드 찾기
+   * @param nndOpRecordNo
+   */
+  async findAllForRecord(
+    nndOpRecordNo: number,
+  ): Promise<DeliverySpaceNndBrandOpRecord[]> {
+    const qb = await this.nndBrandRecordRepo
+      .createQueryBuilder('nndBrandOpRecord')
+      .CustomInnerJoinAndSelect(['brand'])
+      .where('nndBrandOpRecord.nndOpRecordNo = :nndOpRecordNo', {
+        nndOpRecordNo: nndOpRecordNo,
+      })
+      .getMany();
+
+    return qb;
+  }
+
+  /**
+   * update existing operating brand
+   * @param nndOpRecordNo
+   * @param nndBrandOpRecordNo
+   */
+  async updateOperatingBrand(
+    nndOpRecordNo: number,
+    nndBrandOpRecordNo: number,
+  ): Promise<DeliverySpaceNndBrandOpRecord> {
+    await this.nndBrandRecordRepo
+      .createQueryBuilder()
+      .update(DeliverySpaceNndBrandOpRecord)
+      .set({
+        isOperatedYn: YN.NO,
+      })
+      .where('nndOpRecordNo = :nndOpRecordNo', { nndOpRecordNo: nndOpRecordNo })
+      .execute();
+
+    let newOperatingBrand = await this.nndBrandRecordRepo.findOne(
+      nndBrandOpRecordNo,
+    );
+    newOperatingBrand.isOperatedYn = YN.YES;
+    return newOperatingBrand;
   }
 }
