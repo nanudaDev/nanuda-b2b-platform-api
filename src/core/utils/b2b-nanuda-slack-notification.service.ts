@@ -20,7 +20,11 @@ export class NanudaSlackNotificationService extends BaseService {
   slack = new Slack();
   webhookuri = process.env.PLATFORM_NOTIFICATION_SLACK_URL;
 
-  async founderConsultStatusChange(founderConsult: DeliveryFounderConsult) {
+  async founderConsultStatusChange(
+    founderConsultNo: number,
+    companyNameKr: string,
+    companyDecisionStatusCode: string,
+  ) {
     const message = {
       text: `방문자 신청 상태 값 변경 안내`,
       username: SLACK_NOTIFICATION_PROPERTY.founderConsultUsername,
@@ -32,14 +36,14 @@ export class NanudaSlackNotificationService extends BaseService {
               name: 'slack action button',
               text: '신청서 상세보기',
               type: 'button',
-              url: `${process.env.ADMIN_BASEURL}delivery-founder-consult/${founderConsult.no}`,
+              url: `${process.env.ADMIN_BASEURL}delivery-founder-consult/${founderConsultNo}`,
               style: 'primary',
             },
           ],
           fields: [
             {
               title: `${SLACK_NOTIFICATION_PROPERTY.founderConsultUsername}`,
-              value: `${founderConsult.deliverySpace.companyDistrict.company.nameKr}에서 방문자 신청 ID ${founderConsult.no} 상태값을 ${founderConsult.companyDecisionStatusCode.value}(으)로 변경했습니다.`,
+              value: `${companyNameKr}에서 방문자 신청 ID ${founderConsultNo} 상태값을 ${companyDecisionStatusCode}(으)로 변경했습니다.`,
               short: false,
             },
           ],

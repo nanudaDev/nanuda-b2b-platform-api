@@ -38,6 +38,7 @@ import { CompanyDistrictPromotionMapper } from '../company-district-promotion-ma
 import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 import { DeliveryFounderConsultRecord } from '../delivery-founder-consult-record/delivery-founder-consult-record.entity';
 import { CompanyUser } from '../company-user/company-user.entity';
+import { CodeManagement } from '../code-management/code-management.entity';
 
 @Injectable()
 export class DeliveryFounderConsultService extends BaseService {
@@ -818,10 +819,19 @@ export class DeliveryFounderConsultService extends BaseService {
           .where('deliveryConsult.no = :no', { no: deliveryFounderConsultNo })
           .andWhere('company.no = :companyNo', { companyNo: companyNo })
           .getOne();
+        const companyDecisionValue = await this.entityManager
+          .getRepository(CodeManagement)
+          .findOne({
+            where: {
+              key: deliveryFounderConsultUpdateDto.companyDecisionStatus,
+            },
+          });
         await this.nanudaSlackNotificationService.founderConsultStatusChange(
-          updatedQb,
+          updatedQb.no,
+          updatedQb.deliverySpace.companyDistrict.company.nameKr,
+          companyDecisionValue.value,
         );
-        return updatedQb;
+        return qb;
       },
     );
     return deliveryConsult;
