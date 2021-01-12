@@ -14,6 +14,7 @@ import { Expose, Type } from 'class-transformer';
 import { YN, Default } from 'src/common';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';
 import { DeliverySpaceUpdateDto } from './delivery-space-update.dto';
+import { DeliverySpaceNndBrandOpRecordDto } from 'src/modules/delivery-space-nnd-brand-op-record/dto';
 
 export class AdminDeliverySpaceUpdateDto extends DeliverySpaceUpdateDto {
   @ApiPropertyOptional({ type: [FileAttachmentDto] })
@@ -96,9 +97,14 @@ export class AdminDeliverySpaceUpdateDto extends DeliverySpaceUpdateDto {
   @Expose()
   operatingEndDate?: Date;
 
-  @ApiPropertyOptional({ name: 'brandNos[]', type: Number, isArray: true })
+  @ApiPropertyOptional({
+    name: 'deliverySpaceNndBrandOpRecords',
+    type: [DeliverySpaceNndBrandOpRecordDto],
+  })
   @IsOptional()
   @Expose()
   @IsArray()
-  operatingBrandNos?: number[];
+  @ValidateNested()
+  @Type(() => DeliverySpaceNndBrandOpRecordDto)
+  deliverySpaceNndBrandOpRecords?: DeliverySpaceNndBrandOpRecordDto[];
 }

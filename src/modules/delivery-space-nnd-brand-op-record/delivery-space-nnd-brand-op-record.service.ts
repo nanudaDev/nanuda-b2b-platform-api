@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BaseDto, BaseService } from 'src/core';
 import { Repository } from 'typeorm';
 import { DeliverySpaceNndBrandOpRecord } from './delivery-space-nnd-brand-op-record.entity';
+import { DeliverySpaceNndBrandOpRecordDto } from './dto';
 
 @Injectable()
 export class DeliverySpaceNndBrandOpRecordService extends BaseService {
@@ -15,12 +16,21 @@ export class DeliverySpaceNndBrandOpRecordService extends BaseService {
     super();
   }
 
-  async createBrandRecord(brandNos: number[], nndRecordNo: number) {
-    const brandRecords = brandNos.map(async brandNo => {
-      let brandRecord = new DeliverySpaceNndBrandOpRecord({brandNo: brandNo, nndOpRecordNo: nndRecordNo})
-      brandRecord = await this.nndBrandRecordRepo.save(brandRecord)
+  /**
+   * create brand records
+   * @param nndBrandRecordDto
+   * @param nndOpRecordNo
+   */
+  async createBrandRecord(
+    nndBrandRecordDto: DeliverySpaceNndBrandOpRecordDto[],
+    nndOpRecordNo: number,
+  ) {
+    const brandRecords = nndBrandRecordDto.map(async dto => {
+      let brandRecord = new DeliverySpaceNndBrandOpRecord(dto);
+      brandRecord.nndOpRecordNo = nndOpRecordNo;
+      brandRecord = await this.nndBrandRecordRepo.save(brandRecord);
     });
 
-    return brandRecords
+    return brandRecords;
   }
 }
