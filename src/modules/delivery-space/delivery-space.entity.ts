@@ -153,6 +153,14 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
   })
   remainingCount?: number;
 
+  @Column({
+    type: 'char',
+    length: 1,
+    name: 'IS_OPERATED_YN',
+    default: YN.NO,
+  })
+  isOperatedYn?: YN;
+
   // no database
   likedCount?: number;
 
