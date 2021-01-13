@@ -75,6 +75,7 @@ export class DeliverySpaceNndBrandOpRecordService extends BaseService {
       nndBrandOpRecordNo,
     );
     newOperatingBrand.isOperatedYn = YN.YES;
+    newOperatingBrand = await this.nndBrandRecordRepo.save(newOperatingBrand);
     return newOperatingBrand;
   }
 }
