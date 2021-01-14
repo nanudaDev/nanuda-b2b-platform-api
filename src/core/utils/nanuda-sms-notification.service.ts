@@ -10,6 +10,7 @@ import { Admin } from 'src/modules/admin';
 import { ENVIRONMENT } from 'src/config';
 import { BestSpaceMapper } from 'src/modules/best-space/best-space.entity';
 import { LandingPageSuccessRecord } from 'src/modules/landing-page-success-record/landing-page-success-record.entity';
+import { AttendeesOnline } from 'src/modules/attendees-online/attendees-online.entity';
 
 @Injectable()
 export class NanudaSmsNotificationService {
@@ -20,6 +21,27 @@ export class NanudaSmsNotificationService {
    */
   async sendPresentationEvent(attendees: Attendees, req?: Request) {
     const payload = await this.__presentation_event_notification(attendees);
+    req.body = payload.body;
+    console.log(payload);
+    const sms = await aligoapi.send(req, payload.auth);
+    if (
+      process.env.NODE_ENV === ENVIRONMENT.DEVELOPMENT ||
+      ENVIRONMENT.STAGING
+    ) {
+      console.log(sms);
+    }
+    return;
+  }
+
+  /**
+   * send message
+   * @param attendees
+   * @param req
+   */
+  async sendPresentationEventOnline(attendees: AttendeesOnline, req?: Request) {
+    const payload = await this.__presentation_event_notification_online(
+      attendees,
+    );
     req.body = payload.body;
     console.log(payload);
     const sms = await aligoapi.send(req, payload.auth);
@@ -259,5 +281,30 @@ export class NanudaSmsNotificationService {
       msg: `안녕하세요. 나누다키친입니다. \n\n1차 유선상담을 통해서 ${deliveryFounderConsult.nanudaUser.name}님의 희망창업지역 기준 상권분석을 \n안내드립니다. \n\n${deliveryFounderConsult.nanudaUser.name}님이 희망하신 ${deliveryFounderConsult.deliverySpace.companyDistrict.region3DepthName} 기준 상권분석 내용은 아래와 같습니다. \n\n1) 창업 희망 지역 내 주요 인구분포 \n${genderAge[0].max_value_column_name}/${furnitureRatioUpAndDown} \n\n2) 창업 희망 지역 내 업태별 BEST 3 \n${category[0].medium_category_nm}/${category[1].medium_category_nm}/${category[2].medium_category_nm} \n\n3) 추천 창업 공간 BEST 3 \n${bestSpace[0].deliverySpace.companyDistrict.company.nameKr} ${bestSpace[0].deliverySpace.companyDistrict.nameKr} \n${bestSpace[1].deliverySpace.companyDistrict.company.nameKr} ${bestSpace[1].deliverySpace.companyDistrict.nameKr} \n${bestSpace[2].deliverySpace.companyDistrict.company.nameKr} ${bestSpace[2].deliverySpace.companyDistrict.nameKr} \n\n자세한 상담은 2차 대면 미팅 시 안내해드리겠습니다. \n해당 상권에서 최고의 전문가와 안전한 배달 창업에 도전하세요!`,
     };
     return body;
+  }
+
+  /**
+   * send presentation event notification
+   * @param phone
+   * @param name
+   * @param presentationDate
+   * @param schedule
+   */
+  private async __presentation_event_notification_online(
+    attendees: AttendeesOnline,
+  ): Promise<MessageObject> {
+    const presentationDate = moment(attendees.presentationDate).format(
+      'YYYY-MM-DD, ddd',
+    );
+    const auth = await this.__get_auth();
+    const body = {
+      receiver: attendees.phone,
+      sender: process.env.ALIGO_SENDER_PHONE,
+      // msg: `[나누디키친] 안녕하세요 ${attendees.name}님, 나누다키친입니다. \n나누다키친 창업 설명회에 신청해주셔서 감사드립니다. \n\n창업 설명회 안내 \n\n일시: ${presentationDate} | ${attendees.scheduleTime} \n장소: http://naver.me/5Yn0UdYx \n서울 서초구 서초대로 77길 55 에이프로스퀘어 빌딩 6층
+      //   (강남역,신논현역 도보 이동 가능) \n※ 건물에 주차가 어려울 수 있으니 주변 공영주차장을 이용해주시면 감사하겠습니다. \n\n감사합니다. \n나누다키친 드림. \n\nTEL:02-556-5777 \n무료 거부 080-870-0727`,
+      title: '안녕하세요 나누디키친입니다.',
+    };
+
+    return { body, auth };
   }
 }
