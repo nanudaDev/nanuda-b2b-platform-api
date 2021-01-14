@@ -8,7 +8,7 @@ import { AttendeesOnline } from './attendees-online.entity';
 import { NanudaAttendeesOnlineCreateDto } from './dto';
 
 @Injectable()
-export class AttendeesOnlineService extends BaseService {
+export class NanudaAttendeesOnlineService extends BaseService {
   constructor(
     @InjectRepository(AttendeesOnline)
     private readonly attendeesOnlineRepo: Repository<AttendeesOnline>,
