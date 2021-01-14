@@ -44,6 +44,15 @@ export class AttendeesOnline extends BaseMapperEntity<AttendeesOnline> {
   })
   threeDayFlag?: YN;
 
+  /**
+   * 임시 비디오 접속 코드
+   */
+  @Column({
+    name: 'TEMP_VIDEO_KEY',
+    type: 'varchar',
+  })
+  tempCode?: string;
+
   @Column({
     name: 'PRESENTATION_DATE',
     type: 'datetime',

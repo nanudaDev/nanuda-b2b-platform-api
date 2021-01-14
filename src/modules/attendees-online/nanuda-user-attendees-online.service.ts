@@ -6,6 +6,7 @@ import { EntityManager, Repository } from 'typeorm';
 import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 import { AttendeesOnline } from './attendees-online.entity';
 import { NanudaAttendeesOnlineCreateDto } from './dto';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class NanudaAttendeesOnlineService extends BaseService {
@@ -43,6 +44,9 @@ export class NanudaAttendeesOnlineService extends BaseService {
       return '이미 신청한 전화번호입니다.';
     }
     let newAttendee = new AttendeesOnline(nanudaAttendeesOnlineCreateDto);
+    newAttendee.tempCode = crypto.randomBytes(36).toString('hex');
+    // console.log(newAttendee.tempCode);
+
     newAttendee = await this.attendeesOnlineRepo.save(newAttendee);
     // check if larger than three days or less
     const createdDate = new Date(newAttendee.createdAt);

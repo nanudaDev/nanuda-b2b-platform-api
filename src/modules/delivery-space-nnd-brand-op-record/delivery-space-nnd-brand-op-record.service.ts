@@ -72,7 +72,7 @@ export class DeliverySpaceNndBrandOpRecordService extends BaseService {
       .execute();
 
     let newOperatingBrand = await this.nndBrandRecordRepo.findOne({
-      where: { nndOpRecordNo: nndOpRecordNo, no: this.nndBrandRecordRepo },
+      where: { nndOpRecordNo: nndOpRecordNo, no: nndBrandOpRecordNo },
     });
     if (!newOperatingBrand) {
       throw new NotFoundException();
