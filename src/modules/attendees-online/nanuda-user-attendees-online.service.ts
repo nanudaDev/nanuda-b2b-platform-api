@@ -33,7 +33,10 @@ export class NanudaAttendeesOnlineService extends BaseService {
         },
       });
     const checkIfApplied = await this.attendeesOnlineRepo.findOne({
-      where: nanudaAttendeesOnlineCreateDto,
+      where: {
+        name: nanudaAttendeesOnlineCreateDto.name,
+        phone: nanudaAttendeesOnlineCreateDto.phone,
+      },
     });
     //  if already applied
     if (checkIfApplied) {
@@ -45,7 +48,8 @@ export class NanudaAttendeesOnlineService extends BaseService {
     const createdDate = new Date(newAttendee.createdAt);
     const appliedDate = new Date(newAttendee.presentationDate);
     const differenceInTime = appliedDate.getTime() - createdDate.getTime();
-    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+    const differenceInDays = Math.round(differenceInTime / (1000 * 3600 * 24));
+    console.log(Math.round(differenceInDays));
     // check three day flag
     if (differenceInDays >= 3) {
       newAttendee.threeDayFlag = YN.YES;
@@ -55,6 +59,7 @@ export class NanudaAttendeesOnlineService extends BaseService {
     if (checkIfUser) {
       newAttendee.isNanudaUser = YN.YES;
     }
+    await this.attendeesOnlineRepo.save(newAttendee);
     // await sms notification
     // await slack notification
     return newAttendee;
