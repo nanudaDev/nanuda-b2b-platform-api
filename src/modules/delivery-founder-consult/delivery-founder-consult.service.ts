@@ -79,9 +79,9 @@ export class DeliveryFounderConsultService extends BaseService {
     }
     const qb = this.deliveryFounderConsultRepo
       .createQueryBuilder('deliveryConsult')
+      .CustomInnerJoinAndSelect(['companyDecisionStatusCode', 'codeManagement'])
       .CustomLeftJoinAndSelect([
         'deliverySpace',
-        'codeManagement',
         'availableTime',
         'nanudaUser',
         'admin',

@@ -16,6 +16,11 @@ export class DeliverySpaceNndOpRecordService extends BaseService {
     super();
   }
 
+  /**
+   * find all
+   * @param deliverySpaceNo
+   * @param pagination
+   */
   async findAll(
     deliverySpaceNo: number,
     pagination: PaginatedRequest,

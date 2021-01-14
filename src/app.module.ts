@@ -48,6 +48,7 @@ import {
   LandingPageRecordModule,
   LandingPageSuccessRecordModule,
   DeliveryFounderConsultReplyModule,
+  DeliverySpaceNndBrandOpRecordModule,
 } from './modules';
 import { AdminModule } from './modules/admin/admin.module';
 import { PaymentList } from './modules/payment-list/payment-list.entity';
@@ -55,6 +56,7 @@ import { NanudaKitchenMaster } from './modules/nanuda-kitchen-master/nanuda-kitc
 import { NanudaKitchenMenu } from './modules/nanuda-kitchen-menu/nanuda-kitchen-menu.entity';
 import { KioskOrderList } from './modules/kiosk-order-list/kiosk-order-list.entity';
 import { IndexMessage } from './modules/message-delivery-space/index-message.entity';
+import { DeliverySpaceNndRecordModule } from './modules/delivery-space-nnd-op-record/delivery-space-nnd-op-record.module';
 require('dotenv').config();
 const env = process.env;
 @Module({
@@ -144,6 +146,8 @@ const env = process.env;
     DeliveryFounderConsultReplyModule,
     DeliverySpaceModule,
     DeliverySpaceOptionModule,
+    DeliverySpaceNndRecordModule,
+    DeliverySpaceNndBrandOpRecordModule,
     FavoriteSpaceMapperModule,
     FileUploadModule,
     FoodCategoryModule,
