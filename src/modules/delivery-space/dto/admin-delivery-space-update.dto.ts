@@ -14,6 +14,7 @@ import { Expose, Type } from 'class-transformer';
 import { YN, Default } from 'src/common';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';
 import { DeliverySpaceUpdateDto } from './delivery-space-update.dto';
+import { DeliverySpaceNndBrandOpRecordDto } from 'src/modules/delivery-space-nnd-brand-op-record/dto';
 
 export class AdminDeliverySpaceUpdateDto extends DeliverySpaceUpdateDto {
   @ApiPropertyOptional({ type: [FileAttachmentDto] })
@@ -79,4 +80,31 @@ export class AdminDeliverySpaceUpdateDto extends DeliverySpaceUpdateDto {
   @IsEnum(SPACE_PIC_STATUS)
   @Expose()
   picStatus?: SPACE_PIC_STATUS;
+
+  // 직영점 운영 플래그
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  isOperatedYn?: YN;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  operatingStartDate?: Date;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  operatingEndDate?: Date;
+
+  @ApiPropertyOptional({
+    name: 'deliverySpaceNndBrandOpRecords',
+    type: [DeliverySpaceNndBrandOpRecordDto],
+  })
+  @IsOptional()
+  @Expose()
+  @IsArray()
+  @ValidateNested()
+  @Type(() => DeliverySpaceNndBrandOpRecordDto)
+  deliverySpaceNndBrandOpRecords?: DeliverySpaceNndBrandOpRecordDto[];
 }
