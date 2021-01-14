@@ -49,6 +49,7 @@ import {
   LandingPageSuccessRecordModule,
   DeliveryFounderConsultReplyModule,
   DeliverySpaceNndBrandOpRecordModule,
+  AttendeesOnlineModule,
 } from './modules';
 import { AdminModule } from './modules/admin/admin.module';
 import { PaymentList } from './modules/payment-list/payment-list.entity';
@@ -129,6 +130,7 @@ const env = process.env;
     AmenityModule,
     ArticleModule,
     AttendeesModule,
+    AttendeesOnlineModule,
     BannerModule,
     BestSpaceMapperModule,
     BrandModule,
