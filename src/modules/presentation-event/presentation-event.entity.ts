@@ -1,5 +1,9 @@
 import { YN } from 'src/common';
-import { BaseEntity, PRESENTATION_EVENT_TYPE } from 'src/core';
+import {
+  BaseEntity,
+  PRESENTATION_DISPLAY_TYPE,
+  PRESENTATION_EVENT_TYPE,
+} from 'src/core';
 import {
   Column,
   Entity,
@@ -52,9 +56,8 @@ export class PresentationEvent extends BaseEntity<PresentationEvent> {
   @Column({
     type: 'varchar',
     name: 'ADDRESS',
-    nullable: false,
   })
-  address: string;
+  address?: string;
 
   @Column({
     type: 'json',
@@ -110,6 +113,31 @@ export class PresentationEvent extends BaseEntity<PresentationEvent> {
     default: '창업 설명회 신청하기',
   })
   buttonDesc?: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'ZOOM_LINK',
+  })
+  zoomLink?: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'ZOOM_ID',
+  })
+  zoomId?: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'ZOOM_PASSWORD',
+  })
+  zoomPassword?: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'DISPLAY_TYPE',
+    default: PRESENTATION_DISPLAY_TYPE.OFFLINE,
+  })
+  displayType?: PRESENTATION_DISPLAY_TYPE;
 
   //   no database column
   @OneToMany(

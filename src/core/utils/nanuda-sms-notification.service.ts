@@ -10,6 +10,7 @@ import { Admin } from 'src/modules/admin';
 import { ENVIRONMENT } from 'src/config';
 import { BestSpaceMapper } from 'src/modules/best-space/best-space.entity';
 import { LandingPageSuccessRecord } from 'src/modules/landing-page-success-record/landing-page-success-record.entity';
+import { AttendeesOnline } from 'src/modules/attendees-online/attendees-online.entity';
 
 @Injectable()
 export class NanudaSmsNotificationService {
@@ -20,6 +21,27 @@ export class NanudaSmsNotificationService {
    */
   async sendPresentationEvent(attendees: Attendees, req?: Request) {
     const payload = await this.__presentation_event_notification(attendees);
+    req.body = payload.body;
+    console.log(payload);
+    const sms = await aligoapi.send(req, payload.auth);
+    if (
+      process.env.NODE_ENV === ENVIRONMENT.DEVELOPMENT ||
+      ENVIRONMENT.STAGING
+    ) {
+      console.log(sms);
+    }
+    return;
+  }
+
+  /**
+   * send message
+   * @param attendees
+   * @param req
+   */
+  async sendPresentationEventOnline(attendees: AttendeesOnline, req?: Request) {
+    const payload = await this.__presentation_event_notification_online(
+      attendees,
+    );
     req.body = payload.body;
     console.log(payload);
     const sms = await aligoapi.send(req, payload.auth);
@@ -259,5 +281,29 @@ export class NanudaSmsNotificationService {
       msg: `안녕하세요. 나누다키친입니다. \n\n1차 유선상담을 통해서 ${deliveryFounderConsult.nanudaUser.name}님의 희망창업지역 기준 상권분석을 \n안내드립니다. \n\n${deliveryFounderConsult.nanudaUser.name}님이 희망하신 ${deliveryFounderConsult.deliverySpace.companyDistrict.region3DepthName} 기준 상권분석 내용은 아래와 같습니다. \n\n1) 창업 희망 지역 내 주요 인구분포 \n${genderAge[0].max_value_column_name}/${furnitureRatioUpAndDown} \n\n2) 창업 희망 지역 내 업태별 BEST 3 \n${category[0].medium_category_nm}/${category[1].medium_category_nm}/${category[2].medium_category_nm} \n\n3) 추천 창업 공간 BEST 3 \n${bestSpace[0].deliverySpace.companyDistrict.company.nameKr} ${bestSpace[0].deliverySpace.companyDistrict.nameKr} \n${bestSpace[1].deliverySpace.companyDistrict.company.nameKr} ${bestSpace[1].deliverySpace.companyDistrict.nameKr} \n${bestSpace[2].deliverySpace.companyDistrict.company.nameKr} ${bestSpace[2].deliverySpace.companyDistrict.nameKr} \n\n자세한 상담은 2차 대면 미팅 시 안내해드리겠습니다. \n해당 상권에서 최고의 전문가와 안전한 배달 창업에 도전하세요!`,
     };
     return body;
+  }
+
+  /**
+   * send presentation event notification
+   * @param phone
+   * @param name
+   * @param presentationDate
+   * @param schedule
+   */
+  private async __presentation_event_notification_online(
+    attendees: AttendeesOnline,
+  ): Promise<MessageObject> {
+    const auth = await this.__get_auth();
+    const todayDate = new Date(attendees.presentationDate)
+      .toISOString()
+      .slice(0, 10);
+    const body = {
+      receiver: attendees.phone,
+      sender: process.env.ALIGO_SENDER_PHONE,
+      msg: `[나누디키친] 안녕하세요 ${attendees.name}님, 나누다키친입니다. \n나누다키친 온라인 창업 설명회에 신청해주셔서 감사드립니다. \n\n온라인 창업설명회 안내드립니다. \n\n날짜: ${todayDate}\n시간: ${attendees.eventTime}\n이용방법: 줌(ZOOM) 사이트 또는 앱으로 간편하게 화상으로 창업설명회에 참여 가능합니다.\n\n문의사항이 있으신 경우 해당 번호로 연락주시면 상담 도와드리겠습니다.\n\n나누다키친 영업시간 : 평일 10시~18시\n감사합니다 \n나누다키친 드림. \n\nTEL: ${process.env.ALIGO_SECONDARY_PHONE}`,
+      title: '안녕하세요 나누디키친입니다.',
+    };
+
+    return { body, auth };
   }
 }

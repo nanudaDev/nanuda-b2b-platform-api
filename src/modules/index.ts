@@ -1,4 +1,5 @@
 export * from './attendees/attendees.module';
+export * from './attendees-online/nanuda-user-attendees-online.module';
 export * from './auth/auth.module';
 export * from './company/company.module';
 export * from './admin';
@@ -14,8 +15,8 @@ export * from './code-management/code-management.module';
 export * from './credential/credential.module';
 export * from './dashboard/dashboard.module';
 export * from './delivery-space/delivery-space.module';
-export * from './delivery-space-nnd-brand-op-record/delivery-space-nnd-brand-op-record.module'
-export * from './delivery-space-nnd-brand-op-record/delivery-space-nnd-brand-op-record.module'
+export * from './delivery-space-nnd-brand-op-record/delivery-space-nnd-brand-op-record.module';
+export * from './delivery-space-nnd-brand-op-record/delivery-space-nnd-brand-op-record.module';
 export * from './delivery-space-option/delivery-space-option.module';
 export * from './delivery-founder-consult/delivery-founder-consult.module';
 export * from './delivery-founder-consult-contract/delivery-founder-consult-contract.module';

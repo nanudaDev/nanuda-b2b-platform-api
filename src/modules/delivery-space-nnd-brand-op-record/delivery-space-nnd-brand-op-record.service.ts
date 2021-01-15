@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { YN } from 'src/common';
 import { BaseDto, BaseService } from 'src/core';
@@ -71,9 +71,12 @@ export class DeliverySpaceNndBrandOpRecordService extends BaseService {
       .where('nndOpRecordNo = :nndOpRecordNo', { nndOpRecordNo: nndOpRecordNo })
       .execute();
 
-    let newOperatingBrand = await this.nndBrandRecordRepo.findOne(
-      nndBrandOpRecordNo,
-    );
+    let newOperatingBrand = await this.nndBrandRecordRepo.findOne({
+      where: { nndOpRecordNo: nndOpRecordNo, no: nndBrandOpRecordNo },
+    });
+    if (!newOperatingBrand) {
+      throw new NotFoundException();
+    }
     newOperatingBrand.isOperatedYn = YN.YES;
     newOperatingBrand = await this.nndBrandRecordRepo.save(newOperatingBrand);
     return newOperatingBrand;
