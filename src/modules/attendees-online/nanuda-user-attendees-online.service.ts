@@ -7,6 +7,11 @@ import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 import { AttendeesOnline } from './attendees-online.entity';
 import { NanudaAttendeesOnlineCreateDto } from './dto';
 import * as crypto from 'crypto';
+import {
+  B2CNanudaSlackNotificationService,
+  NanudaSmsNotificationService,
+} from 'src/core/utils';
+import { Request } from 'express';
 
 @Injectable()
 export class NanudaAttendeesOnlineService extends BaseService {
@@ -14,6 +19,8 @@ export class NanudaAttendeesOnlineService extends BaseService {
     @InjectRepository(AttendeesOnline)
     private readonly attendeesOnlineRepo: Repository<AttendeesOnline>,
     @InjectEntityManager() private readonly entityManager: EntityManager,
+    private readonly nanudaSmsNotificationService: NanudaSmsNotificationService,
+    private readonly nanudaSlackNotification: B2CNanudaSlackNotificationService,
   ) {
     super();
   }
@@ -24,6 +31,7 @@ export class NanudaAttendeesOnlineService extends BaseService {
    */
   async createAttendees(
     nanudaAttendeesOnlineCreateDto: NanudaAttendeesOnlineCreateDto,
+    req: Request,
   ): Promise<string | AttendeesOnline> {
     const checkIfUser = await this.entityManager
       .getRepository(NanudaUser)
@@ -65,7 +73,12 @@ export class NanudaAttendeesOnlineService extends BaseService {
     }
     await this.attendeesOnlineRepo.save(newAttendee);
     // await sms notification
+    await this.nanudaSmsNotificationService.sendPresentationEventOnline(
+      newAttendee,
+      req,
+    );
     // await slack notification
+    await this.nanudaSlackNotification.attendeesOnlineNotification(newAttendee);
     return newAttendee;
   }
 }

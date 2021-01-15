@@ -117,9 +117,20 @@ export class PresentationEvent extends BaseEntity<PresentationEvent> {
   @Column({
     type: 'varchar',
     name: 'ZOOM_LINK',
-    default: '창업 설명회 신청하기',
   })
   zoomLink?: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'ZOOM_ID',
+  })
+  zoomId?: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'ZOOM_PASSWORD',
+  })
+  zoomPassword?: string;
 
   @Column({
     type: 'varchar',
