@@ -21,7 +21,7 @@ export class NanudaAttendeesOnlineCreateDto
   @ApiProperty()
   @IsOptional()
   @Expose()
-  presentationDate?: Date;
+  presentationDate?: Date | string;
 
   @ApiProperty()
   @IsOptional()
