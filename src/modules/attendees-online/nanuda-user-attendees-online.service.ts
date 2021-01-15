@@ -69,8 +69,12 @@ export class NanudaAttendeesOnlineService extends BaseService {
       newAttendee.threeDayBeforeMessageDate = moment(appliedDate)
         .subtract(3, 'day')
         .format('YYYY-MM-DD');
+      newAttendee.oneDayBeforeMessageDate = moment(appliedDate)
+        .subtract(1, 'day')
+        .format('YYYY-MM-DD');
+    } else {
+      newAttendee.threeDayFlag = YN.NO;
     }
-    newAttendee.threeDayFlag = YN.NO;
     newAttendee.oneDayBeforeMessageDate = moment(appliedDate)
       .subtract(1, 'day')
       .format('YYYY-MM-DD');
