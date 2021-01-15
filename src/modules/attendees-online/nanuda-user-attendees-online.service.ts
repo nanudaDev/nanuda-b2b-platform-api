@@ -12,6 +12,7 @@ import {
   NanudaSmsNotificationService,
 } from 'src/core/utils';
 import { Request } from 'express';
+import * as moment from 'moment';
 
 @Injectable()
 export class NanudaAttendeesOnlineService extends BaseService {
@@ -33,6 +34,8 @@ export class NanudaAttendeesOnlineService extends BaseService {
     nanudaAttendeesOnlineCreateDto: NanudaAttendeesOnlineCreateDto,
     req: Request,
   ): Promise<string | AttendeesOnline> {
+    const days = 3;
+    const todayDate = new Date().toISOString().slice(0, 10);
     const checkIfUser = await this.entityManager
       .getRepository(NanudaUser)
       .findOne({
@@ -54,20 +57,23 @@ export class NanudaAttendeesOnlineService extends BaseService {
     let newAttendee = new AttendeesOnline(nanudaAttendeesOnlineCreateDto);
     newAttendee.tempCode = crypto.randomBytes(36).toString('hex');
     // console.log(newAttendee.tempCode);
-
     newAttendee = await this.attendeesOnlineRepo.save(newAttendee);
     // check if larger than three days or less
     const createdDate = new Date(newAttendee.createdAt);
     const appliedDate = new Date(newAttendee.presentationDate);
     const differenceInTime = appliedDate.getTime() - createdDate.getTime();
     const differenceInDays = Math.round(differenceInTime / (1000 * 3600 * 24));
-    console.log(Math.round(differenceInDays));
     // check three day flag
     if (differenceInDays >= 3) {
       newAttendee.threeDayFlag = YN.YES;
-    } else {
-      newAttendee.threeDayFlag = YN.NO;
+      newAttendee.threeDayBeforeMessageDate = moment(appliedDate)
+        .subtract(3, 'day')
+        .format('YYYY-MM-DD');
     }
+    newAttendee.threeDayFlag = YN.NO;
+    newAttendee.oneDayBeforeMessageDate = moment(appliedDate)
+      .subtract(1, 'day')
+      .format('YYYY-MM-DD');
     if (checkIfUser) {
       newAttendee.isNanudaUser = YN.YES;
     }

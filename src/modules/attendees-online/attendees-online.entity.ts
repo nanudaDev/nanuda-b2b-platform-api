@@ -57,7 +57,19 @@ export class AttendeesOnline extends BaseMapperEntity<AttendeesOnline> {
     name: 'PRESENTATION_DATE',
     type: 'datetime',
   })
-  presentationDate: Date | string;
+  presentationDate: any;
+
+  @Column({
+    name: 'THREE_DAY_MESSAGE_DATE',
+    type: 'varchar',
+  })
+  threeDayBeforeMessageDate: any;
+
+  @Column({
+    name: 'ONE_DAY_BEFORE_MESSAGE_DATE',
+    type: 'varchar',
+  })
+  oneDayBeforeMessageDate: any;
 
   isNanudaUser?: YN;
 }
