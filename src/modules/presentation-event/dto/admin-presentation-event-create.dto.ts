@@ -102,6 +102,16 @@ export class AdminPresentationEventCreateDto
   @Expose()
   zoomLink?: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  zoomId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  zoomPassword?: string;
+
   @ApiPropertyOptional({ enum: PRESENTATION_DISPLAY_TYPE })
   @IsEnum(PRESENTATION_DISPLAY_TYPE)
   @Expose()
