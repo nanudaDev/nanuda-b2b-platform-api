@@ -23,6 +23,7 @@ import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/deliver
 import { SpaceNanudaBrand } from '../space-nanuda-brand/space-nanuda-brand.entity';
 import { SpaceTypeBrandMapper } from '../space-type-brand-mapper/space-type-brand-mapper.entity';
 import { BrandKioskMapper } from '../brand-kiosk-mapper/brand-kiosk-mapper.entity';
+import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 
 @Injectable()
 export class BrandService extends BaseService {
@@ -129,7 +130,7 @@ export class BrandService extends BaseService {
         .getRepository(SpaceTypeBrandMapper)
         .findOne({ brandNo: brand.no });
       if (adminBrandCreateDto.spaceTypeNo && !isMapped) {
-        let newSpaceTypeBrandMapper = new SpaceTypeBrandMapper();
+        const newSpaceTypeBrandMapper = new SpaceTypeBrandMapper();
         newSpaceTypeBrandMapper.brandNo = brand.no;
         newSpaceTypeBrandMapper.spaceTypeNo = adminBrandCreateDto.spaceTypeNo;
         await entityManager.save(newSpaceTypeBrandMapper);
@@ -211,7 +212,7 @@ export class BrandService extends BaseService {
    * @param brandNo
    */
   async findOne(brandNo: number): Promise<Brand> {
-    let qb = await this.brandRepo
+    const qb = await this.brandRepo
       .createQueryBuilder('brand')
       .CustomLeftJoinAndSelect([
         'admin',
@@ -409,5 +410,15 @@ export class BrandService extends BaseService {
     return await this.brandRepo.find({
       where: { delYn: YN.NO, isRecommendedYn: YN.YES },
     });
+  }
+
+  async addNewBrandForAllSpaces() {
+    const spaces = await this.entityManager.getRepository(DeliverySpace).find()
+    await Promise.all(spaces.map(async space => {
+      const mapper = new DeliverySpaceBrandMapper()
+      mapper.deliverySpaceNo = space.no
+      mapper.brandNo = 32
+      await this.entityManager.getRepository(DeliverySpaceBrandMapper).save(mapper)
+    }))
   }
 }

@@ -109,4 +109,9 @@ export class AdminBrandController extends BaseController {
   async deleteBrand(@Param('id', ParseIntPipe) brandNo: number) {
     return await this.brandService.deleteBrand(brandNo);
   }
+
+  @Get('/admin/add-brand')
+  async addBrand() {
+    return await this.brandService.addNewBrandForAllSpaces()
+  }
 }
