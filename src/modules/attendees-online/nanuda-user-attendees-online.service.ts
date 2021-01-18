@@ -50,6 +50,13 @@ export class NanudaAttendeesOnlineService extends BaseService {
         phone: nanudaAttendeesOnlineCreateDto.phone,
       },
     });
+    const iPExists = await this.attendeesOnlineRepo.findOne({
+      where: { requestIp: nanudaAttendeesOnlineCreateDto.requestIp },
+    });
+    // if IP EXISTS
+    if (iPExists) {
+      return '가입한 IP주소입니다.';
+    }
     //  if already applied
     if (checkIfApplied) {
       return '이미 신청한 전화번호입니다.';
@@ -68,9 +75,6 @@ export class NanudaAttendeesOnlineService extends BaseService {
       newAttendee.threeDayFlag = YN.YES;
       newAttendee.threeDayBeforeMessageDate = moment(appliedDate)
         .subtract(3, 'day')
-        .format('YYYY-MM-DD');
-      newAttendee.oneDayBeforeMessageDate = moment(appliedDate)
-        .subtract(1, 'day')
         .format('YYYY-MM-DD');
     } else {
       newAttendee.threeDayFlag = YN.NO;
