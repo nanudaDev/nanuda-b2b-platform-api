@@ -86,10 +86,10 @@ export class AdminPresentationEventCreateDto
   @Expose()
   contactPhone?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @Expose()
-  presentationDate: Date;
+  presentationDate?: Date;
 
   @ApiPropertyOptional()
   @IsOptional()

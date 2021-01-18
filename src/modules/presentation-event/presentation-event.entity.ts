@@ -76,9 +76,8 @@ export class PresentationEvent extends BaseEntity<PresentationEvent> {
   @Column({
     type: 'datetime',
     name: 'PRESENTATION_DATE',
-    nullable: false,
   })
-  presentationDate: Date;
+  presentationDate?: Date;
 
   @Column({
     type: 'varchar',

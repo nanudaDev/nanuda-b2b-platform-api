@@ -82,7 +82,7 @@ export class AdminPresentationEventUpdateeDto
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  presentationDate: Date;
+  presentationDate?: Date;
 
   @ApiPropertyOptional()
   @IsOptional()
