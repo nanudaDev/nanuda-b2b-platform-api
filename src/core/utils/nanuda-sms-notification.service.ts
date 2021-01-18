@@ -24,10 +24,7 @@ export class NanudaSmsNotificationService {
     req.body = payload.body;
     console.log(payload);
     const sms = await aligoapi.send(req, payload.auth);
-    if (
-      process.env.NODE_ENV === ENVIRONMENT.DEVELOPMENT ||
-      ENVIRONMENT.STAGING
-    ) {
+    if (process.env.NODE_ENV === ENVIRONMENT.PRODUCTION) {
       console.log(sms);
     }
     return;
@@ -45,11 +42,8 @@ export class NanudaSmsNotificationService {
     req.body = payload.body;
     console.log(payload);
     const sms = await aligoapi.send(req, payload.auth);
-    if (
-      process.env.NODE_ENV === ENVIRONMENT.DEVELOPMENT ||
-      ENVIRONMENT.STAGING
-    ) {
-      console.log(sms);
+    if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
+      // console.log(sms);
     }
     return;
   }

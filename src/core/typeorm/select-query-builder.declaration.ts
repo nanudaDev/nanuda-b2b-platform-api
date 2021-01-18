@@ -268,6 +268,15 @@ declare module 'typeorm/query-builder/SelectQueryBuilder' {
       value?: any,
       excludedRequestDto?: any,
     ): SelectQueryBuilder<Entity>;
+    /**
+     * 당일 쿼리
+     * @param this
+     * @param date
+     */
+    AndWhereOnDayOf(
+      this: SelectQueryBuilder<Entity>,
+      date: string | Date,
+    ): SelectQueryBuilder<Entity>;
   }
 }
 
@@ -384,6 +393,22 @@ SelectQueryBuilder.prototype.AndWhereBetweenOpenedAt = function<Entity>(
     this.andWhere(`${this.alias}.openedAt >= DATE(:START_DATE)`, {
       START_DATE,
     });
+  }
+  return this;
+};
+
+/**
+ * the day of
+ */
+SelectQueryBuilder.prototype.AndWhereOnDayOf = function<Entity>(
+  this: SelectQueryBuilder<Entity>,
+  date: string | Date,
+) {
+  console.log(date);
+  if (date) {
+    this.andWhere(
+      `PRESENTATION_DATE BETWEEN '${date} 00:00:00' AND '${date} 23:59:59'`,
+    );
   }
   return this;
 };

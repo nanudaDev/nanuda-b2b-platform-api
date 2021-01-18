@@ -92,6 +92,13 @@ export class NanudaAttendeesOnlineService extends BaseService {
       req,
     );
     // await slack notification
+    newAttendee.totalAttendees = await this.attendeesOnlineRepo
+      .createQueryBuilder('attendeesOnline')
+      .getCount();
+    newAttendee.attendeesByDate = await this.attendeesOnlineRepo
+      .createQueryBuilder('attendeesOnline')
+      .AndWhereOnDayOf(new Date(appliedDate).toISOString().slice(0, 10))
+      .getCount();
     await this.nanudaSlackNotification.attendeesOnlineNotification(newAttendee);
     return newAttendee;
   }

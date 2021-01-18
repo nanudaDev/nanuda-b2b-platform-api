@@ -90,7 +90,7 @@ export class B2CNanudaSlackNotificationService extends BaseService {
           fields: [
             {
               title: '신청 내용',
-              value: ` - 이름: ${attendees.name} \n - 핸드폰: ${attendees.phone} \n - 신청날짜: ${presentationDate} \n - IP 주소: ${attendees.requestIp}`,
+              value: ` - 이름: ${attendees.name} \n - 핸드폰: ${attendees.phone} \n - 신청날짜: ${presentationDate} \n - IP 주소: ${attendees.requestIp} \n - 날짜 신청 인원: ${attendees.attendeesByDate} \n - 총 신청 인원: ${attendees.totalAttendees}`,
             },
           ],
         },
