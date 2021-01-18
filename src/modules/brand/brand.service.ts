@@ -413,12 +413,30 @@ export class BrandService extends BaseService {
   }
 
   async addNewBrandForAllSpaces() {
-    const spaces = await this.entityManager.getRepository(DeliverySpace).find()
-    await Promise.all(spaces.map(async space => {
-      const mapper = new DeliverySpaceBrandMapper()
-      mapper.deliverySpaceNo = space.no
-      mapper.brandNo = 32
-      await this.entityManager.getRepository(DeliverySpaceBrandMapper).save(mapper)
-    }))
+    const spaces = await this.entityManager.getRepository(DeliverySpace).find();
+    await Promise.all(
+      spaces.map(async space => {
+        const mapper = new DeliverySpaceBrandMapper();
+        mapper.deliverySpaceNo = space.no;
+        mapper.brandNo = 32;
+        await this.entityManager
+          .getRepository(DeliverySpaceBrandMapper)
+          .save(mapper);
+      }),
+    );
+  }
+
+  /**
+   * delete brands from space
+   * @param brandNo
+   */
+  async deleteBrandForAllSpaces(brandNo: number) {
+    await this.entityManager
+      .getRepository(DeliverySpaceBrandMapper)
+      .createQueryBuilder()
+      .delete()
+      .from(DeliverySpaceBrandMapper)
+      .where('brandNo = :brandNo', { brandNo: brandNo })
+      .execute();
   }
 }

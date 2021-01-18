@@ -112,6 +112,11 @@ export class AdminBrandController extends BaseController {
 
   @Get('/admin/add-brand')
   async addBrand() {
-    return await this.brandService.addNewBrandForAllSpaces()
+    return await this.brandService.addNewBrandForAllSpaces();
+  }
+
+  @Delete('/admin/delete-brand-mapper/:id([0-9]+)')
+  async deleteItems(@Param('id', ParseIntPipe) brandNo: number) {
+    return await this.brandService.deleteBrandForAllSpaces(brandNo);
   }
 }
