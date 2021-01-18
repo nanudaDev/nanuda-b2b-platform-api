@@ -78,4 +78,8 @@ export class AttendeesOnline extends BaseMapperEntity<AttendeesOnline> {
   requestIp?: string;
 
   isNanudaUser?: YN;
+
+  totalAttendees?: number;
+
+  attendeesByDate?: number;
 }
