@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsOptional, MinLength } from 'class-validator';
+import { IsIP, IsOptional, MinLength } from 'class-validator';
 import { BaseDto } from 'src/core';
 import { AttendeesOnline } from '../attendees-online.entity';
 
@@ -32,4 +32,10 @@ export class NanudaAttendeesOnlineCreateDto
   @IsOptional()
   @Expose()
   eventNo: number;
+
+  @ApiPropertyOptional()
+  @IsIP()
+  @IsOptional()
+  @Expose()
+  requestIp?: string;
 }
