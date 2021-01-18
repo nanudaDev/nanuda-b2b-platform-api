@@ -71,5 +71,11 @@ export class AttendeesOnline extends BaseMapperEntity<AttendeesOnline> {
   })
   oneDayBeforeMessageDate: any;
 
+  @Column({
+    name: 'REQUEST_IP',
+    type: 'varchar',
+  })
+  requestIp?: string;
+
   isNanudaUser?: YN;
 }
