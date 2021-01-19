@@ -8,6 +8,7 @@ import { Attendees } from 'src/modules/attendees/attendees.entity';
 import * as moment from 'moment';
 import { LandingPageSuccessRecord } from 'src/modules/landing-page-success-record/landing-page-success-record.entity';
 import { YN } from 'src/common';
+import { AttendeesOnline } from 'src/modules/attendees-online/attendees-online.entity';
 
 @Injectable()
 export class B2CNanudaSlackNotificationService extends BaseService {
@@ -64,6 +65,32 @@ export class B2CNanudaSlackNotificationService extends BaseService {
             {
               title: '신청 내용',
               value: ` - 이름: ${attendees.name} \n - 핸드폰: ${attendees.phone} \n - 시간대: ${attendees.scheduleTime} \n - 광고 유형: ${attendees.event.eventTypeInfo.value}`,
+            },
+          ],
+        },
+      ],
+    };
+
+    this.__send_presentation_slack(message);
+  }
+
+  /**
+   * send presentation slack
+   * @param attendees
+   */
+  async attendeesOnlineNotification(attendees: AttendeesOnline) {
+    const presentationDate = moment(attendees.presentationDate).format(
+      'YYYY-MM-DD, ddd',
+    );
+    const message = {
+      text: `온라인 창업 설명회 신청 안내 ${presentationDate}`,
+      attachments: [
+        {
+          color: '#7CD197',
+          fields: [
+            {
+              title: '신청 내용',
+              value: ` - 이름: ${attendees.name} \n - 핸드폰: ${attendees.phone} \n - 신청날짜: ${presentationDate} \n - IP 주소: ${attendees.requestIp} \n - 날짜 신청 인원: ${attendees.attendeesByDate} \n - 총 신청 인원: ${attendees.totalAttendees}`,
             },
           ],
         },

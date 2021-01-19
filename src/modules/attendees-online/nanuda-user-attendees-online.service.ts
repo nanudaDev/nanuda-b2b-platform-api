@@ -6,6 +6,13 @@ import { EntityManager, Repository } from 'typeorm';
 import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 import { AttendeesOnline } from './attendees-online.entity';
 import { NanudaAttendeesOnlineCreateDto } from './dto';
+import * as crypto from 'crypto';
+import {
+  B2CNanudaSlackNotificationService,
+  NanudaSmsNotificationService,
+} from 'src/core/utils';
+import { Request } from 'express';
+import * as moment from 'moment';
 
 @Injectable()
 export class NanudaAttendeesOnlineService extends BaseService {
@@ -13,6 +20,8 @@ export class NanudaAttendeesOnlineService extends BaseService {
     @InjectRepository(AttendeesOnline)
     private readonly attendeesOnlineRepo: Repository<AttendeesOnline>,
     @InjectEntityManager() private readonly entityManager: EntityManager,
+    private readonly nanudaSmsNotificationService: NanudaSmsNotificationService,
+    private readonly nanudaSlackNotification: B2CNanudaSlackNotificationService,
   ) {
     super();
   }
@@ -23,7 +32,10 @@ export class NanudaAttendeesOnlineService extends BaseService {
    */
   async createAttendees(
     nanudaAttendeesOnlineCreateDto: NanudaAttendeesOnlineCreateDto,
+    req: Request,
   ): Promise<string | AttendeesOnline> {
+    const days = 3;
+    const todayDate = new Date().toISOString().slice(0, 10);
     const checkIfUser = await this.entityManager
       .getRepository(NanudaUser)
       .findOne({
@@ -38,30 +50,56 @@ export class NanudaAttendeesOnlineService extends BaseService {
         phone: nanudaAttendeesOnlineCreateDto.phone,
       },
     });
+    const iPExists = await this.attendeesOnlineRepo.findOne({
+      where: { requestIp: nanudaAttendeesOnlineCreateDto.requestIp },
+    });
+    // if IP EXISTS
+    if (iPExists) {
+      return '가입한 IP주소입니다.';
+    }
     //  if already applied
     if (checkIfApplied) {
       return '이미 신청한 전화번호입니다.';
     }
     let newAttendee = new AttendeesOnline(nanudaAttendeesOnlineCreateDto);
+    newAttendee.tempCode = crypto.randomBytes(36).toString('hex');
+    // console.log(newAttendee.tempCode);
     newAttendee = await this.attendeesOnlineRepo.save(newAttendee);
     // check if larger than three days or less
     const createdDate = new Date(newAttendee.createdAt);
     const appliedDate = new Date(newAttendee.presentationDate);
     const differenceInTime = appliedDate.getTime() - createdDate.getTime();
     const differenceInDays = Math.round(differenceInTime / (1000 * 3600 * 24));
-    console.log(Math.round(differenceInDays));
     // check three day flag
     if (differenceInDays >= 3) {
       newAttendee.threeDayFlag = YN.YES;
+      newAttendee.threeDayBeforeMessageDate = moment(appliedDate)
+        .subtract(3, 'day')
+        .format('YYYY-MM-DD');
     } else {
       newAttendee.threeDayFlag = YN.NO;
     }
+    newAttendee.oneDayBeforeMessageDate = moment(appliedDate)
+      .subtract(1, 'day')
+      .format('YYYY-MM-DD');
     if (checkIfUser) {
       newAttendee.isNanudaUser = YN.YES;
     }
     await this.attendeesOnlineRepo.save(newAttendee);
     // await sms notification
+    await this.nanudaSmsNotificationService.sendPresentationEventOnline(
+      newAttendee,
+      req,
+    );
     // await slack notification
+    newAttendee.totalAttendees = await this.attendeesOnlineRepo
+      .createQueryBuilder('attendeesOnline')
+      .getCount();
+    newAttendee.attendeesByDate = await this.attendeesOnlineRepo
+      .createQueryBuilder('attendeesOnline')
+      .AndWhereOnDayOf(new Date(appliedDate).toISOString().slice(0, 10))
+      .getCount();
+    await this.nanudaSlackNotification.attendeesOnlineNotification(newAttendee);
     return newAttendee;
   }
 }

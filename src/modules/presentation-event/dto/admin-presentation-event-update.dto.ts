@@ -10,7 +10,11 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Default } from 'src/common';
-import { BaseDto, PRESENTATION_EVENT_TYPE } from 'src/core';
+import {
+  BaseDto,
+  PRESENTATION_DISPLAY_TYPE,
+  PRESENTATION_EVENT_TYPE,
+} from 'src/core';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';
 import { PresentationEvent } from '../presentation-event.entity';
 
@@ -78,7 +82,7 @@ export class AdminPresentationEventUpdateeDto
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  presentationDate: Date;
+  presentationDate?: Date;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -95,4 +99,26 @@ export class AdminPresentationEventUpdateeDto
   @Default('창업 설명회 신청하기')
   @Expose()
   buttonDesc?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  zoomLink?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  zoomId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  zoomPassword?: string;
+
+  @ApiPropertyOptional({ enum: PRESENTATION_DISPLAY_TYPE })
+  @IsEnum(PRESENTATION_DISPLAY_TYPE)
+  @Expose()
+  @Default(PRESENTATION_DISPLAY_TYPE.OFFLINE)
+  @IsOptional()
+  displayType?: PRESENTATION_DISPLAY_TYPE;
 }

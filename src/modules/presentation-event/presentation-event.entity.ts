@@ -76,9 +76,8 @@ export class PresentationEvent extends BaseEntity<PresentationEvent> {
   @Column({
     type: 'datetime',
     name: 'PRESENTATION_DATE',
-    nullable: false,
   })
-  presentationDate: Date;
+  presentationDate?: Date;
 
   @Column({
     type: 'varchar',
@@ -113,6 +112,24 @@ export class PresentationEvent extends BaseEntity<PresentationEvent> {
     default: '창업 설명회 신청하기',
   })
   buttonDesc?: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'ZOOM_LINK',
+  })
+  zoomLink?: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'ZOOM_ID',
+  })
+  zoomId?: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'ZOOM_PASSWORD',
+  })
+  zoomPassword?: string;
 
   @Column({
     type: 'varchar',

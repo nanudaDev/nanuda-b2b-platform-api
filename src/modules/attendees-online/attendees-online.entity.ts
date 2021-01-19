@@ -44,11 +44,42 @@ export class AttendeesOnline extends BaseMapperEntity<AttendeesOnline> {
   })
   threeDayFlag?: YN;
 
+  /**
+   * 임시 비디오 접속 코드
+   */
+  @Column({
+    name: 'TEMP_VIDEO_KEY',
+    type: 'varchar',
+  })
+  tempCode?: string;
+
   @Column({
     name: 'PRESENTATION_DATE',
     type: 'datetime',
   })
-  presentationDate: Date | string;
+  presentationDate: any;
+
+  @Column({
+    name: 'THREE_DAY_MESSAGE_DATE',
+    type: 'varchar',
+  })
+  threeDayBeforeMessageDate: any;
+
+  @Column({
+    name: 'ONE_DAY_BEFORE_MESSAGE_DATE',
+    type: 'varchar',
+  })
+  oneDayBeforeMessageDate: any;
+
+  @Column({
+    name: 'REQUEST_IP',
+    type: 'varchar',
+  })
+  requestIp?: string;
 
   isNanudaUser?: YN;
+
+  totalAttendees?: number;
+
+  attendeesByDate?: number;
 }
