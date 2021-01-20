@@ -203,7 +203,8 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
             deliveryFounderConsultIds.push(newConsult.no);
           }),
         );
-        // send information to suer
+        // send information to applied user
+        // TODO: Compose message to send to end user
         const deliverySpaces = await entityManager
           .getRepository(DeliverySpace)
           .createQueryBuilder('deliverySpace')
@@ -254,7 +255,8 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
                   authCode: COMPANY_USER.ADMIN_COMPANY_USER,
                 },
               });
-
+            console.log(masterCompanyUser);
+            // TODO: Compose sms message to send to company user
             // await this.smsNotificationService.notifyCompanyAdmin
           }),
         );
