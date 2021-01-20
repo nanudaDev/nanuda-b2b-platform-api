@@ -149,6 +149,13 @@ export class DeliveryFounderConsult extends BaseEntity<DeliveryFounderConsult> {
   })
   openedAt?: Date;
 
+  @Column({
+    type: 'char',
+    name: 'IS_CONSULTED_YN',
+    default: YN.YES,
+  })
+  isConsultedYn?: YN;
+
   @ManyToOne(type => Admin)
   @JoinColumn({ name: 'S_CONSULT_MANAGER' })
   admin?: Admin;

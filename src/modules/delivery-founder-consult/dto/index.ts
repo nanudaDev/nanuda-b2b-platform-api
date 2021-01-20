@@ -9,3 +9,4 @@ export * from './delivery-founder-consult-update.dto';
 
 //
 export * from './nanuda-delivery-founder-consult-create.dto';
+export * from './without-login-delivery-founder-consult-create.dto';

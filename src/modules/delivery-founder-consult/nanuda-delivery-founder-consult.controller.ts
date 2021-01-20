@@ -5,6 +5,7 @@ import { NanudaDeliveryFounderConsultService } from './nanuda-delivery-founder-c
 import {
   NanudaDeliveryFounderConsultCreateDto,
   DeliveryFounderConsultListDto,
+  WithoutLoginDeliveryFounderConsultCreateDto,
 } from './dto';
 import { DeliveryFounderConsult } from './delivery-founder-consult.entity';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
@@ -31,6 +32,22 @@ export class NanudaDeliveryFounderConsultController extends BaseController {
   ): Promise<DeliveryFounderConsult> {
     return await this.nanudaDeliveryFounderConsultService.create(
       nanudaDeliveryFounderConsultCreateDto,
+      req,
+    );
+  }
+
+  /**
+   * create for nanuda user
+   * @param withoutLoginCreateDto
+   * @param req
+   */
+  @Post('/nanuda/delivery-founder-consult/bulk')
+  async bulkCreate(
+    @Body() withoutLoginCreateDto: WithoutLoginDeliveryFounderConsultCreateDto,
+    @Req() req: Request,
+  ) {
+    return await this.nanudaDeliveryFounderConsultService.createForNanudaUserWithoutLogin(
+      withoutLoginCreateDto,
       req,
     );
   }
