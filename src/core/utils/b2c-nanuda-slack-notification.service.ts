@@ -137,7 +137,7 @@ export class B2CNanudaSlackNotificationService extends BaseService {
       ],
     };
 
-    this.__send_slack(message, SLACK_TYPE.PRESENTATION);
+    this.__send_slack(message, SLACK_TYPE.SECOND_MEETING);
   }
 
   /**
