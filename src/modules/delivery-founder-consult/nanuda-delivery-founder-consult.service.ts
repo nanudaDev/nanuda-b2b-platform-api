@@ -227,7 +227,7 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
 
         // remove duplicates
         companyIds = this.__remove_duplicate(companyIds, 'companyNo');
-        // send information
+        // send information to company
         await Promise.all(
           companyIds.map(async companyId => {
             const companyDistricts = await this.deliveryFounderConsultRepo
@@ -246,6 +246,7 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
                 deliveryFounderConsultIds,
               )
               .getMany();
+
             const masterCompanyUser = await entityManager
               .getRepository(CompanyUser)
               .findOne({
@@ -260,6 +261,8 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
             // await this.smsNotificationService.notifyCompanyAdmin
           }),
         );
+
+        // send notification to admins
       },
     );
 
