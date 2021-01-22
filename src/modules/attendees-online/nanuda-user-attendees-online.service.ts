@@ -5,7 +5,10 @@ import { BaseService } from 'src/core';
 import { EntityManager, Repository } from 'typeorm';
 import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 import { AttendeesOnline } from './attendees-online.entity';
-import { NanudaAttendeesOnlineCreateDto } from './dto';
+import {
+  NanudaAttendeesOnlineCreateDto,
+  NanudaSecondMeetingApplyDto,
+} from './dto';
 import * as crypto from 'crypto';
 import {
   B2CNanudaSlackNotificationService,
@@ -13,12 +16,17 @@ import {
 } from 'src/core/utils';
 import { Request } from 'express';
 import * as moment from 'moment';
+import { SecondMeetingApplicant } from './second-meeting-applicant.entity';
 
 @Injectable()
 export class NanudaAttendeesOnlineService extends BaseService {
   constructor(
     @InjectRepository(AttendeesOnline)
     private readonly attendeesOnlineRepo: Repository<AttendeesOnline>,
+    @InjectRepository(SecondMeetingApplicant)
+    private readonly secondMeetingApplicantRepo: Repository<
+      SecondMeetingApplicant
+    >,
     @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly nanudaSmsNotificationService: NanudaSmsNotificationService,
     private readonly nanudaSlackNotification: B2CNanudaSlackNotificationService,
@@ -101,5 +109,48 @@ export class NanudaAttendeesOnlineService extends BaseService {
       .getCount();
     await this.nanudaSlackNotification.attendeesOnlineNotification(newAttendee);
     return newAttendee;
+  }
+
+  /**
+   * second kmeeting application url
+   * @param nanudaSecondMeetingApplyDto
+   */
+  async secondMeetingApplicateCreate(
+    nanudaSecondMeetingApplyDto: NanudaSecondMeetingApplyDto,
+  ): Promise<SecondMeetingApplicant> {
+    let secondMeetingApplicant = new SecondMeetingApplicant(
+      nanudaSecondMeetingApplyDto,
+    );
+    const checkIfUser = await this.entityManager
+      .getRepository(NanudaUser)
+      .findOne({
+        where: {
+          name: nanudaSecondMeetingApplyDto.name,
+          phone: nanudaSecondMeetingApplyDto.phone,
+        },
+      });
+
+    if (checkIfUser) {
+      secondMeetingApplicant.isNanudaUser = YN.YES;
+    }
+    const firstMeetingData = await this.attendeesOnlineRepo.findOne({
+      where: {
+        name: nanudaSecondMeetingApplyDto.name,
+        phone: nanudaSecondMeetingApplyDto.phone,
+      },
+    });
+    if (firstMeetingData) {
+      secondMeetingApplicant.firstMeetingAppliedDate = firstMeetingData.presentationDate
+        .toISOString()
+        .slice(0, 10);
+    }
+    secondMeetingApplicant = await this.secondMeetingApplicantRepo.save(
+      secondMeetingApplicant,
+    );
+    // await slack notification
+    await this.nanudaSlackNotification.secondMeetingNotification(
+      secondMeetingApplicant,
+    );
+    return secondMeetingApplicant;
   }
 }

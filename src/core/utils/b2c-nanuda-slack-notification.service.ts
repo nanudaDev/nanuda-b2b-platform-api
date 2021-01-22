@@ -9,13 +9,22 @@ import * as moment from 'moment';
 import { LandingPageSuccessRecord } from 'src/modules/landing-page-success-record/landing-page-success-record.entity';
 import { YN } from 'src/common';
 import { AttendeesOnline } from 'src/modules/attendees-online/attendees-online.entity';
+import { isFunction } from 'util';
+import { SecondMeetingApplicant } from 'src/modules/attendees-online/second-meeting-applicant.entity';
 
+enum SLACK_TYPE {
+  WEBHOOK = 'WEBHOOK',
+  LANDING = 'LANDING',
+  PRESENTATION = 'PRESENTATION',
+  SECOND_MEETING = 'SECOND_MEETING',
+}
 @Injectable()
 export class B2CNanudaSlackNotificationService extends BaseService {
   slack = new Slack();
   webhookuri = process.env.SLACK_URL;
   presentationSlackUrl = process.env.BUSINESS_PRESENTATION_SLACK_URL;
   landingPageSlackUrl = process.env.LANDING_PAGE_SUCCESS_SLACK_URL;
+  secondMeetingSlackUrl = process.env.SECOND_MEETING_APPLICANT_SLACK_URL;
 
   async deliveryFounderConsultAdded(
     deliveryFounderConsult: DeliveryFounderConsult,
@@ -45,7 +54,7 @@ export class B2CNanudaSlackNotificationService extends BaseService {
         },
       ],
     };
-    this.__send_slack(message);
+    this.__send_slack(message, SLACK_TYPE.WEBHOOK);
   }
 
   /**
@@ -71,7 +80,7 @@ export class B2CNanudaSlackNotificationService extends BaseService {
       ],
     };
 
-    this.__send_presentation_slack(message);
+    this.__send_slack(message, SLACK_TYPE.PRESENTATION);
   }
 
   /**
@@ -97,7 +106,39 @@ export class B2CNanudaSlackNotificationService extends BaseService {
       ],
     };
 
-    this.__send_presentation_slack(message);
+    this.__send_slack(message, SLACK_TYPE.PRESENTATION);
+  }
+
+  /**
+   * send presentation slack
+   * @param attendees
+   */
+  async secondMeetingNotification(
+    secondMeetingApplicant: SecondMeetingApplicant,
+  ) {
+    const message = {
+      text: `온라인 창업 설명회 2차 대면 신청 알림`,
+      attachments: [
+        {
+          color: '#7CD197',
+          fields: [
+            {
+              title: '신청 내용',
+              value: ` - 이름: ${secondMeetingApplicant.name} \n - 핸드폰: ${
+                secondMeetingApplicant.phone
+              } \n - 1차 신청 날짜: ${secondMeetingApplicant.firstMeetingAppliedDate ||
+                '내용 없음'} \n - IP 주소: ${
+                secondMeetingApplicant.requestIp
+              } \n - 기존 사용자: ${
+                secondMeetingApplicant.isNanudaUser
+              }\n - 창업희망 지역: ${secondMeetingApplicant.hopeArea}`,
+            },
+          ],
+        },
+      ],
+    };
+
+    this.__send_slack(message, SLACK_TYPE.SECOND_MEETING);
   }
 
   /**
@@ -132,12 +173,23 @@ export class B2CNanudaSlackNotificationService extends BaseService {
       ],
     };
 
-    this.__send_landing_slack(message);
+    this.__send_slack(message, SLACK_TYPE.LANDING);
   }
 
   // send notification
-  private __send_slack(message: object) {
-    this.slack.setWebhook(this.webhookuri);
+  private __send_slack(message: object, slackType: SLACK_TYPE) {
+    if (slackType === SLACK_TYPE.WEBHOOK) {
+      this.slack.setWebhook(this.webhookuri);
+    }
+    if (slackType === SLACK_TYPE.LANDING) {
+      this.slack.setWebhook(this.landingPageSlackUrl);
+    }
+    if (slackType === SLACK_TYPE.PRESENTATION) {
+      this.slack.setWebhook(this.presentationSlackUrl);
+    }
+    if (slackType === SLACK_TYPE.SECOND_MEETING) {
+      this.slack.setWebhook(this.secondMeetingSlackUrl);
+    }
     this.slack.webhook(message, function(err, response) {
       if (err) {
         console.log(err);
@@ -145,21 +197,21 @@ export class B2CNanudaSlackNotificationService extends BaseService {
     });
   }
 
-  private __send_presentation_slack(message: object) {
-    this.slack.setWebhook(this.presentationSlackUrl);
-    this.slack.webhook(message, function(err, response) {
-      if (err) {
-        console.log(err);
-      }
-    });
-  }
+  // private __send_presentation_slack(message: object) {
+  //   this.slack.setWebhook(this.presentationSlackUrl);
+  //   this.slack.webhook(message, function(err, response) {
+  //     if (err) {
+  //       console.log(err);
+  //     }
+  //   });
+  // }
 
-  private __send_landing_slack(message: object) {
-    this.slack.setWebhook(this.landingPageSlackUrl);
-    this.slack.webhook(message, function(err, response) {
-      if (err) {
-        console.log(err);
-      }
-    });
-  }
+  // private __send_landing_slack(message: object) {
+  //   this.slack.setWebhook(this.landingPageSlackUrl);
+  //   this.slack.webhook(message, function(err, response) {
+  //     if (err) {
+  //       console.log(err);
+  //     }
+  //   });
+  // }
 }
