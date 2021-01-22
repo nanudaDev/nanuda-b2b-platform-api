@@ -39,9 +39,11 @@ export class NanudaAttendeesOnlineController extends BaseController {
   @Post('/nanuda/second-meeting-applicant')
   async secondMeetingApplicantCreate(
     @Body() secondMeetingApplicantDto: NanudaSecondMeetingApplyDto,
+    @Req() req: Request,
   ): Promise<SecondMeetingApplicant> {
     return await this.attendeesOnlineService.secondMeetingApplicateCreate(
       secondMeetingApplicantDto,
+      req,
     );
   }
 }
