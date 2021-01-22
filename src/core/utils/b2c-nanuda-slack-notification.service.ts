@@ -129,8 +129,9 @@ export class B2CNanudaSlackNotificationService extends BaseService {
               } \n - 1차 신청 날짜: ${secondMeetingApplicant.firstMeetingAppliedDate ||
                 '내용 없음'} \n - IP 주소: ${
                 secondMeetingApplicant.requestIp
-              } \n - 기존 사용자: ${secondMeetingApplicant.isNanudaUser}
-              \n - 창업희망 지역: ${secondMeetingApplicant.hopeArea}`,
+              } \n - 기존 사용자: ${
+                secondMeetingApplicant.isNanudaUser
+              }\n - 창업희망 지역: ${secondMeetingApplicant.hopeArea}`,
             },
           ],
         },
