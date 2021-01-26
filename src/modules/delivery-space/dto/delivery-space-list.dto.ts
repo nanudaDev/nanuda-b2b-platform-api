@@ -119,12 +119,12 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  region2DepthName?: string;
+  region1DepthName?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  region1DepthName?: string;
+  region2DepthName?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

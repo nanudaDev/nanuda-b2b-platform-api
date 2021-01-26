@@ -9,17 +9,22 @@ import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { DeliverySpace } from './delivery-space.entity';
 import { Repository, EntityManager, In } from 'typeorm';
 import { CompanyDistrict } from '../company-district/company-district.entity';
-import { DeliverySpaceListDto } from './dto';
+import {
+  DeliverySpaceListDto,
+  NanudaDeliverySpaceFindDistrictOrCityDto,
+} from './dto';
 import {
   ORDER_BY_VALUE,
   PaginatedRequest,
   PaginatedResponse,
   YN,
+  LOCATION_TYPE,
 } from 'src/common';
 import { FavoriteSpaceMapper } from '../favorite-space-mapper/favorite-space-mapper.entity';
 import { DeliveryFounderConsult } from '../delivery-founder-consult/delivery-founder-consult.entity';
 import { CompanyDistrictPromotionMapper } from '../company-district-promotion-mapper/company-district-promotion-mapper.entity';
 import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
+import { RemoveDuplicateObject } from 'src/core/utils';
 
 @Injectable()
 export class NanudaDeliverySpaceService extends BaseService {
@@ -529,6 +534,9 @@ export class NanudaDeliverySpaceService extends BaseService {
     return await qb;
   }
 
+  /**
+   * find max values
+   */
   async findMaxValues() {
     const maxDepositValue = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
@@ -569,5 +577,78 @@ export class NanudaDeliverySpaceService extends BaseService {
       maxMonthlyRentFee: maxRentValue[0].monthlyRentFee,
     };
     return results;
+  }
+
+  /**
+   * find all for landing page
+   * @param deliverySpaceListDto
+   */
+  async findAllDeliverySpacesByDistricts(
+    deliverySpaceListDto: DeliverySpaceListDto,
+  ): Promise<DeliverySpace[]> {
+    const qb = this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .CustomInnerJoinAndSelect(['companyDistrict'])
+      .innerJoin('companyDistrict.company', 'company')
+      .where('company.companyStatus = :companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere(
+        'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
+        { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
+      )
+      .AndWhereLike(
+        'companyDistrict',
+        'region2DepthName',
+        deliverySpaceListDto.region2DepthName,
+        deliverySpaceListDto.exclude('region2DepthName'),
+      );
+
+    return await qb.getMany();
+  }
+
+  /**
+   * find all districts byt city
+   * @param nanudaDeliverySpaceFindDistrictOrCityDto
+   */
+  async findAllDistrictsByCityCode(
+    nanudaDeliverySpaceFindDistrictOrCityDto: NanudaDeliverySpaceFindDistrictOrCityDto,
+  ): Promise<object[]> {
+    const districtNamesAndCode = [];
+    const qb = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .CustomInnerJoinAndSelect(['companyDistrict'])
+      .leftJoinAndSelect('companyDistrict.promotions', 'promotions')
+      .innerJoin('companyDistrict.company', 'company')
+      .where('company.companyStatus = :companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere(
+        'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
+        { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
+      )
+      .andWhere('companyDistrict.region1DepthName like :region1DepthName', {
+        region1DepthName: `${nanudaDeliverySpaceFindDistrictOrCityDto.locationType}%`,
+      })
+      .andWhere('deliverySpace.remainingCount > 0')
+      .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+      .getMany();
+
+    // push district object
+    await Promise.all(
+      qb.map(q => {
+        districtNamesAndCode.push({
+          districtName: q.companyDistrict.region2DepthName,
+          hdongCode: q.companyDistrict.hCode,
+        });
+      }),
+    );
+    if (districtNamesAndCode.length < 3) {
+      return qb;
+    } else {
+      districtNamesAndCode.unshift({ directSpace: YN.NO });
+    }
+    return RemoveDuplicateObject(districtNamesAndCode, 'districtName');
   }
 }

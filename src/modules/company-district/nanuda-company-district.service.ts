@@ -8,6 +8,7 @@ import { CompanyDistrictListDto, NanudaCompanyDistrictSearchDto } from './dto';
 import Axios from 'axios';
 import { YN } from 'src/common';
 import { Space } from '../space/space.entity';
+import { RemoveDuplicateObject } from 'src/core/utils';
 
 export class SearchResults {
   lat: string;
@@ -213,7 +214,7 @@ export class NanudaCompanyDistrictService extends BaseService {
         'companyDistrict.region3DepthName',
       ])
       .getMany();
-    const reduced: any = this.__remove_duplicate(
+    const reduced: any = RemoveDuplicateObject(
       dropdownDistrict,
       'region2DepthName',
     );
@@ -261,10 +262,7 @@ export class NanudaCompanyDistrictService extends BaseService {
       .select(['companyDistrict.no', 'companyDistrict.region1DepthName'])
       .getMany();
 
-    const firstReduced: any = this.__remove_duplicate(
-      first,
-      'region1DepthName',
-    );
+    const firstReduced: any = RemoveDuplicateObject(first, 'region1DepthName');
     firstReduced.map(reduce => {
       const top = new DropdownResults();
       top.no = reduce.no;
@@ -298,7 +296,7 @@ export class NanudaCompanyDistrictService extends BaseService {
       ])
       .getMany();
 
-    const secondReduced: any = this.__remove_duplicate(
+    const secondReduced: any = RemoveDuplicateObject(
       second,
       'region2DepthName',
     );
@@ -331,10 +329,7 @@ export class NanudaCompanyDistrictService extends BaseService {
       ])
       .getMany();
 
-    const thirdReduced: any = this.__remove_duplicate(
-      third,
-      'region3DepthName',
-    );
+    const thirdReduced: any = RemoveDuplicateObject(third, 'region3DepthName');
 
     thirdReduced.map(reduce => {
       const top = new DropdownResults();
@@ -373,9 +368,5 @@ export class NanudaCompanyDistrictService extends BaseService {
       .getMany();
 
     return qb;
-  }
-
-  private __remove_duplicate(array: any, key: string) {
-    return [...new Map(array.map(item => [item[key], item])).values()];
   }
 }
