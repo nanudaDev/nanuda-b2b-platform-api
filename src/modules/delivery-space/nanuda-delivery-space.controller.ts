@@ -1,7 +1,10 @@
 import { Controller, Get, Query, Param, ParseIntPipe } from '@nestjs/common';
 import { BaseController } from 'src/core';
 import { NanudaDeliverySpaceService } from './nanuda-delivery-space.service';
-import { DeliverySpaceListDto } from './dto';
+import {
+  DeliverySpaceListDto,
+  NanudaDeliverySpaceFindDistrictOrCityDto,
+} from './dto';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
 import { DeliverySpace } from './delivery-space.entity';
 import { ApiTags } from '@nestjs/swagger';
@@ -67,6 +70,9 @@ export class NanudaDeliverySpaceController extends BaseController {
     );
   }
 
+  /**
+   * get max values
+   */
   @Get('/nanuda/delivery-space/max-values')
   async findMaxValues() {
     return await this.nanudaDeliverySpaceService.findMaxValues();
@@ -78,5 +84,19 @@ export class NanudaDeliverySpaceController extends BaseController {
   @Get('/nanuda/delivery-space/count')
   async deliverySpaceCount() {
     return await this.nanudaDeliverySpaceService.deliverySpaceCount();
+  }
+
+  /**
+   *
+   * @param nanudaDeliverySpaceFindDistrictDto
+   */
+  @Get('/nanuda/delviery-space/find-all-district-by-code')
+  async findAllDistrictsByCode(
+    @Query()
+    nanudaDeliverySpaceFindDistrictDto: NanudaDeliverySpaceFindDistrictOrCityDto,
+  ): Promise<object[]> {
+    return await this.nanudaDeliverySpaceService.findAllDistrictsByCityCode(
+      nanudaDeliverySpaceFindDistrictDto,
+    );
   }
 }

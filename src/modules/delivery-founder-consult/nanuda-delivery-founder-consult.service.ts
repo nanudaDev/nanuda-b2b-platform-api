@@ -16,7 +16,10 @@ import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { B2CNanudaSlackNotificationService } from 'src/core/utils/b2c-nanuda-slack-notification.service';
 import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
-import { NanudaSmsNotificationService } from 'src/core/utils';
+import {
+  NanudaSmsNotificationService,
+  RemoveDuplicateObject,
+} from 'src/core/utils';
 import { Request } from 'express';
 import { Admin } from '../admin';
 import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
@@ -216,7 +219,7 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
             withoutLoginCreateDto.deliverySpaceNos,
           )
           .getMany();
-
+        // send message here
         let companyIds = [];
         deliverySpaces.map(deliverySpace => {
           companyIds.push({
@@ -226,7 +229,7 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
         });
 
         // remove duplicates
-        companyIds = this.__remove_duplicate(companyIds, 'companyNo');
+        companyIds = RemoveDuplicateObject(companyIds, 'companyNo');
         // send information to company
         await Promise.all(
           companyIds.map(async companyId => {
@@ -267,9 +270,5 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
     );
 
     return createDeliveryFounderConsults;
-  }
-
-  private __remove_duplicate(array: any[], key: string) {
-    return [...new Map(array.map(item => [item[key], item])).values()];
   }
 }

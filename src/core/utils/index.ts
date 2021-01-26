@@ -5,3 +5,4 @@ export * from './duplicate-key-remover.util';
 export * from './nanuda-sms-notification.service';
 export * from './new-data-duplicate-key-remover.util';
 export * from './sms-notification.service';
+export * from './remove-duplicate.util';
