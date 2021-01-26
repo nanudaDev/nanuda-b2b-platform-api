@@ -134,31 +134,37 @@ export class NanudaDeliverySpaceService extends BaseService {
         'address',
         deliverySpaceListDto.address,
         deliverySpaceListDto.exclude('address'),
+      )
+      .AndWhereLike(
+        'companyDistrict',
+        'region1DepthName',
+        deliverySpaceListDto.region1DepthName,
+        deliverySpaceListDto.exclude('region1DepthName'),
+      )
+      .AndWhereLike(
+        'companyDistrict',
+        'region2DepthName',
+        deliverySpaceListDto.region2DepthName,
+        deliverySpaceListDto.exclude('region2DepthName'),
+      )
+      .AndWhereLike(
+        'companyDistrict',
+        'region3DepthName',
+        deliverySpaceListDto.region3DepthName,
+        deliverySpaceListDto.exclude('region3DepthName'),
+      )
+      .AndWhereEqual(
+        'companyDistrict',
+        'hCode',
+        deliverySpaceListDto.hCode,
+        deliverySpaceListDto.exclude('hCode'),
+      )
+      .AndWhereEqual(
+        'companyDistrict',
+        'bCode',
+        deliverySpaceListDto.bCode,
+        deliverySpaceListDto.exclude('bCode'),
       );
-    // .AndWhereBetweenValues(
-    //   'deliverySpace',
-    //   'size',
-    //   deliverySpaceListDto.minSize,
-    //   deliverySpaceListDto.maxSize,
-    //   deliverySpaceListDto.exclude('minSize'),
-    //   deliverySpaceListDto.exclude('maxSize'),
-    // )
-    // .AndWhereBetweenValues(
-    //   'deliverySpace',
-    //   'deposit',
-    //   deliverySpaceListDto.minDeposit,
-    //   deliverySpaceListDto.maxDeposit,
-    //   deliverySpaceListDto.exclude('minDeposit'),
-    //   deliverySpaceListDto.exclude('maxDeposit'),
-    // )
-    // .AndWhereBetweenValues(
-    //   'deliverySpace',
-    //   'monthlyRentFee',
-    //   deliverySpaceListDto.minMonthlyRentFee,
-    //   deliverySpaceListDto.maxMonthlyRentFee,
-    //   deliverySpaceListDto.exclude('minMonthlyRentFee'),
-    //   deliverySpaceListDto.exclude('maxMonthlyRentFee'),
-    // );
     // size
     if (deliverySpaceListDto.minSize && !deliverySpaceListDto.maxSize) {
       qb.andWhere('deliverySpace.size >= :minSize', {
@@ -633,6 +639,7 @@ export class NanudaDeliverySpaceService extends BaseService {
       .andWhere('deliverySpace.remainingCount > 0')
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+      .orderBy('deliverySpace.monthlyRentFee', ORDER_BY_VALUE.DESC)
       .getMany();
 
     // push district object
@@ -644,6 +651,7 @@ export class NanudaDeliverySpaceService extends BaseService {
         });
       }),
     );
+    // check if the number of districts is lower than three
     if (districtNamesAndCode.length < 3) {
       return qb;
     } else {
