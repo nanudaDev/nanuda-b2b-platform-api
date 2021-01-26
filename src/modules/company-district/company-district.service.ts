@@ -26,6 +26,7 @@ import {
 } from 'src/core/utils';
 import { CompanyDistrictAmenityMapper } from '../company-district-amenity-mapper/company-district-amenity-mapper.entity';
 import { CompanyDistrictAnalysisSenderService } from './company-district-analysis-sender.service';
+import * as daum from 'daum-map-api';
 import { FileUploadService } from '../file-upload/file-upload.service';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 import { CompanyDistrictPromotionMapper } from '../company-district-promotion-mapper/company-district-promotion-mapper.entity';

@@ -7,6 +7,8 @@ import { YN } from 'src/common';
 import { AdminSendMessageDto } from 'src/modules/sms-auth/dto';
 import { ENVIRONMENT } from 'src/config';
 import { DeliveryFounderConsultReply } from 'src/modules/delivery-founder-consult-reply/delivery-founder-consult-reply.entity';
+import { CompanyUser } from 'src/modules/company-user/company-user.entity';
+import { DeliveryFounderConsult } from 'src/modules/delivery-founder-consult/delivery-founder-consult.entity';
 export class AligoAuth {
   key: string;
   user_id: string;
@@ -80,6 +82,29 @@ export class SmsNotificationService extends BaseService {
     };
     req.body = body;
     await aligoapi.send(req, auth);
+    return;
+  }
+
+  /**
+   * send to company user
+   * @param companyUser
+   * @param consults
+   * @param req
+   */
+  async sendCartCompanyUserMessage(
+    companyUser: CompanyUser,
+    consults: DeliveryFounderConsult[],
+    req: Request,
+  ) {
+    const payload = await this.__send_cart_message_company(
+      companyUser,
+      consults,
+    );
+    req.body = payload.body;
+    const sms = await aligoapi.send(req, payload.auth);
+    if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
+      console.log(payload.body);
+    }
     return;
   }
 
@@ -159,6 +184,39 @@ export class SmsNotificationService extends BaseService {
       receiver: phone,
       sender: process.env.ALIGO_SENDER_PHONE,
       msg: `[위대한상사] 안녕하세요 나누다키친입니다. 신청서 번호 ${deliveryFounderConsultReply.deliveryFounderConsultNo}에 관한 새로운 정보가 추가되었습니다. 확인 부탁드립니다. \n해당 링크: ${process.env.B2B_BASE_URL}founder-consult/${deliveryFounderConsultReply.deliveryFounderConsultNo}`,
+      title: '안녕하세요 위대한상사입니다.',
+    };
+
+    return { auth, body };
+  }
+
+  private async __send_cart_message_company(
+    companyUser: CompanyUser,
+    consults: DeliveryFounderConsult[],
+  ): Promise<MessageObject> {
+    const auth = await this.__get_auth();
+    const spaces = [];
+    consults.map(consult => {
+      // TODO: 이벤트 노출할지 말지 고찰
+      // const promotions = [];
+      // if (
+      //   consult.deliverySpace.companyDistrict.promotions &&
+      //   consult.deliverySpace.companyDistrict.promotions.length > 0
+      // ) {
+      //   consult.deliverySpace.companyDistrict.promotions.map(promotion => {
+      //     promotions.push(` - ${promotion.title}\n`);
+      //   });
+      // }
+      spaces.push(
+        ` - ${consult.deliverySpace.companyDistrict.nameKr} ${consult.deliverySpace.size}평\n - 연결링크: ${process.env.B2B_BASE_URL}founder-consult/${consult.no}\n\n`,
+      );
+    });
+    const body = {
+      receiver: companyUser.phone,
+      sender: process.env.ALIGO_SENDER_PHONE,
+      msg: `[위대한상사] 안녕하세요 나누다키친입니다. ${
+        consults[0].nanudaUser.name
+      }님께서 상담신청하신 목록입니다. . \n${[...spaces]}`,
       title: '안녕하세요 위대한상사입니다.',
     };
 
