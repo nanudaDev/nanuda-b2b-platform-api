@@ -90,7 +90,7 @@ export class NanudaDeliverySpaceController extends BaseController {
    *
    * @param nanudaDeliverySpaceFindDistrictDto
    */
-  @Get('/nanuda/delviery-space/find-all-district-by-code')
+  @Get('/nanuda/delivery-space/find-all-district-by-code')
   async findAllDistrictsByCode(
     @Query()
     nanudaDeliverySpaceFindDistrictDto: NanudaDeliverySpaceFindDistrictOrCityDto,
