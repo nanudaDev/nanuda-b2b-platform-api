@@ -137,12 +137,6 @@ export class NanudaDeliverySpaceService extends BaseService {
       )
       .AndWhereLike(
         'companyDistrict',
-        'region1DepthName',
-        deliverySpaceListDto.region1DepthName,
-        deliverySpaceListDto.exclude('region1DepthName'),
-      )
-      .AndWhereLike(
-        'companyDistrict',
         'region2DepthName',
         deliverySpaceListDto.region2DepthName,
         deliverySpaceListDto.exclude('region2DepthName'),
@@ -165,6 +159,25 @@ export class NanudaDeliverySpaceService extends BaseService {
         deliverySpaceListDto.bCode,
         deliverySpaceListDto.exclude('bCode'),
       );
+    // if region1DepthName is '충청/경상'
+    if (deliverySpaceListDto.region1DepthName === '충청/경상') {
+      console.log('test');
+      qb.AndWhereIn('companyDistrict', 'region1DepthName', [
+        '부산',
+        '울산',
+        '충남',
+        '대구',
+        '포항',
+      ]);
+      delete deliverySpaceListDto.region1DepthName;
+    } else {
+      qb.AndWhereLike(
+        'companyDistrict',
+        'region1DepthName',
+        deliverySpaceListDto.region1DepthName,
+        deliverySpaceListDto.exclude('region1DepthName'),
+      );
+    }
     // size
     if (deliverySpaceListDto.minSize && !deliverySpaceListDto.maxSize) {
       qb.andWhere('deliverySpace.size >= :minSize', {
@@ -304,7 +317,7 @@ export class NanudaDeliverySpaceService extends BaseService {
     qb.WhereAndOrder(deliverySpaceListDto);
     qb.Paginate(pagination);
 
-    let [items, totalCount] = await qb.getManyAndCount();
+    const [items, totalCount] = await qb.getManyAndCount();
     // if(deliverySpaceListDto.amenityIds && deliverySpaceListDto.amenityIds.length > 1) {
     //   totalCount
     // }
@@ -373,7 +386,7 @@ export class NanudaDeliverySpaceService extends BaseService {
     deliverySpaceNo: number,
     nanudaUserNo?: number,
   ): Promise<DeliverySpace> {
-    let space = await this.deliverySpaceRepo
+    const space = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
       .CustomLeftJoinAndSelect([
@@ -502,7 +515,7 @@ export class NanudaDeliverySpaceService extends BaseService {
       .limit(5)
       .Paginate(pagination);
 
-    let [items, totalCount] = await qb.getManyAndCount();
+    const [items, totalCount] = await qb.getManyAndCount();
 
     items.map(item => {
       if (item.no === selectedDeliverySpace.no) {
