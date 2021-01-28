@@ -399,7 +399,7 @@ export class NanudaSmsNotificationService {
           consult.deliverySpace.companyDistrict.nameKr
         }\n - ${consult.deliverySpace.companyDistrict.address}\n - ${
           consult.deliverySpace.size
-        }평형\n\n ${[...promotions]}\n\n`,
+        }평형\n\n ${[...promotions]}\n`,
       );
     });
     const body = {
