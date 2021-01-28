@@ -383,9 +383,10 @@ export class NanudaDeliverySpaceService extends BaseService {
     }
     if (checkRatingDto.isSkipped === YN.NO) {
       let newTrack = new TrackTraceToSpaceCategory();
+      console.log(deliverySpaceListDto);
       newTrack.isSkippedYn = YN.NO;
-      newTrack.region1DepthName = deliverySpaceListDto.region1DepthName;
-      newTrack.region2DepthName = deliverySpaceListDto.region2DepthName;
+      newTrack.region1DepthName = items[0].companyDistrict.region1DepthName;
+      newTrack.region2DepthName = items[0].companyDistrict.region2DepthName;
       newTrack.kbFoodCategory = checkRatingDto.kbFoodCategory;
       newTrack = await this.entityManager
         .getRepository(TrackTraceToSpaceCategory)
@@ -418,8 +419,8 @@ export class NanudaDeliverySpaceService extends BaseService {
     } else {
       let newTrack = new TrackTraceToSpaceCategory();
       newTrack.isSkippedYn = YN.YES;
-      newTrack.region1DepthName = deliverySpaceListDto.region1DepthName;
-      newTrack.region2DepthName = deliverySpaceListDto.region2DepthName;
+      newTrack.region1DepthName = items[0].companyDistrict.region1DepthName;
+      newTrack.region2DepthName = items[0].companyDistrict.region2DepthName;
       newTrack.kbFoodCategory = null;
       newTrack = await this.entityManager
         .getRepository(TrackTraceToSpaceCategory)
