@@ -10,3 +10,4 @@ export * from './delivery-space-update.dto';
 
 // nanuda
 export * from './nanuda-delivery-space-find-district-or-city.dto';
+export * from './nanuda-track-trace-to-space-category-create.dto';
