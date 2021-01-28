@@ -170,6 +170,10 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
 
   consultCount?: number;
 
+  rating?: number;
+
+  ratingScore?: number;
+
   @ManyToOne(
     type => CompanyUser,
     companyUser => companyUser.deliverySpaces,

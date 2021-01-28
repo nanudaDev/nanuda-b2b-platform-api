@@ -4,12 +4,14 @@ import {
   FOUNDER_CONSULT,
   APPROVAL_STATUS,
   SPACE_TYPE,
+  CONST_NOTICE_BOARD,
 } from 'src/core';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { DeliverySpace } from './delivery-space.entity';
 import { Repository, EntityManager, In } from 'typeorm';
 import { CompanyDistrict } from '../company-district/company-district.entity';
 import {
+  CheckRatingDto,
   DeliverySpaceListDto,
   NanudaCreateTrackDto,
   NanudaDeliverySpaceFindDistrictOrCityDto,
@@ -27,6 +29,7 @@ import { CompanyDistrictPromotionMapper } from '../company-district-promotion-ma
 import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 import { RemoveDuplicateObject } from 'src/core/utils';
 import { TrackTraceToSpaceCategory } from '../track-trace-space-to-category/track-trace-space-to-category.entity';
+import Axios from 'axios';
 
 @Injectable()
 export class NanudaDeliverySpaceService extends BaseService {
@@ -49,6 +52,7 @@ export class NanudaDeliverySpaceService extends BaseService {
   async findAllForNanudaUser(
     deliverySpaceListDto: DeliverySpaceListDto,
     pagination: PaginatedRequest,
+    checkRatingDto?: CheckRatingDto,
   ): Promise<PaginatedResponse<DeliverySpace>> {
     // passing nanuda user token from old server
     // amenity ids length because of exclude dto
@@ -373,6 +377,33 @@ export class NanudaDeliverySpaceService extends BaseService {
             item.favoriteSpaceNo = liked.no;
           } else {
             item.likedYn = false;
+          }
+        }),
+      );
+    }
+    if (checkRatingDto.isSkipped === YN.NO) {
+      // get grades
+      await Promise.all(
+        items.map(async item => {
+          const grade = await Axios.get<any>(
+            `${process.env.PLATFORM_ANALYSIS_URL}commercial-area-grade-by-hdong-category`,
+            {
+              params: {
+                hdongCode: item.companyDistrict.hCode,
+                mediumCategoryCode: checkRatingDto.kbFoodCategory,
+                yymm: '2009',
+              },
+            },
+          );
+
+          if (!grade.data && !grade.data.finalGrade) {
+            item.rating = null;
+            item.ratingScore = null;
+          }
+          if (grade.data.finalGrade) {
+            console.log(grade.data, 'null', item.companyDistrict.hCode);
+            item.rating = grade.data.finalGrade['0'];
+            item.ratingScore = grade.data.finalScore['0'];
           }
         }),
       );

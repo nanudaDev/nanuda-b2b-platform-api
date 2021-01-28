@@ -1,5 +1,5 @@
 import { YN } from 'src/common';
-import { BaseMapperEntity } from 'src/core';
+import { BaseMapperEntity, KbFoodCategory } from 'src/core';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'TRACK_TRACE_SPACE_TO_CATEGORY' })
@@ -14,7 +14,7 @@ export class TrackTraceToSpaceCategory extends BaseMapperEntity<
   no: number;
 
   @Column({
-    name: 'H_DONG_NAME',
+    name: 'GU_NAME',
     type: 'varchar',
     nullable: false,
   })
@@ -25,7 +25,7 @@ export class TrackTraceToSpaceCategory extends BaseMapperEntity<
     name: 'KB_FOOD_CATEGORY',
     type: 'varchar',
   })
-  kbFoodCategory?: string;
+  kbFoodCategory?: KbFoodCategory;
 
   @Column({
     name: 'IS_SKIPPED_YN',

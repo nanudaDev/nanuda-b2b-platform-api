@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
-import { YN } from 'src/common';
-import { BaseDto } from 'src/core';
+import { Default, YN } from 'src/common';
+import { BaseDto, KbFoodCategory } from 'src/core';
 import { TrackTraceToSpaceCategory } from 'src/modules/track-trace-space-to-category/track-trace-space-to-category.entity';
 
 export class NanudaCreateTrackDto extends BaseDto<NanudaCreateTrackDto>
@@ -10,16 +10,18 @@ export class NanudaCreateTrackDto extends BaseDto<NanudaCreateTrackDto>
   @ApiProperty()
   @IsNotEmpty()
   @Expose()
-  hdongName: string;
+  guName: string;
 
   @ApiPropertyOptional({ enum: YN })
   @IsOptional()
   @IsEnum(YN)
   @Expose()
+  @Default(YN.NO)
   isSkippedYn?: YN;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ enum: KbFoodCategory })
   @IsOptional()
   @Expose()
-  kbFoodCategory?: string;
+  @IsEnum(KbFoodCategory)
+  kbFoodCategory?: KbFoodCategory;
 }
