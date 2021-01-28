@@ -10,6 +10,7 @@ import {
 import { BaseController } from 'src/core';
 import { NanudaDeliverySpaceService } from './nanuda-delivery-space.service';
 import {
+  CheckRatingDto,
   DeliverySpaceListDto,
   NanudaCreateTrackDto,
   NanudaDeliverySpaceFindDistrictOrCityDto,
@@ -37,6 +38,7 @@ export class NanudaDeliverySpaceController extends BaseController {
     @Query() nanudaDeliverySpaceListDto: DeliverySpaceListDto,
     @Query() pagination: PaginatedRequest,
     @Query() nanudaUserNo?: number,
+    @Query() checkRatingDto?: CheckRatingDto,
   ): Promise<PaginatedResponse<DeliverySpace>> {
     if (nanudaUserNo) {
       nanudaDeliverySpaceListDto.nanudaUserNo = nanudaUserNo;
@@ -44,6 +46,7 @@ export class NanudaDeliverySpaceController extends BaseController {
     return await this.nanudaDeliverySpaceService.findAllForNanudaUser(
       nanudaDeliverySpaceListDto,
       pagination,
+      checkRatingDto,
     );
   }
 

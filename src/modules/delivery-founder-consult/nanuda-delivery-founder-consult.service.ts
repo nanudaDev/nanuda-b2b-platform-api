@@ -278,8 +278,6 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
             // await this.smsNotificationService.notifyCompanyAdmin
           }),
         );
-
-        // send notification to admins
       },
     );
 
