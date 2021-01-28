@@ -1,3 +1,4 @@
+import { YN } from 'src/common';
 import { BaseMapperEntity } from 'src/core';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -13,15 +14,22 @@ export class TrackTraceToSpaceCategory extends BaseMapperEntity<
   no: number;
 
   @Column({
-    name: 'DELIVERY_SPACE_NO',
-    type: 'int',
+    name: 'H_DONG_NAME',
+    type: 'varchar',
     nullable: false,
   })
-  deliverySpaceNo: number;
+  hdongName: string;
 
   //   TODO: crawl KB_CATEGORY CODE into common code folder
-  //   @Column({
-  //       name: 'KB_FOOD_CATEGORY',
-  //       type: 'varchar',
-  //   })
+  @Column({
+    name: 'KB_FOOD_CATEGORY',
+    type: 'varchar',
+  })
+  kbFoodCategory?: string;
+
+  @Column({
+    name: 'IS_SKIPPED_YN',
+    type: 'char',
+  })
+  isSkippedYn?: YN;
 }

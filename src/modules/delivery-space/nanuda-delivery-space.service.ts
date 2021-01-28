@@ -11,6 +11,7 @@ import { Repository, EntityManager, In } from 'typeorm';
 import { CompanyDistrict } from '../company-district/company-district.entity';
 import {
   DeliverySpaceListDto,
+  NanudaCreateTrackDto,
   NanudaDeliverySpaceFindDistrictOrCityDto,
 } from './dto';
 import {
@@ -25,6 +26,7 @@ import { DeliveryFounderConsult } from '../delivery-founder-consult/delivery-fou
 import { CompanyDistrictPromotionMapper } from '../company-district-promotion-mapper/company-district-promotion-mapper.entity';
 import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
 import { RemoveDuplicateObject } from 'src/core/utils';
+import { TrackTraceToSpaceCategory } from '../track-trace-space-to-category/track-trace-space-to-category.entity';
 
 @Injectable()
 export class NanudaDeliverySpaceService extends BaseService {
@@ -671,5 +673,16 @@ export class NanudaDeliverySpaceService extends BaseService {
       districtNamesAndCode.unshift({ directSpace: YN.NO });
     }
     return RemoveDuplicateObject(districtNamesAndCode, 'districtName');
+  }
+
+  /**
+   * create new track
+   * @param nanudaTrackTraceDto
+   */
+  async trackTraceToSpaceCategory(nanudaTrackTraceDto: NanudaCreateTrackDto) {
+    let track = new TrackTraceToSpaceCategory(nanudaTrackTraceDto);
+    track = await this.entityManager
+      .getRepository(TrackTraceToSpaceCategory)
+      .save(track);
   }
 }

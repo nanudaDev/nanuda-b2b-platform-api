@@ -1,8 +1,17 @@
-import { Controller, Get, Query, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Param,
+  ParseIntPipe,
+  Post,
+  Body,
+} from '@nestjs/common';
 import { BaseController } from 'src/core';
 import { NanudaDeliverySpaceService } from './nanuda-delivery-space.service';
 import {
   DeliverySpaceListDto,
+  NanudaCreateTrackDto,
   NanudaDeliverySpaceFindDistrictOrCityDto,
 } from './dto';
 import { PaginatedRequest, PaginatedResponse } from 'src/common';
@@ -97,6 +106,17 @@ export class NanudaDeliverySpaceController extends BaseController {
   ): Promise<object[]> {
     return await this.nanudaDeliverySpaceService.findAllDistrictsByCityCode(
       nanudaDeliverySpaceFindDistrictDto,
+    );
+  }
+
+  /**
+   * create new track
+   * @param createNewTrackDto
+   */
+  @Post('/nanuda/create-new-track')
+  async createNewTrack(@Body() createNewTrackDto: NanudaCreateTrackDto) {
+    return await this.nanudaDeliverySpaceService.trackTraceToSpaceCategory(
+      createNewTrackDto,
     );
   }
 }
