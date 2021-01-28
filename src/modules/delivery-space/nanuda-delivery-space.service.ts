@@ -167,7 +167,6 @@ export class NanudaDeliverySpaceService extends BaseService {
       );
     // if region1DepthName is '충청/경상'
     if (deliverySpaceListDto.region1DepthName === '충청/경상') {
-      console.log('test');
       qb.AndWhereIn('companyDistrict', 'region1DepthName', [
         '부산',
         '울산',
@@ -324,9 +323,6 @@ export class NanudaDeliverySpaceService extends BaseService {
     qb.Paginate(pagination);
 
     const [items, totalCount] = await qb.getManyAndCount();
-    // if(deliverySpaceListDto.amenityIds && deliverySpaceListDto.amenityIds.length > 1) {
-    //   totalCount
-    // }
     // add favorite mark
     await Promise.all(
       items.map(async item => {
@@ -351,13 +347,6 @@ export class NanudaDeliverySpaceService extends BaseService {
             },
           });
         item.consultCount = consults.length;
-        // item.remainingCount = item.quantity - item.contracts.length;
-        // // splice and remove unwanted delivery spaces
-        // if (item.remainingCount === 0) {
-        //   const index = items.indexOf(item);
-        //   items.splice(index, 1);
-        //   totalCount - 1;
-        // }
         delete item.contracts;
       }),
     );
@@ -410,7 +399,6 @@ export class NanudaDeliverySpaceService extends BaseService {
             item.ratingScore = null;
           }
           if (grade.data.finalGrade) {
-            console.log(grade.data, 'null', item.companyDistrict.hCode);
             item.rating = grade.data.finalGrade['0'];
             item.ratingScore = grade.data.finalScore['0'];
           }

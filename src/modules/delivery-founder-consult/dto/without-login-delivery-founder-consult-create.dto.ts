@@ -38,25 +38,4 @@ export class WithoutLoginDeliveryFounderConsultCreateDto extends BaseDto<
   hopeTime?: AVAILABLE_TIME;
 
   nanudaUserNo?: number;
-
-  //   @ApiPropertyOptional({ enum: AVAILABLE_TIME })
-  //   @IsOptional()
-  //   @Expose()
-  //   @Default(AVAILABLE_TIME.ALL)
-  //   @IsEnum(AVAILABLE_TIME)
-  //   hopeTime?: AVAILABLE_TIME;
-
-  //   @ApiPropertyOptional({ enum: YN })
-  //   @IsOptional()
-  //   @Expose()
-  //   @Default(YN.NO)
-  //   @IsEnum(YN)
-  //   changUpExpYn?: YN;
-
-  //   @ApiPropertyOptional({ enum: YN })
-  //   @IsOptional()
-  //   @Expose()
-  //   @Default(YN.NO)
-  //   @IsEnum(YN)
-  //   spaceOwnYn?: YN;
 }
