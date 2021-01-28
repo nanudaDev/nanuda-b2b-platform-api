@@ -14,11 +14,18 @@ export class TrackTraceToSpaceCategory extends BaseMapperEntity<
   no: number;
 
   @Column({
-    name: 'GU_NAME',
+    name: 'REGION_1DEPTHNAME',
     type: 'varchar',
     nullable: false,
   })
-  hdongName: string;
+  region1DepthName: string;
+
+  @Column({
+    name: 'REGION_2DEPTHNAME',
+    type: 'varchar',
+    nullable: false,
+  })
+  region2DepthName: string;
 
   //   TODO: crawl KB_CATEGORY CODE into common code folder
   @Column({
