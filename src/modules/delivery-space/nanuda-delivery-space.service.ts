@@ -405,14 +405,18 @@ export class NanudaDeliverySpaceService extends BaseService {
         }),
       );
     } else {
-      let newTrack = new TrackTraceToSpaceCategory();
-      newTrack.isSkippedYn = YN.YES;
-      newTrack.region1DepthName = items[0].companyDistrict.region1DepthName;
-      newTrack.region2DepthName = items[0].companyDistrict.region2DepthName;
-      newTrack.kbFoodCategory = null;
-      newTrack = await this.entityManager
-        .getRepository(TrackTraceToSpaceCategory)
-        .save(newTrack);
+      if (items.length > 0) {
+        let newTrack = new TrackTraceToSpaceCategory();
+        newTrack.isSkippedYn = YN.YES;
+        newTrack.region1DepthName =
+          items[0].companyDistrict.region1DepthName || null;
+        newTrack.region2DepthName =
+          items[0].companyDistrict.region2DepthName || null;
+        newTrack.kbFoodCategory = null;
+        newTrack = await this.entityManager
+          .getRepository(TrackTraceToSpaceCategory)
+          .save(newTrack);
+      }
     }
     return { items, totalCount };
   }
