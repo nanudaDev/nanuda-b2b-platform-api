@@ -5,5 +5,6 @@ export enum LOCATION_TYPE {
   IN_ULSAN = '울산',
   IN_JEJU = '제주',
   IN_DAEGU = '대구',
+  IN_INCHEON = '인천',
   // IN_OTHER = 'IN_OTHER',
 }

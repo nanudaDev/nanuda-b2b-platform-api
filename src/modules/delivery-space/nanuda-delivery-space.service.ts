@@ -166,15 +166,15 @@ export class NanudaDeliverySpaceService extends BaseService {
         deliverySpaceListDto.exclude('bCode'),
       );
     // if region1DepthName is '충청/경상'
-    if (deliverySpaceListDto.region1DepthName === '충청/경상') {
-      console.log('test');
+    if (deliverySpaceListDto.region1DepthName === '경상') {
       qb.AndWhereIn('companyDistrict', 'region1DepthName', [
-        '부산',
         '울산',
-        '충남',
         '대구',
         '포항',
       ]);
+      delete deliverySpaceListDto.region1DepthName;
+    } else if (deliverySpaceListDto.region1DepthName === '충청') {
+      qb.AndWhereIn('companyDistrict', 'region1DepthName', ['충남']);
       delete deliverySpaceListDto.region1DepthName;
     } else {
       qb.AndWhereLike(
@@ -324,9 +324,6 @@ export class NanudaDeliverySpaceService extends BaseService {
     qb.Paginate(pagination);
 
     const [items, totalCount] = await qb.getManyAndCount();
-    // if(deliverySpaceListDto.amenityIds && deliverySpaceListDto.amenityIds.length > 1) {
-    //   totalCount
-    // }
     // add favorite mark
     await Promise.all(
       items.map(async item => {
@@ -351,13 +348,6 @@ export class NanudaDeliverySpaceService extends BaseService {
             },
           });
         item.consultCount = consults.length;
-        // item.remainingCount = item.quantity - item.contracts.length;
-        // // splice and remove unwanted delivery spaces
-        // if (item.remainingCount === 0) {
-        //   const index = items.indexOf(item);
-        //   items.splice(index, 1);
-        //   totalCount - 1;
-        // }
         delete item.contracts;
       }),
     );
@@ -383,9 +373,10 @@ export class NanudaDeliverySpaceService extends BaseService {
     }
     if (checkRatingDto.isSkipped === YN.NO) {
       let newTrack = new TrackTraceToSpaceCategory();
+      console.log(deliverySpaceListDto);
       newTrack.isSkippedYn = YN.NO;
-      newTrack.region1DepthName = deliverySpaceListDto.region1DepthName;
-      newTrack.region2DepthName = deliverySpaceListDto.region2DepthName;
+      newTrack.region1DepthName = items[0].companyDistrict.region1DepthName;
+      newTrack.region2DepthName = items[0].companyDistrict.region2DepthName;
       newTrack.kbFoodCategory = checkRatingDto.kbFoodCategory;
       newTrack = await this.entityManager
         .getRepository(TrackTraceToSpaceCategory)
@@ -409,21 +400,24 @@ export class NanudaDeliverySpaceService extends BaseService {
             item.ratingScore = null;
           }
           if (grade.data.finalGrade) {
-            console.log(grade.data, 'null', item.companyDistrict.hCode);
             item.rating = grade.data.finalGrade['0'];
             item.ratingScore = grade.data.finalScore['0'];
           }
         }),
       );
     } else {
-      let newTrack = new TrackTraceToSpaceCategory();
-      newTrack.isSkippedYn = YN.YES;
-      newTrack.region1DepthName = deliverySpaceListDto.region1DepthName;
-      newTrack.region2DepthName = deliverySpaceListDto.region2DepthName;
-      newTrack.kbFoodCategory = null;
-      newTrack = await this.entityManager
-        .getRepository(TrackTraceToSpaceCategory)
-        .save(newTrack);
+      if (items.length > 0) {
+        let newTrack = new TrackTraceToSpaceCategory();
+        newTrack.isSkippedYn = YN.YES;
+        newTrack.region1DepthName =
+          items[0].companyDistrict.region1DepthName || null;
+        newTrack.region2DepthName =
+          items[0].companyDistrict.region2DepthName || null;
+        newTrack.kbFoodCategory = null;
+        newTrack = await this.entityManager
+          .getRepository(TrackTraceToSpaceCategory)
+          .save(newTrack);
+      }
     }
     return { items, totalCount };
   }
