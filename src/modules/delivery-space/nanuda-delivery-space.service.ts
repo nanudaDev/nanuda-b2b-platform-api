@@ -166,14 +166,15 @@ export class NanudaDeliverySpaceService extends BaseService {
         deliverySpaceListDto.exclude('bCode'),
       );
     // if region1DepthName is '충청/경상'
-    if (deliverySpaceListDto.region1DepthName === '충청/경상') {
+    if (deliverySpaceListDto.region1DepthName === '경상') {
       qb.AndWhereIn('companyDistrict', 'region1DepthName', [
-        '부산',
         '울산',
-        '충남',
         '대구',
         '포항',
       ]);
+      delete deliverySpaceListDto.region1DepthName;
+    } else if (deliverySpaceListDto.region1DepthName === '충청') {
+      qb.AndWhereIn('companyDistrict', 'region1DepthName', ['충남']);
       delete deliverySpaceListDto.region1DepthName;
     } else {
       qb.AndWhereLike(
