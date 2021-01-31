@@ -381,12 +381,19 @@ export class NanudaDeliverySpaceService extends BaseService {
               },
             },
           );
-
-          if (!grade.data && !grade.data.finalGrade) {
+          console.log(grade.data);
+          if (
+            !grade.data ||
+            !grade.data.finalGrade ||
+            grade.data === 'null' ||
+            grade.data === null
+          ) {
             item.rating = null;
             item.ratingScore = null;
+            item.revenueAmountPercentile = null;
+            item.targetPopulationPercentile = null;
           }
-          if (grade.data.finalGrade) {
+          if (grade.data && grade.data.finalGrade) {
             item.rating = grade.data.finalGrade['0'];
             item.ratingScore = grade.data.finalScore['0'];
             item.revenueAmountPercentile =
