@@ -290,22 +290,6 @@ export class NanudaDeliverySpaceService extends BaseService {
       qb.AndWhereJoinBetweenDate('promotions', new Date());
       qb.andWhere('promotions.showYn = :showYn', { showYn: YN.YES });
     }
-    // if (
-    //   deliverySpaceListDto.amenityIds &&
-    //   deliverySpaceListDto.amenityIds.length > 0
-    // ) {
-    //   const amenityIdsLength = deliverySpaceListDto.amenityIds.length;
-    //   console.log(amenityIdsLength);
-    //   qb.innerJoinAndSelect('deliverySpace.amenities', 'amenities');
-    //   qb.AndWhereIn(
-    //     'amenities',
-    //     'no',
-    //     deliverySpaceListDto.amenityIds,
-    //     deliverySpaceListDto.exclude('amenityIds'),
-    //   );
-    //   qb.groupBy('deliverySpace.no');
-    //   qb.having(`COUNT(DISTINCT amenities.NO) = ${amenityIdsLength}`);
-    // }
     if (deliverySpaceListDto.orderByDeposit) {
       qb.addOrderBy(
         'deliverySpace.deposit',
@@ -373,7 +357,6 @@ export class NanudaDeliverySpaceService extends BaseService {
     }
     if (checkRatingDto.isSkipped === YN.NO) {
       let newTrack = new TrackTraceToSpaceCategory();
-      console.log(deliverySpaceListDto);
       newTrack.isSkippedYn = YN.NO;
       newTrack.region1DepthName = items[0].companyDistrict.region1DepthName;
       newTrack.region2DepthName = items[0].companyDistrict.region2DepthName;
@@ -404,7 +387,6 @@ export class NanudaDeliverySpaceService extends BaseService {
             item.ratingScore = null;
           }
           if (grade.data.finalGrade) {
-            console.log(grade.data);
             item.rating = grade.data.finalGrade['0'];
             item.ratingScore = grade.data.finalScore['0'];
             item.revenueAmountPercentile =
