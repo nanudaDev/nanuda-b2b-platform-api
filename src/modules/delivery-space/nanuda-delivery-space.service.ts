@@ -290,22 +290,6 @@ export class NanudaDeliverySpaceService extends BaseService {
       qb.AndWhereJoinBetweenDate('promotions', new Date());
       qb.andWhere('promotions.showYn = :showYn', { showYn: YN.YES });
     }
-    // if (
-    //   deliverySpaceListDto.amenityIds &&
-    //   deliverySpaceListDto.amenityIds.length > 0
-    // ) {
-    //   const amenityIdsLength = deliverySpaceListDto.amenityIds.length;
-    //   console.log(amenityIdsLength);
-    //   qb.innerJoinAndSelect('deliverySpace.amenities', 'amenities');
-    //   qb.AndWhereIn(
-    //     'amenities',
-    //     'no',
-    //     deliverySpaceListDto.amenityIds,
-    //     deliverySpaceListDto.exclude('amenityIds'),
-    //   );
-    //   qb.groupBy('deliverySpace.no');
-    //   qb.having(`COUNT(DISTINCT amenities.NO) = ${amenityIdsLength}`);
-    // }
     if (deliverySpaceListDto.orderByDeposit) {
       qb.addOrderBy(
         'deliverySpace.deposit',

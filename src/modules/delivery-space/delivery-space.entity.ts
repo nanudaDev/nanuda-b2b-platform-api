@@ -161,6 +161,14 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
   })
   isOperatedYn?: YN;
 
+  @Column({
+    type: 'char',
+    length: 1,
+    name: 'TEMP_PIC_YN',
+    default: YN.NO,
+  })
+  tempPicYn?: YN;
+
   // no database
   likedCount?: number;
 
