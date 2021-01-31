@@ -19,6 +19,7 @@ import { NanudaDeliverySpaceService } from './nanuda-delivery-space.service';
 import { FavoriteSpaceMapper } from '../favorite-space-mapper/favorite-space-mapper.entity';
 import { DeliverySpaceNndRecordModule } from '../delivery-space-nnd-op-record/delivery-space-nnd-op-record.module';
 import { DeliverySpaceNndBrandOpRecordModule } from '../delivery-space-nnd-brand-op-record/delivery-space-nnd-brand-op-record.module';
+import { TrackTraceToSpaceCategory } from '../track-trace-space-to-category/track-trace-space-to-category.entity';
 
 @Module({
   imports: [
@@ -33,10 +34,11 @@ import { DeliverySpaceNndBrandOpRecordModule } from '../delivery-space-nnd-brand
       DeliveryFounderConsultContract,
       DeliveryFounderConsultContractHistory,
       FavoriteSpaceMapper,
+      TrackTraceToSpaceCategory,
     ]),
     FileUploadModule,
     DeliverySpaceNndRecordModule,
-    DeliverySpaceNndBrandOpRecordModule
+    DeliverySpaceNndBrandOpRecordModule,
   ],
   controllers: [
     AdminDeliverySpaceController,

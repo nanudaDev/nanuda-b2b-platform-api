@@ -12,6 +12,7 @@ import { BestSpaceMapper } from 'src/modules/best-space/best-space.entity';
 import { LandingPageSuccessRecord } from 'src/modules/landing-page-success-record/landing-page-success-record.entity';
 import { AttendeesOnline } from 'src/modules/attendees-online/attendees-online.entity';
 import { SecondMeetingApplicant } from 'src/modules/attendees-online/second-meeting-applicant.entity';
+import { NanudaUser } from 'src/modules/nanuda-user/nanuda-user.entity';
 
 @Injectable()
 export class NanudaSmsNotificationService {
@@ -187,6 +188,29 @@ export class NanudaSmsNotificationService {
   }
 
   /**
+   * 장바구니 문자 발송
+   * @param nanudaUser
+   * @param consults
+   * @param req
+   */
+  async sendCartMessageNotifcation(
+    nanudaUser: NanudaUser,
+    consults: DeliveryFounderConsult[],
+    req: Request,
+  ) {
+    const payload = await this.__send_cart_message_notifcation_to_user(
+      nanudaUser,
+      consults,
+    );
+    req.body = payload.body;
+    const sms = await aligoapi.send(req, payload.auth);
+    if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
+      console.log(sms);
+    }
+    return;
+  }
+
+  /**
    * aligo api authentication
    */
   private async __get_auth(): Promise<AligoAuth> {
@@ -347,5 +371,49 @@ export class NanudaSmsNotificationService {
     };
 
     return { body, auth };
+  }
+
+  /**
+   * notification to user
+   * @param nanudaUser
+   * @param consults
+   */
+  private async __send_cart_message_notifcation_to_user(
+    nanudaUser: NanudaUser,
+    consults: DeliveryFounderConsult[],
+  ): Promise<MessageObject> {
+    const auth = await this.__get_auth();
+    const spaces = [];
+    consults.map(consult => {
+      const promotions = [];
+      if (
+        consult.deliverySpace.companyDistrict.promotions &&
+        consult.deliverySpace.companyDistrict.promotions.length > 0
+      ) {
+        consult.deliverySpace.companyDistrict.promotions.map(promotion => {
+          promotions.push(`${promotion.title}\n`);
+        });
+      }
+      spaces.push(
+        `${consult.deliverySpace.companyDistrict.company.nameKr} ${
+          consult.deliverySpace.companyDistrict.nameKr
+        }\n - ${consult.deliverySpace.companyDistrict.address}\n - ${
+          consult.deliverySpace.size
+        }평형\n${promotions.join(' ')}\n`,
+      );
+    });
+
+    const body = {
+      receiver: nanudaUser.phone,
+      sender: process.env.ALIGO_SENDER_PHONE,
+      msg: `[나누다키친] 안녕하세요 ${
+        nanudaUser.name
+      }님, 공유주방 플랫폼 나누다키친입니다. \n신청해주신 공유주방 안내드립니다. \n\n ${spaces.join(
+        ' ',
+      )}\n\n각 공유주방 상담사가 연락을 드려 자세한 상담을 진행드릴 예정입니다. \n**공유주방 상황에 따라 연락이 일부 지연 될 수 있습니다.** `,
+      title: '안녕하세요 나누다키친입니다.',
+    };
+
+    return { auth, body };
   }
 }

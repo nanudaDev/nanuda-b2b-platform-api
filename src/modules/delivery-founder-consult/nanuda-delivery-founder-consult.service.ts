@@ -16,7 +16,11 @@ import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { B2CNanudaSlackNotificationService } from 'src/core/utils/b2c-nanuda-slack-notification.service';
 import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
-import { NanudaSmsNotificationService } from 'src/core/utils';
+import {
+  NanudaSmsNotificationService,
+  RemoveDuplicateObject,
+  SmsNotificationService,
+} from 'src/core/utils';
 import { Request } from 'express';
 import { Admin } from '../admin';
 import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
@@ -33,6 +37,7 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
     @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly nanudaSlackNotificationService: B2CNanudaSlackNotificationService,
     private readonly nanudaSmsNotificationService: NanudaSmsNotificationService,
+    private readonly smsNotificationService: SmsNotificationService,
   ) {
     super();
   }
@@ -205,32 +210,38 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
         );
         // send information to applied user
         // TODO: Compose message to send to end user
-        const deliverySpaces = await entityManager
-          .getRepository(DeliverySpace)
-          .createQueryBuilder('deliverySpace')
-          .CustomInnerJoinAndSelect(['companyDistrict'])
-          .innerJoinAndSelect('companyDistrict.company', 'company')
-          .AndWhereIn(
-            'deliverySpace',
-            'no',
-            withoutLoginCreateDto.deliverySpaceNos,
+        const cartedConsults = await this.deliveryFounderConsultRepo
+          .createQueryBuilder('deliveryFounderConsult')
+          .CustomInnerJoinAndSelect(['deliverySpace', 'nanudaUser'])
+          .innerJoinAndSelect(
+            'deliverySpace.companyDistrict',
+            'companyDistrict',
           )
+          .innerJoinAndSelect('companyDistrict.company', 'company')
+          .AndWhereIn('deliveryFounderConsult', 'no', deliveryFounderConsultIds)
           .getMany();
-
+        // send message here
+        await this.nanudaSmsNotificationService.sendCartMessageNotifcation(
+          cartedConsults[0].nanudaUser,
+          cartedConsults,
+          req,
+        );
+        // company ids
         let companyIds = [];
-        deliverySpaces.map(deliverySpace => {
+        cartedConsults.map(consult => {
           companyIds.push({
-            companyNo: deliverySpace.companyDistrict.companyNo,
+            companyNo: consult.deliverySpace.companyDistrict.companyNo,
             // districtName: deliverySpace.companyDistrict.nameKr,
           });
         });
 
         // remove duplicates
-        companyIds = this.__remove_duplicate(companyIds, 'companyNo');
+        companyIds = RemoveDuplicateObject(companyIds, 'companyNo');
         // send information to company
         await Promise.all(
           companyIds.map(async companyId => {
-            const companyDistricts = await this.deliveryFounderConsultRepo
+            console.log(companyId);
+            const consults = await this.deliveryFounderConsultRepo
               .createQueryBuilder('deliveryFounderConsult')
               .CustomInnerJoinAndSelect(['deliverySpace', 'nanudaUser'])
               .innerJoinAndSelect(
@@ -246,30 +257,30 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
                 deliveryFounderConsultIds,
               )
               .getMany();
-
+            console.log(consults);
             const masterCompanyUser = await entityManager
               .getRepository(CompanyUser)
-              .findOne({
-                where: {
-                  companyNo: companyId.companyNo,
-                  companyUserStatus: APPROVAL_STATUS,
-                  authCode: COMPANY_USER.ADMIN_COMPANY_USER,
-                },
-              });
-            console.log(masterCompanyUser);
+              .createQueryBuilder('companyUser')
+              .where('companyUser.companyNo = :companyNo', {
+                companyNo: companyId.companyNo,
+              })
+              .andWhere('companyUser.authCode = :authCode', {
+                authCode: COMPANY_USER.ADMIN_COMPANY_USER,
+              })
+              .getMany();
+            console.log(masterCompanyUser[0]);
             // TODO: Compose sms message to send to company user
+            await this.smsNotificationService.sendCartCompanyUserMessage(
+              masterCompanyUser[0],
+              consults,
+              req,
+            );
             // await this.smsNotificationService.notifyCompanyAdmin
           }),
         );
-
-        // send notification to admins
       },
     );
 
     return createDeliveryFounderConsults;
-  }
-
-  private __remove_duplicate(array: any[], key: string) {
-    return [...new Map(array.map(item => [item[key], item])).values()];
   }
 }

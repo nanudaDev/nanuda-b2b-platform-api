@@ -1,4 +1,4 @@
-import { B2B_EVENT_TYPE, BaseDto } from 'src/core';
+import { B2B_EVENT_TYPE, BaseDto, KbFoodCategory } from 'src/core';
 import { DeliverySpace } from '../delivery-space.entity';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsEnum, IsNumber, IsArray } from 'class-validator';
@@ -119,17 +119,27 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  region2DepthName?: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Expose()
   region1DepthName?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  region2DepthName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   region3DepthName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  hCode?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  bCode?: number;
 
   @ApiPropertyOptional({ enum: B2B_EVENT_TYPE })
   @IsOptional()
@@ -185,4 +195,18 @@ export class DeliverySpaceListDto extends BaseDto<DeliverySpaceListDto>
   @IsOptional()
   @Expose()
   maxMonthlyRentFee?: number;
+}
+
+export class CheckRatingDto {
+  @ApiPropertyOptional({ enum: YN })
+  @IsEnum(YN)
+  @IsOptional()
+  @Expose()
+  isSkipped?: YN;
+
+  @ApiPropertyOptional({ enum: KbFoodCategory })
+  @IsOptional()
+  @Expose()
+  @IsEnum(KbFoodCategory)
+  kbFoodCategory?: KbFoodCategory;
 }
