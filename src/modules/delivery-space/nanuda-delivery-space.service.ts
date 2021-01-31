@@ -382,6 +382,10 @@ export class NanudaDeliverySpaceService extends BaseService {
         .getRepository(TrackTraceToSpaceCategory)
         .save(newTrack);
       // get grades
+      const averageRatingArray = [];
+      const averageRatingScoreArray = [];
+      const averageTargetPopulationPercentileArray = [];
+      const averageRevenuePercentileArray = [];
       await Promise.all(
         items.map(async item => {
           const grade = await Axios.get<any>(
@@ -400,11 +404,51 @@ export class NanudaDeliverySpaceService extends BaseService {
             item.ratingScore = null;
           }
           if (grade.data.finalGrade) {
+            console.log(grade.data);
             item.rating = grade.data.finalGrade['0'];
             item.ratingScore = grade.data.finalScore['0'];
+            item.revenueAmountPercentile =
+              grade.data.revenueAmountPercentile['0'];
+            item.targetPopulationPercentile =
+              grade.data.targetPopulationPercentile['0'];
           }
+          if (item.rating > 2) {
+            const index = items.indexOf(item);
+            items.splice(index, 1);
+          }
+          // push values to array
+          averageRatingArray.push(item.rating);
+          averageRatingScoreArray.push(item.ratingScore);
+          averageRevenuePercentileArray.push(item.revenueAmountPercentile);
+          averageTargetPopulationPercentileArray.push(
+            item.targetPopulationPercentile,
+          );
         }),
       );
+      if (averageRatingArray.length > 0) {
+        const averageRating =
+          averageRatingArray.reduce((a, b) => a + b, 0) /
+          averageRatingArray.length;
+        const averageRatingScore =
+          averageRatingScoreArray.reduce((a, b) => a + b, 0) /
+          averageRatingScoreArray.length;
+        const averageTargetPopulationPercentile =
+          averageTargetPopulationPercentileArray.reduce((a, b) => a + b, 0) /
+          averageTargetPopulationPercentileArray.length;
+        const averageRevenuePercentileScore =
+          averageRevenuePercentileArray.reduce((a, b) => a + b, 0) /
+          averageRevenuePercentileArray.length;
+        items.map(item => {
+          item.averageRating = Math.round(averageRating);
+          item.averageRatingScore = Math.round(averageRatingScore);
+          item.averageRevenuePercentileScore = Math.round(
+            averageRevenuePercentileScore,
+          );
+          item.averageTargetPopulationPercentile = Math.round(
+            averageTargetPopulationPercentile,
+          );
+        });
+      }
     } else {
       if (items.length > 0) {
         let newTrack = new TrackTraceToSpaceCategory();
