@@ -373,7 +373,6 @@ export class NanudaDeliverySpaceService extends BaseService {
     }
     if (checkRatingDto.isSkipped === YN.NO) {
       let newTrack = new TrackTraceToSpaceCategory();
-      console.log(deliverySpaceListDto);
       newTrack.isSkippedYn = YN.NO;
       newTrack.region1DepthName = items[0].companyDistrict.region1DepthName;
       newTrack.region2DepthName = items[0].companyDistrict.region2DepthName;
@@ -404,7 +403,6 @@ export class NanudaDeliverySpaceService extends BaseService {
             item.ratingScore = null;
           }
           if (grade.data.finalGrade) {
-            console.log(grade.data);
             item.rating = grade.data.finalGrade['0'];
             item.ratingScore = grade.data.finalScore['0'];
             item.revenueAmountPercentile =

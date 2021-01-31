@@ -399,17 +399,18 @@ export class NanudaSmsNotificationService {
           consult.deliverySpace.companyDistrict.nameKr
         }\n - ${consult.deliverySpace.companyDistrict.address}\n - ${
           consult.deliverySpace.size
-        }평형\n\n ${[...promotions]}\n`,
+        }평형\n${promotions.join(' ')}\n`,
       );
     });
+
     const body = {
       receiver: nanudaUser.phone,
       sender: process.env.ALIGO_SENDER_PHONE,
       msg: `[나누다키친] 안녕하세요 ${
         nanudaUser.name
-      }님, 공유주방 플랫폼 나누다키친입니다. \n신청해주신 공유주방 안내드립니다. \n\n ${[
-        ...spaces,
-      ]}`,
+      }님, 공유주방 플랫폼 나누다키친입니다. \n신청해주신 공유주방 안내드립니다. \n\n ${spaces.join(
+        ' ',
+      )}\n\n각 공유주방 상담사가 연락을 드려 자세한 상담을 진행드릴 예정입니다. \n**공유주방 상황에 따라 연락이 일부 지연 될 수 있습니다.** `,
       title: '안녕하세요 나누다키친입니다.',
     };
 
