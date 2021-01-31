@@ -401,10 +401,10 @@ export class NanudaDeliverySpaceService extends BaseService {
             item.targetPopulationPercentile =
               grade.data.targetPopulationPercentile['0'];
           }
-          // if (item.rating > 2) {
-          //   const index = items.indexOf(item);
-          //   items.splice(index, 1);
-          // }
+          if (item.rating > 4) {
+            const index = items.indexOf(item);
+            items.splice(index, 1);
+          }
           // push values to array
           averageRatingArray.push(item.rating);
           averageRatingScoreArray.push(item.ratingScore);
