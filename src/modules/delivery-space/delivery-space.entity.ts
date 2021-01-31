@@ -172,7 +172,19 @@ export class DeliverySpace extends BaseEntity<DeliverySpace> {
 
   rating?: number;
 
+  averageRating?: number;
+
   ratingScore?: number;
+
+  averageRatingScore?: number;
+
+  revenueAmountPercentile?: number;
+
+  averageRevenuePercentileScore?: number;
+
+  targetPopulationPercentile?: number;
+
+  averageTargetPopulationPercentile?: number;
 
   @ManyToOne(
     type => CompanyUser,

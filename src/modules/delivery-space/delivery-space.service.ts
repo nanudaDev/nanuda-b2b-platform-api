@@ -349,7 +349,7 @@ export class DeliverySpaceService extends BaseService {
        * best space
        */
       if (adminDeliverySpaceCreateDto.isBestedYn === YN.YES) {
-        let newBestMapper = new BestSpaceMapper();
+        const newBestMapper = new BestSpaceMapper();
         newBestMapper.spaceNo = newDeliverySpace.no;
         newBestMapper.spaceTypeNo = SPACE_TYPE.ONLY_DELIVERY;
         newBestMapper.showYn = adminDeliverySpaceCreateDto.isBestedShowYn;
@@ -578,7 +578,7 @@ export class DeliverySpaceService extends BaseService {
               message: 'Already in best space list.',
             });
           }
-          let newBestMapper = new BestSpaceMapper();
+          const newBestMapper = new BestSpaceMapper();
           newBestMapper.spaceNo = deliverySpaceNo;
           newBestMapper.spaceTypeNo = SPACE_TYPE.ONLY_DELIVERY;
           newBestMapper.showYn = adminDeliverySpaceUpdateDto.isBestedShowYn;
@@ -605,7 +605,7 @@ export class DeliverySpaceService extends BaseService {
           adminDeliverySpaceUpdateDto.deliverySpaceNndBrandOpRecords.length > 0
         ) {
           // create new record for delivery space operation for NND
-          let newRecordDto = new AdminDeliverySpaceNndOpRecordCreateDto({
+          const newRecordDto = new AdminDeliverySpaceNndOpRecordCreateDto({
             deliverySpaceNo: deliverySpaceNo,
             started: adminDeliverySpaceUpdateDto.operatingStartDate,
             ended: adminDeliverySpaceUpdateDto.operatingEndDate,
