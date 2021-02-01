@@ -205,6 +205,16 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
             const newConsult = await this.deliveryFounderConsultRepo.save(
               consult,
             );
+            // const newlyAddedConsult = await this.deliveryFounderConsultRepo
+            //   .createQueryBuilder('deliveryFounderConsult')
+            //   .CustomInnerJoinAndSelect(['nanudaUser', 'deliverySpace'])
+            //   .innerJoinAndSelect(
+            //     'deliverySpace.companyDistrict',
+            //     'companyDistrict',
+            //   )
+            //   .innerJoinAndSelect('companyDistrict.company', 'company')
+            //   .where('deliveryFounderConsult.no = :no', { no: newConsult.no })
+            //   .getOne();
             deliveryFounderConsultIds.push(newConsult.no);
           }),
         );
@@ -220,6 +230,9 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
           .innerJoinAndSelect('companyDistrict.company', 'company')
           .AndWhereIn('deliveryFounderConsult', 'no', deliveryFounderConsultIds)
           .getMany();
+        await this.nanudaSlackNotificationService.deliveryFounderConsultAddedByCart(
+          cartedConsults,
+        );
         // send message here
         await this.nanudaSmsNotificationService.sendCartMessageNotifcation(
           cartedConsults[0].nanudaUser,
@@ -240,7 +253,6 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
         // send information to company
         await Promise.all(
           companyIds.map(async companyId => {
-            console.log(companyId);
             const consults = await this.deliveryFounderConsultRepo
               .createQueryBuilder('deliveryFounderConsult')
               .CustomInnerJoinAndSelect(['deliverySpace', 'nanudaUser'])
@@ -257,7 +269,6 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
                 deliveryFounderConsultIds,
               )
               .getMany();
-            console.log(consults);
             const masterCompanyUser = await entityManager
               .getRepository(CompanyUser)
               .createQueryBuilder('companyUser')
@@ -268,7 +279,6 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
                 authCode: COMPANY_USER.ADMIN_COMPANY_USER,
               })
               .getMany();
-            console.log(masterCompanyUser[0]);
             // TODO: Compose sms message to send to company user
             await this.smsNotificationService.sendCartCompanyUserMessage(
               masterCompanyUser[0],
