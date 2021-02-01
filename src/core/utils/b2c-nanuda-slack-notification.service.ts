@@ -58,6 +58,42 @@ export class B2CNanudaSlackNotificationService extends BaseService {
   }
 
   /**
+   * cart registration
+   * @param deliveryFounderConsults
+   */
+  async deliveryFounderConsultAddedByCart(
+    deliveryFounderConsults: DeliveryFounderConsult[],
+  ) {
+    const consults = [];
+    deliveryFounderConsults.map(consult => {
+      consults.push(
+        ` - ${consult.deliverySpace.companyDistrict.company.nameKr}, ${consult.deliverySpace.companyDistrict.nameKr} - ${consult.deliverySpace.size}평 (${process.env.ADMIN_BASEURL}delivery-founder-consult/${consult.no})\n`,
+      );
+    });
+    const message = {
+      text: `배달형 상담신청 안내 랜딩 광고`,
+      username: B2C_SLACK_NOTIFICATION_PROPERTY.founderConsultUsername,
+      attachments: [
+        {
+          color: '#009900',
+          fields: [
+            {
+              title: `${B2C_SLACK_NOTIFICATION_PROPERTY.founderConsultUsername}`,
+              value: `${
+                deliveryFounderConsults[0].nanudaUser.name
+              }님이 랜딩 페이지로 공유주방 신청했습니다. \n\n${consults.join(
+                ' ',
+              )}`,
+              short: false,
+            },
+          ],
+        },
+      ],
+    };
+    this.__send_slack(message, SLACK_TYPE.WEBHOOK);
+  }
+
+  /**
    * send presentation slack
    * @param attendees
    */

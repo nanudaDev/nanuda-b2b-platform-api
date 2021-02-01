@@ -216,7 +216,7 @@ export class SmsNotificationService extends BaseService {
       sender: process.env.ALIGO_SENDER_PHONE,
       msg: `[위대한상사] 안녕하세요 나누다키친입니다. ${
         consults[0].nanudaUser.name
-      }님께서 상담신청하신 목록입니다. . \n${[...spaces]}`,
+      }님께서 상담신청하신 목록입니다. . \n${spaces.join(' ')}`,
       title: '안녕하세요 위대한상사입니다.',
     };
 
