@@ -4,22 +4,32 @@ import {
   FOUNDER_CONSULT,
   APPROVAL_STATUS,
   SPACE_TYPE,
+  CONST_NOTICE_BOARD,
 } from 'src/core';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { DeliverySpace } from './delivery-space.entity';
 import { Repository, EntityManager, In } from 'typeorm';
 import { CompanyDistrict } from '../company-district/company-district.entity';
-import { DeliverySpaceListDto } from './dto';
+import {
+  CheckRatingDto,
+  DeliverySpaceListDto,
+  NanudaCreateTrackDto,
+  NanudaDeliverySpaceFindDistrictOrCityDto,
+} from './dto';
 import {
   ORDER_BY_VALUE,
   PaginatedRequest,
   PaginatedResponse,
   YN,
+  LOCATION_TYPE,
 } from 'src/common';
 import { FavoriteSpaceMapper } from '../favorite-space-mapper/favorite-space-mapper.entity';
 import { DeliveryFounderConsult } from '../delivery-founder-consult/delivery-founder-consult.entity';
 import { CompanyDistrictPromotionMapper } from '../company-district-promotion-mapper/company-district-promotion-mapper.entity';
 import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
+import { RemoveDuplicateObject } from 'src/core/utils';
+import { TrackTraceToSpaceCategory } from '../track-trace-space-to-category/track-trace-space-to-category.entity';
+import Axios from 'axios';
 
 @Injectable()
 export class NanudaDeliverySpaceService extends BaseService {
@@ -42,6 +52,7 @@ export class NanudaDeliverySpaceService extends BaseService {
   async findAllForNanudaUser(
     deliverySpaceListDto: DeliverySpaceListDto,
     pagination: PaginatedRequest,
+    checkRatingDto?: CheckRatingDto,
   ): Promise<PaginatedResponse<DeliverySpace>> {
     // passing nanuda user token from old server
     // amenity ids length because of exclude dto
@@ -129,31 +140,50 @@ export class NanudaDeliverySpaceService extends BaseService {
         'address',
         deliverySpaceListDto.address,
         deliverySpaceListDto.exclude('address'),
+      )
+      .AndWhereLike(
+        'companyDistrict',
+        'region2DepthName',
+        deliverySpaceListDto.region2DepthName,
+        deliverySpaceListDto.exclude('region2DepthName'),
+      )
+      .AndWhereLike(
+        'companyDistrict',
+        'region3DepthName',
+        deliverySpaceListDto.region3DepthName,
+        deliverySpaceListDto.exclude('region3DepthName'),
+      )
+      .AndWhereEqual(
+        'companyDistrict',
+        'hCode',
+        deliverySpaceListDto.hCode,
+        deliverySpaceListDto.exclude('hCode'),
+      )
+      .AndWhereEqual(
+        'companyDistrict',
+        'bCode',
+        deliverySpaceListDto.bCode,
+        deliverySpaceListDto.exclude('bCode'),
       );
-    // .AndWhereBetweenValues(
-    //   'deliverySpace',
-    //   'size',
-    //   deliverySpaceListDto.minSize,
-    //   deliverySpaceListDto.maxSize,
-    //   deliverySpaceListDto.exclude('minSize'),
-    //   deliverySpaceListDto.exclude('maxSize'),
-    // )
-    // .AndWhereBetweenValues(
-    //   'deliverySpace',
-    //   'deposit',
-    //   deliverySpaceListDto.minDeposit,
-    //   deliverySpaceListDto.maxDeposit,
-    //   deliverySpaceListDto.exclude('minDeposit'),
-    //   deliverySpaceListDto.exclude('maxDeposit'),
-    // )
-    // .AndWhereBetweenValues(
-    //   'deliverySpace',
-    //   'monthlyRentFee',
-    //   deliverySpaceListDto.minMonthlyRentFee,
-    //   deliverySpaceListDto.maxMonthlyRentFee,
-    //   deliverySpaceListDto.exclude('minMonthlyRentFee'),
-    //   deliverySpaceListDto.exclude('maxMonthlyRentFee'),
-    // );
+    // if region1DepthName is '충청/경상'
+    if (deliverySpaceListDto.region1DepthName === '경상') {
+      qb.AndWhereIn('companyDistrict', 'region1DepthName', [
+        '울산',
+        '대구',
+        '포항',
+      ]);
+      delete deliverySpaceListDto.region1DepthName;
+    } else if (deliverySpaceListDto.region1DepthName === '충청') {
+      qb.AndWhereIn('companyDistrict', 'region1DepthName', ['충남']);
+      delete deliverySpaceListDto.region1DepthName;
+    } else {
+      qb.AndWhereLike(
+        'companyDistrict',
+        'region1DepthName',
+        deliverySpaceListDto.region1DepthName,
+        deliverySpaceListDto.exclude('region1DepthName'),
+      );
+    }
     // size
     if (deliverySpaceListDto.minSize && !deliverySpaceListDto.maxSize) {
       qb.andWhere('deliverySpace.size >= :minSize', {
@@ -260,22 +290,6 @@ export class NanudaDeliverySpaceService extends BaseService {
       qb.AndWhereJoinBetweenDate('promotions', new Date());
       qb.andWhere('promotions.showYn = :showYn', { showYn: YN.YES });
     }
-    // if (
-    //   deliverySpaceListDto.amenityIds &&
-    //   deliverySpaceListDto.amenityIds.length > 0
-    // ) {
-    //   const amenityIdsLength = deliverySpaceListDto.amenityIds.length;
-    //   console.log(amenityIdsLength);
-    //   qb.innerJoinAndSelect('deliverySpace.amenities', 'amenities');
-    //   qb.AndWhereIn(
-    //     'amenities',
-    //     'no',
-    //     deliverySpaceListDto.amenityIds,
-    //     deliverySpaceListDto.exclude('amenityIds'),
-    //   );
-    //   qb.groupBy('deliverySpace.no');
-    //   qb.having(`COUNT(DISTINCT amenities.NO) = ${amenityIdsLength}`);
-    // }
     if (deliverySpaceListDto.orderByDeposit) {
       qb.addOrderBy(
         'deliverySpace.deposit',
@@ -293,10 +307,7 @@ export class NanudaDeliverySpaceService extends BaseService {
     qb.WhereAndOrder(deliverySpaceListDto);
     qb.Paginate(pagination);
 
-    let [items, totalCount] = await qb.getManyAndCount();
-    // if(deliverySpaceListDto.amenityIds && deliverySpaceListDto.amenityIds.length > 1) {
-    //   totalCount
-    // }
+    const [items, totalCount] = await qb.getManyAndCount();
     // add favorite mark
     await Promise.all(
       items.map(async item => {
@@ -321,13 +332,6 @@ export class NanudaDeliverySpaceService extends BaseService {
             },
           });
         item.consultCount = consults.length;
-        // item.remainingCount = item.quantity - item.contracts.length;
-        // // splice and remove unwanted delivery spaces
-        // if (item.remainingCount === 0) {
-        //   const index = items.indexOf(item);
-        //   items.splice(index, 1);
-        //   totalCount - 1;
-        // }
         delete item.contracts;
       }),
     );
@@ -351,6 +355,103 @@ export class NanudaDeliverySpaceService extends BaseService {
         }),
       );
     }
+    if (checkRatingDto.isSkipped === YN.NO) {
+      let newTrack = new TrackTraceToSpaceCategory();
+      newTrack.isSkippedYn = YN.NO;
+      newTrack.region1DepthName = items[0].companyDistrict.region1DepthName;
+      newTrack.region2DepthName = items[0].companyDistrict.region2DepthName;
+      newTrack.kbFoodCategory = checkRatingDto.kbFoodCategory;
+      newTrack = await this.entityManager
+        .getRepository(TrackTraceToSpaceCategory)
+        .save(newTrack);
+      // get grades
+      const averageRatingArray = [];
+      const averageRatingScoreArray = [];
+      const averageTargetPopulationPercentileArray = [];
+      const averageRevenuePercentileArray = [];
+      await Promise.all(
+        items.map(async item => {
+          const grade = await Axios.get<any>(
+            `${process.env.PLATFORM_ANALYSIS_URL}commercial-area-grade-by-hdong-category`,
+            {
+              params: {
+                hdongCode: item.companyDistrict.hCode,
+                mediumCategoryCode: checkRatingDto.kbFoodCategory,
+                yymm: '2009',
+              },
+            },
+          );
+          console.log(grade.data);
+          if (
+            !grade.data ||
+            !grade.data.finalGrade ||
+            grade.data === 'null' ||
+            grade.data === null
+          ) {
+            item.rating = null;
+            item.ratingScore = null;
+            item.revenueAmountPercentile = null;
+            item.targetPopulationPercentile = null;
+          }
+          if (grade.data && grade.data.finalGrade) {
+            item.rating = grade.data.finalGrade['0'];
+            item.ratingScore = grade.data.finalScore['0'];
+            item.revenueAmountPercentile =
+              grade.data.revenueAmountPercentile['0'];
+            item.targetPopulationPercentile =
+              grade.data.targetPopulationPercentile['0'];
+          }
+          if (item.rating > 4) {
+            const index = items.indexOf(item);
+            items.splice(index, 1);
+          }
+          // push values to array
+          averageRatingArray.push(item.rating);
+          averageRatingScoreArray.push(item.ratingScore);
+          averageRevenuePercentileArray.push(item.revenueAmountPercentile);
+          averageTargetPopulationPercentileArray.push(
+            item.targetPopulationPercentile,
+          );
+        }),
+      );
+      if (averageRatingArray.length > 0) {
+        const averageRating =
+          averageRatingArray.reduce((a, b) => a + b, 0) /
+          averageRatingArray.length;
+        const averageRatingScore =
+          averageRatingScoreArray.reduce((a, b) => a + b, 0) /
+          averageRatingScoreArray.length;
+        const averageTargetPopulationPercentile =
+          averageTargetPopulationPercentileArray.reduce((a, b) => a + b, 0) /
+          averageTargetPopulationPercentileArray.length;
+        const averageRevenuePercentileScore =
+          averageRevenuePercentileArray.reduce((a, b) => a + b, 0) /
+          averageRevenuePercentileArray.length;
+        items.map(item => {
+          item.averageRating = Math.round(averageRating);
+          item.averageRatingScore = Math.round(averageRatingScore);
+          item.averageRevenuePercentileScore = Math.round(
+            averageRevenuePercentileScore,
+          );
+          item.averageTargetPopulationPercentile = Math.round(
+            averageTargetPopulationPercentile,
+          );
+        });
+      }
+    } else {
+      if (items.length > 0) {
+        let newTrack = new TrackTraceToSpaceCategory();
+        newTrack.isSkippedYn = YN.YES;
+        newTrack.region1DepthName =
+          items[0].companyDistrict.region1DepthName || null;
+        newTrack.region2DepthName =
+          items[0].companyDistrict.region2DepthName || null;
+        newTrack.kbFoodCategory = null;
+        newTrack = await this.entityManager
+          .getRepository(TrackTraceToSpaceCategory)
+          .save(newTrack);
+      }
+    }
     return { items, totalCount };
   }
 
@@ -362,7 +463,7 @@ export class NanudaDeliverySpaceService extends BaseService {
     deliverySpaceNo: number,
     nanudaUserNo?: number,
   ): Promise<DeliverySpace> {
-    let space = await this.deliverySpaceRepo
+    const space = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
       .CustomInnerJoinAndSelect(['companyDistrict'])
       .CustomLeftJoinAndSelect([
@@ -491,7 +592,7 @@ export class NanudaDeliverySpaceService extends BaseService {
       .limit(5)
       .Paginate(pagination);
 
-    let [items, totalCount] = await qb.getManyAndCount();
+    const [items, totalCount] = await qb.getManyAndCount();
 
     items.map(item => {
       if (item.no === selectedDeliverySpace.no) {
@@ -529,6 +630,9 @@ export class NanudaDeliverySpaceService extends BaseService {
     return await qb;
   }
 
+  /**
+   * find max values
+   */
   async findMaxValues() {
     const maxDepositValue = await this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
@@ -569,5 +673,91 @@ export class NanudaDeliverySpaceService extends BaseService {
       maxMonthlyRentFee: maxRentValue[0].monthlyRentFee,
     };
     return results;
+  }
+
+  /**
+   * find all for landing page
+   * @param deliverySpaceListDto
+   */
+  async findAllDeliverySpacesByDistricts(
+    deliverySpaceListDto: DeliverySpaceListDto,
+  ): Promise<DeliverySpace[]> {
+    const qb = this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .CustomInnerJoinAndSelect(['companyDistrict'])
+      .innerJoin('companyDistrict.company', 'company')
+      .where('company.companyStatus = :companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere(
+        'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
+        { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
+      )
+      .AndWhereLike(
+        'companyDistrict',
+        'region2DepthName',
+        deliverySpaceListDto.region2DepthName,
+        deliverySpaceListDto.exclude('region2DepthName'),
+      );
+
+    return await qb.getMany();
+  }
+
+  /**
+   * find all districts byt city
+   * @param nanudaDeliverySpaceFindDistrictOrCityDto
+   */
+  async findAllDistrictsByCityCode(
+    nanudaDeliverySpaceFindDistrictOrCityDto: NanudaDeliverySpaceFindDistrictOrCityDto,
+  ): Promise<object[]> {
+    const districtNamesAndCode = [];
+    const qb = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .CustomInnerJoinAndSelect(['companyDistrict'])
+      .leftJoinAndSelect('companyDistrict.promotions', 'promotions')
+      .innerJoin('companyDistrict.company', 'company')
+      .where('company.companyStatus = :companyStatus', {
+        companyStatus: APPROVAL_STATUS.APPROVAL,
+      })
+      .andWhere(
+        'companyDistrict.companyDistrictStatus = :companyDistrictStatus',
+        { companyDistrictStatus: APPROVAL_STATUS.APPROVAL },
+      )
+      .andWhere('companyDistrict.region1DepthName like :region1DepthName', {
+        region1DepthName: `${nanudaDeliverySpaceFindDistrictOrCityDto.locationType}%`,
+      })
+      .andWhere('deliverySpace.remainingCount > 0')
+      .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
+      .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
+      .orderBy('deliverySpace.monthlyRentFee', ORDER_BY_VALUE.DESC)
+      .getMany();
+
+    // push district object
+    await Promise.all(
+      qb.map(q => {
+        districtNamesAndCode.push({
+          districtName: q.companyDistrict.region2DepthName,
+          hdongCode: q.companyDistrict.hCode,
+        });
+      }),
+    );
+    // check if the number of districts is lower than three
+    if (districtNamesAndCode.length < 3) {
+      return qb;
+    } else {
+      districtNamesAndCode.unshift({ directSpace: YN.NO });
+    }
+    return RemoveDuplicateObject(districtNamesAndCode, 'districtName');
+  }
+
+  /**
+   * create new track
+   * @param nanudaTrackTraceDto
+   */
+  async trackTraceToSpaceCategory(nanudaTrackTraceDto: NanudaCreateTrackDto) {
+    let track = new TrackTraceToSpaceCategory(nanudaTrackTraceDto);
+    track = await this.entityManager
+      .getRepository(TrackTraceToSpaceCategory)
+      .save(track);
   }
 }

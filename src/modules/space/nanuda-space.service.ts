@@ -4,6 +4,7 @@ import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import Axios from 'axios';
 import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
 import { BaseService, SPACE_TYPE } from 'src/core';
+import { RemoveDuplicateObject } from 'src/core/utils';
 import { EntityManager, Repository } from 'typeorm';
 import {
   DropdownResults,
@@ -44,7 +45,7 @@ export class NanudaSpaceService extends BaseService {
       .select(['space.no', 'space.sido', 'space.sigungu', 'space.bName2'])
       //   .groupBy('space.sido')
       .getMany();
-    const reduced: any = this.__remove_duplicate(dropdownSpace, 'sido');
+    const reduced: any = RemoveDuplicateObject(dropdownSpace, 'sido');
     reduced.map(reduce => {
       const top = new DropdownResults();
       top.no = reduce.no;
@@ -52,7 +53,7 @@ export class NanudaSpaceService extends BaseService {
       top.district = true;
       topResults.push(top);
     });
-    const reduced2: any = this.__remove_duplicate(dropdownSpace, 'sigungu');
+    const reduced2: any = RemoveDuplicateObject(dropdownSpace, 'sigungu');
     reduced2.map(space => {
       const second = new DropdownResults();
       second.no = space.no;
@@ -219,7 +220,7 @@ export class NanudaSpaceService extends BaseService {
   }
 
   //   remove duplicate
-  private __remove_duplicate(array: any, key: string) {
-    return [...new Map(array.map(item => [item[key], item])).values()];
-  }
+  // private __remove_duplicate(array: any, key: string) {
+  //   return [...new Map(array.map(item => [item[key], item])).values()];
+  // }
 }

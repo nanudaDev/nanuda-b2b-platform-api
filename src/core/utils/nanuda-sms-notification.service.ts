@@ -11,6 +11,8 @@ import { ENVIRONMENT } from 'src/config';
 import { BestSpaceMapper } from 'src/modules/best-space/best-space.entity';
 import { LandingPageSuccessRecord } from 'src/modules/landing-page-success-record/landing-page-success-record.entity';
 import { AttendeesOnline } from 'src/modules/attendees-online/attendees-online.entity';
+import { SecondMeetingApplicant } from 'src/modules/attendees-online/second-meeting-applicant.entity';
+import { NanudaUser } from 'src/modules/nanuda-user/nanuda-user.entity';
 
 @Injectable()
 export class NanudaSmsNotificationService {
@@ -163,6 +165,52 @@ export class NanudaSmsNotificationService {
   }
 
   /**
+   * 2차 대면 미팅 안내
+   * @param applicant
+   * @param req
+   */
+  async secondMeetingApplicantNotification(
+    applicant: SecondMeetingApplicant,
+    req: Request,
+  ) {
+    const payload = await this.__second_meeting_applicant_notification(
+      applicant,
+    );
+    req.body = payload.body;
+    const sms = await aligoapi.send(req, payload.auth);
+    if (
+      process.env.NODE_ENV === ENVIRONMENT.DEVELOPMENT ||
+      ENVIRONMENT.STAGING
+    ) {
+      console.log(sms);
+    }
+    return;
+  }
+
+  /**
+   * 장바구니 문자 발송
+   * @param nanudaUser
+   * @param consults
+   * @param req
+   */
+  async sendCartMessageNotifcation(
+    nanudaUser: NanudaUser,
+    consults: DeliveryFounderConsult[],
+    req: Request,
+  ) {
+    const payload = await this.__send_cart_message_notifcation_to_user(
+      nanudaUser,
+      consults,
+    );
+    req.body = payload.body;
+    const sms = await aligoapi.send(req, payload.auth);
+    if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
+      console.log(sms);
+    }
+    return;
+  }
+
+  /**
    * aligo api authentication
    */
   private async __get_auth(): Promise<AligoAuth> {
@@ -299,5 +347,73 @@ export class NanudaSmsNotificationService {
     };
 
     return { body, auth };
+  }
+
+  /**
+   * send presentation event notification
+   * @param phone
+   * @param name
+   * @param presentationDate
+   * @param schedule
+   */
+  private async __second_meeting_applicant_notification(
+    applicant: SecondMeetingApplicant,
+  ): Promise<MessageObject> {
+    const auth = await this.__get_auth();
+    // const todayDate = new Date(attendees.presentationDate)
+    // .toISOString()
+    // .slice(0, 10);
+    const body = {
+      receiver: applicant.phone,
+      sender: process.env.ALIGO_SENDER_PHONE,
+      msg: `[나누다키친] 안녕하세요 ${applicant.name}님, 나누다키친입니다. \n나누다키친 온라인 창업 설명회 2부 상담신청이 완료되었습니다. \n\n[2부 설명회 안내]\n> 빅데이터 상권분석\n> 깃발 컨설팅\n> 공유주방 매칭\n> 브랜드 상세설명\n\n*2부는 1:1 맞춤 상담으로 진행됩니다.\n\n담당자분이 최대한 빠른 시일 내 연락드려 미팅 안내를 드릴 예정입니다.\n\n2부 상담이 완료된 분들에 한하여 추첨하여 뿌링클 쿠폰을 드리고 있으니 예비사장님들은 꼭 참석해주세요!\n기타 궁금하신 부분이 있으시면 ${process.env.ALIGO_SECONDARY_PHONE}로 연락주시면 응대 도와드립니다.\n\n나누다키친 영업시간: 평일 10시 ~ 18시\n감사합니다.`,
+      title: '안녕하세요 나누다키친입니다.',
+    };
+
+    return { body, auth };
+  }
+
+  /**
+   * notification to user
+   * @param nanudaUser
+   * @param consults
+   */
+  private async __send_cart_message_notifcation_to_user(
+    nanudaUser: NanudaUser,
+    consults: DeliveryFounderConsult[],
+  ): Promise<MessageObject> {
+    const auth = await this.__get_auth();
+    const spaces = [];
+    consults.map(consult => {
+      const promotions = [];
+      if (
+        consult.deliverySpace.companyDistrict.promotions &&
+        consult.deliverySpace.companyDistrict.promotions.length > 0
+      ) {
+        consult.deliverySpace.companyDistrict.promotions.map(promotion => {
+          promotions.push(`${promotion.title}\n`);
+        });
+      }
+      spaces.push(
+        `${consult.deliverySpace.companyDistrict.company.nameKr} ${
+          consult.deliverySpace.companyDistrict.nameKr
+        }\n - ${consult.deliverySpace.companyDistrict.address}\n - ${
+          consult.deliverySpace.size
+        }평형\n${promotions.join(' ')}\n`,
+      );
+    });
+
+    const body = {
+      receiver: nanudaUser.phone,
+      sender: process.env.ALIGO_SENDER_PHONE,
+      msg: `[나누다키친] 안녕하세요 ${
+        nanudaUser.name
+      }님, 공유주방 플랫폼 나누다키친입니다. \n신청해주신 공유주방 안내드립니다. \n\n ${spaces.join(
+        ' ',
+      )}\n\n각 공유주방 상담사가 연락을 드려 자세한 상담을 진행드릴 예정입니다. \n**공유주방 상황에 따라 연락이 일부 지연 될 수 있습니다.** `,
+      title: '안녕하세요 나누다키친입니다.',
+    };
+
+    return { auth, body };
   }
 }

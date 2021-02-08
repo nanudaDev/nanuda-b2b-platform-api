@@ -3,3 +3,4 @@ export * from './pagination.type';
 export * from './del-yn.type';
 export * from './available-time.type';
 export * from './advertisement-source.type';
+export * from './location.type';

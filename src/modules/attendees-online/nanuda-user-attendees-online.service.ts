@@ -117,6 +117,7 @@ export class NanudaAttendeesOnlineService extends BaseService {
    */
   async secondMeetingApplicateCreate(
     nanudaSecondMeetingApplyDto: NanudaSecondMeetingApplyDto,
+    req: Request,
   ): Promise<SecondMeetingApplicant> {
     let secondMeetingApplicant = new SecondMeetingApplicant(
       nanudaSecondMeetingApplyDto,
@@ -146,6 +147,11 @@ export class NanudaAttendeesOnlineService extends BaseService {
     }
     secondMeetingApplicant = await this.secondMeetingApplicantRepo.save(
       secondMeetingApplicant,
+    );
+    // await sms notification
+    await this.nanudaSmsNotificationService.secondMeetingApplicantNotification(
+      secondMeetingApplicant,
+      req,
     );
     // await slack notification
     await this.nanudaSlackNotification.secondMeetingNotification(
