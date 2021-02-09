@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/core';
 import { Repository } from 'typeorm';
@@ -14,7 +14,28 @@ export class CompanyDistrictRevenueRecordService extends BaseService {
   ) {
     super();
   }
+
+  /**
+   * repository find one example
+   * @param no
+   */
   async findOne(no: number): Promise<CompanyDistrictRevenueRecord> {
+    // return await this.companyDistrictRevenueRecordRepo.findOne(no);
     return await this.companyDistrictRevenueRecordRepo.findOne(no);
+  }
+
+  //NATE TODO: find one with query builder
+  async findOneWithQueryBuilder(
+    no: number,
+  ): Promise<CompanyDistrictRevenueRecord> {
+    const qb = await this.companyDistrictRevenueRecordRepo
+      .createQueryBuilder('revenueRecord')
+      .where('revenueRecord.no = :no', { no: no })
+      .getOne();
+    if (!qb) {
+      throw new NotFoundException();
+    }
+
+    return qb;
   }
 }

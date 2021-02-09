@@ -5,7 +5,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export class CompanyDistrictRevenueRecord extends BaseEntity<
   CompanyDistrictRevenueRecord
 > {
-  @PrimaryGeneratedColumn({ name: 'NO', type: 'int' })
+  @PrimaryGeneratedColumn({ name: 'NO', type: 'int', unsigned: true })
   no: number;
 
   @Column({ name: 'MAX_REVENUE', type: 'int', default: 0 })
@@ -20,6 +20,13 @@ export class CompanyDistrictRevenueRecord extends BaseEntity<
   @Column({ name: 'MONTH', type: 'varchar', nullable: false })
   month: string;
 
-  @Column({ name: 'COMPANY_DISTRICT_NO', type: 'int', nullable: false })
+  @Column({
+    name: 'COMPANY_DISTRICT_NO',
+    type: 'int',
+    nullable: false,
+    unsigned: true,
+  })
   companyDistrictNo: number;
+
+  // NATE TODO: COMPANY DISTRICT RELATIONS MANY TO ONE
 }
