@@ -18,6 +18,7 @@ import { Amenity } from '../amenity/amenity.entity';
 import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 import { FileAttachmentDto } from '../file-upload/dto';
 import { CompanyDistrictPromotion } from '../company-district-promotion/company-district-promotion.entity';
+import { CompanyDistrictRevenueRecord } from '../company-district-revenue-record/company-district-revenue-record.entity';
 
 @Entity({ name: 'COMPANY_DISTRICT' })
 export class CompanyDistrict extends BaseEntity<CompanyDistrict> {
@@ -207,4 +208,10 @@ export class CompanyDistrict extends BaseEntity<CompanyDistrict> {
     },
   })
   promotions?: CompanyDistrictPromotion[];
+
+  @OneToMany(
+    type => CompanyDistrictRevenueRecord,
+    revenueRecord => revenueRecord.companyDistrict,
+  )
+  revenueRecords?: CompanyDistrictRevenueRecord[];
 }
