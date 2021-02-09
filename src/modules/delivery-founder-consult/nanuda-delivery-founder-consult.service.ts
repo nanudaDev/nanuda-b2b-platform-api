@@ -205,16 +205,6 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
             const newConsult = await this.deliveryFounderConsultRepo.save(
               consult,
             );
-            // const newlyAddedConsult = await this.deliveryFounderConsultRepo
-            //   .createQueryBuilder('deliveryFounderConsult')
-            //   .CustomInnerJoinAndSelect(['nanudaUser', 'deliverySpace'])
-            //   .innerJoinAndSelect(
-            //     'deliverySpace.companyDistrict',
-            //     'companyDistrict',
-            //   )
-            //   .innerJoinAndSelect('companyDistrict.company', 'company')
-            //   .where('deliveryFounderConsult.no = :no', { no: newConsult.no })
-            //   .getOne();
             deliveryFounderConsultIds.push(newConsult.no);
           }),
         );
