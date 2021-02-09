@@ -33,11 +33,10 @@ export class AdminListDto extends BaseDto<AdminListDto>
   @Expose()
   delYn?: YN;
 
-  @ApiPropertyOptional({ enum: SPACE_TYPE, isArray: true })
-  @IsEnum(SPACE_TYPE)
+  @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  spaceTypeNo?: SPACE_TYPE;
+  spaceTypeNo?: 0 | 1 | 2;
 
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsOptional()
