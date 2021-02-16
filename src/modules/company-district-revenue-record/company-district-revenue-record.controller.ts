@@ -7,19 +7,28 @@ import {
   Patch,
   ParseIntPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { BaseController } from 'src/core';
+import {
+  ApiBearerAuth,
+  ApiProperty,
+  ApiPropertyOptional,
+  ApiTags,
+} from '@nestjs/swagger';
+import { AuthRolesGuard, BaseController, CONST_COMPANY_USER } from 'src/core';
 import { CompanyDistrictCreateDto } from '../company-district/dto';
 import { CompanyDistrictRevenueRecord } from './company-district-revenue-record.entity';
 import { CompanyDistrictRevenueRecordService } from './company-district-revenue-record.service';
 import {
   CompanyDistrictRevenueRecordCreateDto,
+  CompanyDistrictRevenueRecordListDto,
   CompanyDistrictRevenueRecordUpdateDto,
 } from './dto';
 
 @Controller()
 @ApiTags('COMPANY DISTRICT REVENUE RECORD')
+@ApiBearerAuth()
+@UseGuards(new AuthRolesGuard(...CONST_COMPANY_USER))
 export class CompanyDistrictRevenueRecordController extends BaseController {
   constructor(
     private readonly companyDistrictRevenueRecordService: CompanyDistrictRevenueRecordService,
@@ -27,22 +36,18 @@ export class CompanyDistrictRevenueRecordController extends BaseController {
     super();
   }
 
-  /**
-   *
-   * @param districtNo
-   * @param year
-   */
-
   @Get('/company-district/:id([0-9]+)/revenue-record')
   async findAll(
     @Param('id') districtNo: number,
-    @Query('year') year: string,
+    @Query()
+    companyDistrictRevenueRecordListDto: CompanyDistrictRevenueRecordListDto,
   ): Promise<CompanyDistrictRevenueRecord[]> {
     return await this.companyDistrictRevenueRecordService.findAll(
       districtNo,
-      year,
+      companyDistrictRevenueRecordListDto.year,
     );
   }
+
   /**
    *
    * @param companyDistrictRevenueRecordCreateDto

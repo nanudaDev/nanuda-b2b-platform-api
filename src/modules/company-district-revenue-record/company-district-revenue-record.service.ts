@@ -19,10 +19,6 @@ export class CompanyDistrictRevenueRecordService extends BaseService {
     super();
   }
 
-  /**
-   * repository find one example
-   * @param no
-   */
   async findOne(no: number): Promise<CompanyDistrictRevenueRecord> {
     return await this.companyDistrictRevenueRecordRepo.findOne({
       where: { no: no },

@@ -13,38 +13,15 @@ export class CompanyDistrictRevenueRecordListDto
   //   @Expose()
   //   district_no:number
   //   @ApiProperty()
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  companyDistrictName: string;
+  year?: string;
 
-  @IsOptional()
-  @Expose()
-  companyDistrictNo: number;
-  @ApiProperty()
-  @IsOptional()
-  @Expose()
-  maxYear?: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @Expose()
-  min_year?: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @Expose()
-  max_month?: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @Expose()
-  min_month?: number;
-
-  @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
-  @IsOptional()
-  @IsEnum(ORDER_BY_VALUE)
-  @Expose()
-  @Default(ORDER_BY_VALUE.DESC)
-  orderby: ORDER_BY_VALUE;
+  // @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
+  // @IsOptional()
+  // @IsEnum(ORDER_BY_VALUE)
+  // @Expose()
+  // @Default(ORDER_BY_VALUE.DESC)
+  // orderby: ORDER_BY_VALUE;
 }
