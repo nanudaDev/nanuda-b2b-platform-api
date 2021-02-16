@@ -38,6 +38,7 @@ export class CompanyDistrictRevenueRecordService extends BaseService {
     if (year) {
       qb.andWhere('revenueRecord.year = :year', { year: year });
     }
+    qb.orderBy('revenueRecord.year', 'DESC');
     const records = qb.getMany();
 
     if (!records) {
