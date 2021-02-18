@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Query,
   UseGuards,
+  NotAcceptableException,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -57,10 +58,9 @@ export class CompanyDistrictRevenueRecordController extends BaseController {
     @Body()
     companyDistrictRevenueRecordCreateDto: CompanyDistrictRevenueRecordCreateDto,
   ): Promise<CompanyDistrictRevenueRecord> {
-    const newDto = new CompanyDistrictRevenueRecordCreateDto(
+    return await this.companyDistrictRevenueRecordService.createRecord(
       companyDistrictRevenueRecordCreateDto,
     );
-    return await this.companyDistrictRevenueRecordService.createRecord(newDto);
   }
 
   /**
