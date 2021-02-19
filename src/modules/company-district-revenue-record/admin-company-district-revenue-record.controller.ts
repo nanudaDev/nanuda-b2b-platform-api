@@ -21,15 +21,15 @@ export class AdminCompanyDistrictRevenueRecordController extends BaseController 
    * @param year
    */
 
-  @Get('/admin/company-district/:id([0-9]+)/revenue-record')
-  async findAll(
-    @Param('id') districtNo: number,
-    @Query()
-    companyDistrictRevenueRecordListDto: CompanyDistrictRevenueRecordListDto,
-  ): Promise<CompanyDistrictRevenueRecord[]> {
-    return await this.companyDistrictRevenueRecordService.findAll(
-      districtNo,
-      companyDistrictRevenueRecordListDto.year,
-    );
-  }
+  // @Get('/admin/company-district/:id([0-9]+)/revenue-record')
+  // async findAll(
+  //   @Param('id') districtNo: number,
+  //   @Query()
+  //   companyDistrictRevenueRecordListDto: CompanyDistrictRevenueRecordListDto,
+  // ): Promise<CompanyDistrictRevenueRecord[]> {
+  //   return await this.companyDistrictRevenueRecordService.findAll(
+  //     districtNo,
+  //     companyDistrictRevenueRecordListDto.year,
+  //   );
+  // }
 }

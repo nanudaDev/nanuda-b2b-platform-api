@@ -16,8 +16,10 @@ import {
   ApiPropertyOptional,
   ApiTags,
 } from '@nestjs/swagger';
+import { PaginatedRequest, PaginatedResponse, UserInfo } from 'src/common';
 import { AuthRolesGuard, BaseController, CONST_COMPANY_USER } from 'src/core';
 import { CompanyDistrictCreateDto } from '../company-district/dto';
+import { CompanyUser } from '../company-user/company-user.entity';
 import { CompanyDistrictRevenueRecord } from './company-district-revenue-record.entity';
 import { CompanyDistrictRevenueRecordService } from './company-district-revenue-record.service';
 import {
@@ -37,15 +39,17 @@ export class CompanyDistrictRevenueRecordController extends BaseController {
     super();
   }
 
-  @Get('/company-district/:id([0-9]+)/revenue-record')
+  @Get('/revenue-record')
   async findAll(
-    @Param('id') districtNo: number,
     @Query()
     companyDistrictRevenueRecordListDto: CompanyDistrictRevenueRecordListDto,
-  ): Promise<CompanyDistrictRevenueRecord[]> {
+    @Query() pagination: PaginatedRequest,
+    @UserInfo() companyUser: CompanyUser,
+  ): Promise<PaginatedResponse<CompanyDistrictRevenueRecord>> {
     return await this.companyDistrictRevenueRecordService.findAll(
-      districtNo,
-      companyDistrictRevenueRecordListDto.year,
+      companyDistrictRevenueRecordListDto,
+      companyUser.companyNo,
+      pagination,
     );
   }
 
