@@ -1,6 +1,8 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { UserInfo } from 'src/common';
 import { AuthRolesGuard, BaseController, CONST_ADMIN_USER } from 'src/core';
+import { Admin } from '../admin/admin.entity';
 import { CompanyDistrictRevenueRecord } from './company-district-revenue-record.entity';
 import { CompanyDistrictRevenueRecordService } from './company-district-revenue-record.service';
 import { CompanyDistrictRevenueRecordListDto } from './dto';
@@ -27,9 +29,9 @@ export class AdminCompanyDistrictRevenueRecordController extends BaseController 
     @Query()
     companyDistrictRevenueRecordListDto: CompanyDistrictRevenueRecordListDto,
   ): Promise<CompanyDistrictRevenueRecord[]> {
-    return await this.companyDistrictRevenueRecordService.findAll(
+    return await this.companyDistrictRevenueRecordService.findAllForAdmin(
       districtNo,
-      companyDistrictRevenueRecordListDto.year,
+      companyDistrictRevenueRecordListDto,
     );
   }
 }

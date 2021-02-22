@@ -18,6 +18,9 @@ export class CompanyDistrictRevenueRecordListDto
   @Expose()
   year?: string;
 
+  @ApiPropertyOptional()
+  @Expose()
+  companyDistrictNo: number;
   // @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   // @IsOptional()
   // @IsEnum(ORDER_BY_VALUE)

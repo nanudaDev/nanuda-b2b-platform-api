@@ -16,8 +16,10 @@ import {
   ApiPropertyOptional,
   ApiTags,
 } from '@nestjs/swagger';
+import { UserInfo } from 'src/common';
 import { AuthRolesGuard, BaseController, CONST_COMPANY_USER } from 'src/core';
 import { CompanyDistrictCreateDto } from '../company-district/dto';
+import { CompanyUser } from '../company-user/company-user.entity';
 import { CompanyDistrictRevenueRecord } from './company-district-revenue-record.entity';
 import { CompanyDistrictRevenueRecordService } from './company-district-revenue-record.service';
 import {
@@ -36,16 +38,19 @@ export class CompanyDistrictRevenueRecordController extends BaseController {
   ) {
     super();
   }
-
-  @Get('/company-district/:id([0-9]+)/revenue-record')
+  /**
+   *
+   * @param companyDistrictRevenueRecordListDto
+   */
+  @Get('/revenue-record')
   async findAll(
-    @Param('id') districtNo: number,
+    @UserInfo() companyUser: CompanyUser,
     @Query()
     companyDistrictRevenueRecordListDto: CompanyDistrictRevenueRecordListDto,
   ): Promise<CompanyDistrictRevenueRecord[]> {
     return await this.companyDistrictRevenueRecordService.findAll(
-      districtNo,
-      companyDistrictRevenueRecordListDto.year,
+      companyUser,
+      companyDistrictRevenueRecordListDto,
     );
   }
 
@@ -55,10 +60,12 @@ export class CompanyDistrictRevenueRecordController extends BaseController {
    */
   @Post('/revenue-record')
   async create(
+    @UserInfo() companyUser: CompanyUser,
     @Body()
     companyDistrictRevenueRecordCreateDto: CompanyDistrictRevenueRecordCreateDto,
   ): Promise<CompanyDistrictRevenueRecord> {
     return await this.companyDistrictRevenueRecordService.createRecord(
+      companyUser,
       companyDistrictRevenueRecordCreateDto,
     );
   }
@@ -70,11 +77,13 @@ export class CompanyDistrictRevenueRecordController extends BaseController {
    */
   @Patch('/revenue-record/:id([0-9]+)')
   async update(
+    @UserInfo() companyUser: CompanyUser,
     @Param('id', ParseIntPipe) id: number,
     @Body()
     companyDistrictRevenueRecordUpdateDto: CompanyDistrictRevenueRecordUpdateDto,
   ): Promise<CompanyDistrictRevenueRecord> {
     return await this.companyDistrictRevenueRecordService.updateRecord(
+      companyUser,
       id,
       companyDistrictRevenueRecordUpdateDto,
     );
