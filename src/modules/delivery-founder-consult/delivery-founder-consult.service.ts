@@ -444,7 +444,7 @@ export class DeliveryFounderConsultService extends BaseService {
             throw new BadRequestException('등록할 수 없는 공간입니다.');
           }
           // create new record of change
-          let newRecord = new DeliveryFounderConsultRecord();
+          const newRecord = new DeliveryFounderConsultRecord();
           newRecord.prevDeliverySpaceNo =
             deliveryFounderConsult.deliverySpaceNo;
           newRecord.deliveryFounderConsultNo = deliveryFounderConsult.no;
