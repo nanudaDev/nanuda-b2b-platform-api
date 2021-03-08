@@ -126,6 +126,10 @@ export class DeliveryFounderConsultContractService extends BaseService {
     return { items, totalCount };
   }
 
+  /**
+   * find one for admin
+   * @param deliveryFounderConsultContractNo
+   */
   async findOneForAdmin(
     deliveryFounderConsultContractNo: number,
   ): Promise<DeliveryFounderConsultContract> {
