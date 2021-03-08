@@ -186,10 +186,10 @@ export class DeliveryFounderConsultService extends BaseService {
         adminDeliveryFounderConsultListDto.started,
         adminDeliveryFounderConsultListDto.ended,
         adminDeliveryFounderConsultListDto.exclude('started'),
-        adminDeliveryFounderConsultListDto.exclude('ended '),
-      );
-    qb.WhereAndOrder(adminDeliveryFounderConsultListDto);
-    qb.Paginate(pagination);
+        adminDeliveryFounderConsultListDto.exclude('ended'),
+      )
+      .WhereAndOrder(adminDeliveryFounderConsultListDto)
+      .Paginate(pagination);
     const [items, totalCount] = await qb.getManyAndCount();
     return { items, totalCount };
   }
