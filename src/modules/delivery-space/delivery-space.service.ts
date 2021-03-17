@@ -598,6 +598,9 @@ export class DeliverySpaceService extends BaseService {
             })
             .execute();
         }
+        if (adminDeliverySpaceUpdateDto.quantity) {
+          deliverySpace.remainingCount = adminDeliverySpaceUpdateDto.quantity;
+        }
         deliverySpace = await entityManager.save(deliverySpace);
         if (
           adminDeliverySpaceUpdateDto.isOperatedYn === YN.YES &&
@@ -908,6 +911,10 @@ export class DeliverySpaceService extends BaseService {
           );
         }
         space = space.set(deliverySpaceUpdateDto);
+        // change remaining count along with quantity
+        if (deliverySpaceUpdateDto.quantity) {
+          space.remainingCount = deliverySpaceUpdateDto.quantity;
+        }
         return await entityManager.save(space);
       },
     );
