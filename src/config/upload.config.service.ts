@@ -26,7 +26,7 @@ type S3BucketInfo = {
   cloudFrontUrl: string;
 };
 type S3BucketInfoEnvironments = {
-  [key in 'production' | 'staging']: S3BucketInfo;
+  [key in 'production' | 'staging' | 'common']: S3BucketInfo;
 };
 type UploadOption = {
   path: string;
@@ -58,6 +58,10 @@ export class UploadConfigService {
     },
     staging: {
       bucketName: 'staging-storage-nanuda',
+      cloudFrontUrl: null, // 'https://xxxxx.cloudfront.net',
+    },
+    common: {
+      bucketName: 'common-nanuda',
       cloudFrontUrl: null, // 'https://xxxxx.cloudfront.net',
     },
   };
@@ -183,6 +187,10 @@ export const bucketInfoEnvironments: S3BucketInfoEnvironments = {
   },
   staging: {
     bucketName: 'staging-storage-nanuda',
+    cloudFrontUrl: null, // 'https://xxxxx.cloudfront.net',
+  },
+  common: {
+    bucketName: 'common-nanuda',
     cloudFrontUrl: null, // 'https://xxxxx.cloudfront.net',
   },
 };
