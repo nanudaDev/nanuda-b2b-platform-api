@@ -101,7 +101,17 @@ export class ArticleService extends BaseService {
       );
       if (!newArticle.image) {
         throw new BadRequestException({
-          message: 'Upload failed!',
+          message: 'Upload failed! (Article image)',
+        });
+      }
+    }
+    if (newArticle.attachment && newArticle.attachment.length > 0) {
+      newArticle.attachment = await this.fileUploadService.moveS3File(
+        newArticle.attachment,
+      );
+      if (!newArticle.attachment) {
+        throw new BadRequestException({
+          message: 'Upload failed! (Article attachment)',
         });
       }
     }
