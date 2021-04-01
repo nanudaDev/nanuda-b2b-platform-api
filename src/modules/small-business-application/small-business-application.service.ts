@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { PaginatedRequest, PaginatedResponse, YN } from 'src/common';
 import { BaseService } from 'src/core';
+import { B2CNanudaSlackNotificationService } from 'src/core/utils';
 import { EntityManager, Repository } from 'typeorm';
 import { NanudaUser } from '../nanuda-user/nanuda-user.entity';
 import {
@@ -21,6 +22,7 @@ export class SmallBusinessApplicationService extends BaseService {
       SmallBusinessApplication
     >,
     @InjectEntityManager() private readonly entityManager: EntityManager,
+    private readonly nanudaSlackNotificationService: B2CNanudaSlackNotificationService,
   ) {
     super();
   }
@@ -44,6 +46,16 @@ export class SmallBusinessApplicationService extends BaseService {
     let newApplication = new SmallBusinessApplication(
       smallBusinessApplicationCreateDto,
     );
+    const checkIfUserApplied = await this.smallBusinessApplicationRepo.findOne({
+      where: {
+        name: smallBusinessApplicationCreateDto.name,
+        phone: smallBusinessApplicationCreateDto.phone,
+        isCompleteYn: YN.YES,
+      },
+    });
+    if (checkIfUserApplied) {
+      throw new BadRequestException('죄송합니다. 이미 신청한 전화번호입니다.');
+    }
     if (
       smallBusinessApplicationCreateDto.experience &&
       smallBusinessApplicationCreateDto.experience.length > 0
@@ -69,7 +81,9 @@ export class SmallBusinessApplicationService extends BaseService {
     if (checkIfNanudaUser) {
       newApplication.isNanudaUserYn = YN.YES;
     }
-    if ((smallBusinessApplicationCreateDto.isCompleteYn = YN.YES)) {
+    if (smallBusinessApplicationCreateDto.isCompleteYn === YN.YES) {
+      smallBusinessApplicationCreateDto.isAgreeYn = YN.YES;
+      smallBusinessApplicationCreateDto.isAgreePrivacyYn = YN.YES;
       const newDto = new SmallBusinessApplicationSubmitDto(
         smallBusinessApplicationCreateDto,
       );
@@ -77,6 +91,9 @@ export class SmallBusinessApplicationService extends BaseService {
       // send message
       newApplication = new SmallBusinessApplication(newDto);
       newApplication = await this.smallBusinessApplicationRepo.save(
+        newApplication,
+      );
+      await this.nanudaSlackNotificationService.smallBusinessApplicationNotification(
         newApplication,
       );
       return newApplication;
@@ -158,6 +175,9 @@ export class SmallBusinessApplicationService extends BaseService {
       );
       application = application.set(submitDto);
       application = await this.smallBusinessApplicationRepo.save(application);
+      await this.nanudaSlackNotificationService.smallBusinessApplicationNotification(
+        application,
+      );
       return application;
     }
     application = application.set(smallBusinessApplicationUpdateDto);
