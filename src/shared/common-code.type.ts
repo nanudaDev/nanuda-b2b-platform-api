@@ -179,6 +179,12 @@ export enum PROMOTION {
 }
 export const CONST_PROMOTION  = Object.values(PROMOTION);
 
+export enum SMALL_BUSINESS_APPLICATION {
+ 'SMALL_BIZ_TYPE_1' = 'SMALL_BIZ_TYPE_1', 
+ 'SMALL_BIZ_TYPE_2' = 'SMALL_BIZ_TYPE_2', 
+}
+export const CONST_SMALL_BUSINESS_APPLICATION  = Object.values(SMALL_BUSINESS_APPLICATION);
+
 export enum SPACE {
  'ALL' = 'ALL', 
  'ANALYSIS_FIN' = 'ANALYSIS_FIN', 
