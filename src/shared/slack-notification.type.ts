@@ -9,4 +9,5 @@ export enum SLACK_NOTIFICATION_PROPERTY {
 
 export enum B2C_SLACK_NOTIFICATION_PROPERTY {
   founderConsultUsername = '배달형 상담 신청 안내',
+  smallBusinessApplicationUsername = '소진공 신청 안내',
 }

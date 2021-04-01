@@ -11,6 +11,7 @@ import { YN } from 'src/common';
 import { AttendeesOnline } from 'src/modules/attendees-online/attendees-online.entity';
 import { isFunction } from 'util';
 import { SecondMeetingApplicant } from 'src/modules/attendees-online/second-meeting-applicant.entity';
+import { SmallBusinessApplication } from 'src/modules/small-business-application/small-business-application.entity';
 
 enum SLACK_TYPE {
   WEBHOOK = 'WEBHOOK',

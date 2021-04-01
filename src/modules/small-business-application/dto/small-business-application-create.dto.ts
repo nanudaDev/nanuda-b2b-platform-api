@@ -65,6 +65,20 @@ export class SmallBusinessApplicationCreateDto
   @Default(YN.NO)
   isCompleteYn?: YN;
 
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @Expose()
+  @IsEnum(YN)
+  @Default(YN.NO)
+  isAgreeYn: YN.YES;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @Expose()
+  @IsEnum(YN)
+  @Default(YN.NO)
+  isAgreePrivacyYn: YN.YES;
+
   @ApiPropertyOptional({ type: [SmallBusinessApplicantExperience] })
   @IsOptional()
   @Type(() => SmallBusinessApplicantExperience)
