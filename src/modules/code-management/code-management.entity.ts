@@ -22,6 +22,9 @@ export class CodeManagement extends BaseEntity<CodeManagement> {
   @Column({ type: 'varchar', length: 20, nullable: false, name: 'KEY' })
   key: string;
 
+  @Column({ name: 'ADDITIONAL_KEY', type: 'varchar' })
+  additionalKey: string;
+
   @Column({ type: 'varchar', length: 20, nullable: false, name: 'VALUE' })
   value: string;
 

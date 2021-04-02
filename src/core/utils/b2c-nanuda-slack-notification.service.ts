@@ -11,6 +11,7 @@ import { YN } from 'src/common';
 import { AttendeesOnline } from 'src/modules/attendees-online/attendees-online.entity';
 import { isFunction } from 'util';
 import { SecondMeetingApplicant } from 'src/modules/attendees-online/second-meeting-applicant.entity';
+import { SmallBusinessApplication } from 'src/modules/small-business-application/small-business-application.entity';
 
 enum SLACK_TYPE {
   WEBHOOK = 'WEBHOOK',
@@ -25,6 +26,39 @@ export class B2CNanudaSlackNotificationService extends BaseService {
   presentationSlackUrl = process.env.BUSINESS_PRESENTATION_SLACK_URL;
   landingPageSlackUrl = process.env.LANDING_PAGE_SUCCESS_SLACK_URL;
   secondMeetingSlackUrl = process.env.SECOND_MEETING_APPLICANT_SLACK_URL;
+
+  async smallBusinessApplicationNotification(
+    smallBusinessApplication: SmallBusinessApplication,
+  ) {
+    const message = {
+      text: `소진공 신청서 알림`,
+      username:
+        B2C_SLACK_NOTIFICATION_PROPERTY.smallBusinessApplicationUsername,
+      attachments: [
+        {
+          // color: '#009900',
+          // actions: [
+          //   {
+          //     name: 'slack action button',
+          //     text: '신청서 상세보기',
+          //     type: 'button',
+          //     url: `${process.env.ADMIN_BASEURL}delivery-founder-consult/${deliveryFounderConsult.no}`,
+          //     style: 'primary',
+          //   },
+          // ],
+          fields: [
+            {
+              title: `${B2C_SLACK_NOTIFICATION_PROPERTY.smallBusinessApplicationUsername}`,
+              value: `${smallBusinessApplication.name}님이 (${smallBusinessApplication.phone}) 신청을 했습니다.\n기존 나누다키친 사용자: ${smallBusinessApplication.isNanudaUserYn}`,
+              short: false,
+            },
+          ],
+        },
+      ],
+    };
+
+    this.__send_slack(message, SLACK_TYPE.LANDING);
+  }
 
   async deliveryFounderConsultAdded(
     deliveryFounderConsult: DeliveryFounderConsult,
