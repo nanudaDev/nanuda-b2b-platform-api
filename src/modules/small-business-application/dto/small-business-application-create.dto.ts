@@ -65,6 +65,7 @@ export class SmallBusinessApplicationCreateDto
   @Default(YN.NO)
   isCompleteYn?: YN;
 
+  // 수집-이영 동의 여부 필수
   @ApiPropertyOptional({ enum: YN })
   @IsOptional()
   @Expose()
@@ -72,6 +73,23 @@ export class SmallBusinessApplicationCreateDto
   @Default(YN.NO)
   isAgreeYn: YN.YES;
 
+  // 수집-이영 동의 여부 선택
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @Expose()
+  @IsEnum(YN)
+  @Default(YN.NO)
+  isAgreeOptionalYn: YN.YES;
+
+  // 고우식별정보 동의 여부
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @Expose()
+  @IsEnum(YN)
+  @Default(YN.NO)
+  sensitiveInfoYn: YN.YES;
+
+  // 민감정보 동의 여부
   @ApiPropertyOptional({ enum: YN })
   @IsOptional()
   @Expose()

@@ -66,6 +66,38 @@ export class SmallBusinessApplicationSubmitDto
   @Default(YN.NO)
   isCompleteYn?: YN;
 
+  // 수집-이영 동의 여부 필수
+  @ApiProperty({ enum: YN })
+  @IsNotEmpty()
+  @Expose()
+  @IsEnum(YN)
+  @Default(YN.NO)
+  isAgreeYn: YN.YES;
+
+  // 수집-이영 동의 여부 선택
+  @ApiProperty({ enum: YN })
+  @IsNotEmpty()
+  @Expose()
+  @IsEnum(YN)
+  @Default(YN.NO)
+  isAgreeOptionalYn: YN.YES;
+
+  // 고우식별정보 동의 여부
+  @ApiProperty({ enum: YN })
+  @IsNotEmpty()
+  @Expose()
+  @IsEnum(YN)
+  @Default(YN.NO)
+  sensitiveInfoYn: YN.YES;
+
+  // 민감정보 동의 여부
+  @ApiProperty({ enum: YN })
+  @IsNotEmpty()
+  @Expose()
+  @IsEnum(YN)
+  @Default(YN.NO)
+  isAgreePrivacyYn: YN.YES;
+
   @ApiPropertyOptional({ type: [SmallBusinessApplicantExperience] })
   @IsOptional()
   @Type(() => SmallBusinessApplicantExperience)
