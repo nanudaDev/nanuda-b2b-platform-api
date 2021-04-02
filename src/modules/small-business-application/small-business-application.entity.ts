@@ -84,6 +84,20 @@ export class SmallBusinessApplication extends BaseEntity<
   isAgreeYn: YN;
 
   @Column({
+    name: 'IS_AGREE_OPTIONAL_YN',
+    type: 'char',
+    default: () => YN.NO,
+  })
+  isAgreeOptionalYn: YN;
+
+  @Column({
+    name: 'SENSITIVE_INFO_YN',
+    type: 'char',
+    default: () => YN.NO,
+  })
+  sensitiveInfoYn: YN;
+
+  @Column({
     name: 'IS_AGREE_PRIVACY_YN',
     type: 'char',
     default: () => YN.NO,
