@@ -8,6 +8,8 @@ export class SmallBusinessApplicantExperience {
   @ApiPropertyOptional()
   @Expose()
   businessEndDate?: string;
+  @ApiPropertyOptional()
+  @Expose()
   operationDuration?: string | number;
   @ApiPropertyOptional()
   @Expose()
