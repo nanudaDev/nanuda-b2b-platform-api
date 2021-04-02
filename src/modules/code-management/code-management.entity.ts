@@ -41,6 +41,12 @@ export class CodeManagement extends BaseEntity<CodeManagement> {
   orderBy: number;
 
   @Column({
+    name: 'SUB_CSS_VALUE',
+    type: 'varchar',
+  })
+  subCssValue: string;
+
+  @Column({
     type: 'varchar',
     length: 1,
     nullable: false,
