@@ -56,19 +56,19 @@ export class SmallBusinessApplicationService extends BaseService {
     if (checkIfUserApplied) {
       throw new BadRequestException('죄송합니다. 이미 신청한 전화번호입니다.');
     }
-    if (
-      smallBusinessApplicationCreateDto.experience &&
-      smallBusinessApplicationCreateDto.experience.length > 0
-    ) {
-      smallBusinessApplicationCreateDto.experience.map(exp => {
-        const operationTime = Math.abs(
-          new Date(exp.businessEndDate).getTime() -
-            new Date(exp.businessStartDate).getTime(),
-        );
-        const difference = operationTime / (1000 * 3600 * 24);
-        exp.operationDuration = `${difference}일`;
-      });
-    }
+    // if (
+    //   smallBusinessApplicationCreateDto.experience &&
+    //   smallBusinessApplicationCreateDto.experience.length > 0
+    // ) {
+    //   smallBusinessApplicationCreateDto.experience.map(exp => {
+    //     const operationTime = Math.abs(
+    //       new Date(exp.businessEndDate).getTime() -
+    //         new Date(exp.businessStartDate).getTime(),
+    //     );
+    //     const difference = operationTime / (1000 * 3600 * 24);
+    //     exp.operationDuration = `${difference}일`;
+    //   });
+    // }
     // 기존 나누다 키친 사용자인지 아닌지 확인
     const checkIfNanudaUser = await this.entityManager
       .getRepository(NanudaUser)
