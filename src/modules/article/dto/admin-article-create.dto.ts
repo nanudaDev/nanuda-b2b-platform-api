@@ -57,4 +57,12 @@ export class AdminArticleCreateDto extends BaseDto<AdminArticleCreateDto>
   @IsOptional()
   @Expose()
   image?: FileAttachmentDto[];
+
+  @ApiPropertyOptional({ type: [FileAttachmentDto] })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => FileAttachmentDto)
+  @IsOptional()
+  @Expose()
+  attachment?: FileAttachmentDto[];
 }

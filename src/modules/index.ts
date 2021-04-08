@@ -44,6 +44,7 @@ export * from './space/space.module';
 export * from './space-type/space-type.module';
 export * from './amenity/amenity.module';
 export * from './founder-consult-management/founder-consult-management.module';
+export * from './small-business-application/small-business-application.module';
 
 // 상권 분석
 export * from './message-delivery-space/message-delivery-space.module';

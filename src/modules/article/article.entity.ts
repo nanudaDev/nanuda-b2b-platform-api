@@ -61,6 +61,12 @@ export class Article extends BaseEntity<Article> {
   image?: FileAttachmentDto[];
 
   @Column({
+    type: 'json',
+    name: 'ATTACHMENT',
+  })
+  attachment?: FileAttachmentDto[];
+
+  @Column({
     type: 'char',
     name: 'SHOW_YN',
     nullable: false,
