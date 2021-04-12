@@ -30,5 +30,11 @@ export class AdminDeliverySpaceListDto extends DeliverySpaceListDto {
   @IsOptional()
   @IsEnum(YN)
   @Expose()
+  isOperatedYn?: YN;
+
+  @ApiPropertyOptional({ enum: YN })
+  @IsOptional()
+  @IsEnum(YN)
+  @Expose()
   isBestedShowYn?: YN;
 }
