@@ -23,8 +23,8 @@ export class AdminPresentationEventListDto
   @Expose()
   eventType?: PRESENTATION_EVENT_TYPE;
 
-  @ApiPropertyOptional({ enum: PRESENTATION_DISPLAY_TYPE, isArray: true })
-  @IsEnum(PRESENTATION_DISPLAY_TYPE, { each: true })
+  @ApiPropertyOptional({ enum: PRESENTATION_DISPLAY_TYPE })
+  @IsEnum(PRESENTATION_DISPLAY_TYPE)
   @IsOptional()
   @Expose()
   displayType?: PRESENTATION_DISPLAY_TYPE;
