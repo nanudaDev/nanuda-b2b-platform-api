@@ -28,6 +28,11 @@ export class AdminArticleUpdateDto extends BaseDto<AdminArticleUpdateDto>
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  mediaName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   desc?: string;
 
   @ApiPropertyOptional({ type: [FileAttachmentDto] })

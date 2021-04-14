@@ -2,7 +2,11 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsEnum, IsOptional } from 'class-validator';
 import { Default, ORDER_BY_VALUE } from 'src/common';
-import { BaseDto, PRESENTATION_EVENT_TYPE } from 'src/core';
+import {
+  BaseDto,
+  PRESENTATION_DISPLAY_TYPE,
+  PRESENTATION_EVENT_TYPE,
+} from 'src/core';
 import { PresentationEvent } from '../presentation-event.entity';
 
 export class AdminPresentationEventListDto
@@ -18,6 +22,12 @@ export class AdminPresentationEventListDto
   @IsOptional()
   @Expose()
   eventType?: PRESENTATION_EVENT_TYPE;
+
+  @ApiPropertyOptional({ enum: PRESENTATION_DISPLAY_TYPE })
+  @IsEnum(PRESENTATION_DISPLAY_TYPE)
+  @IsOptional()
+  @Expose()
+  displayType?: PRESENTATION_DISPLAY_TYPE;
 
   @ApiPropertyOptional()
   @IsOptional()
