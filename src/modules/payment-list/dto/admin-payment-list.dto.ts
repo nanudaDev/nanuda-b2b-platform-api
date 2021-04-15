@@ -40,6 +40,11 @@ export class AdminPaymentListDto extends BaseDto<AdminPaymentListDto>
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  nanudaNo?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   nanudaKitchenMasterName?: string;
 
   @ApiPropertyOptional()
