@@ -15,6 +15,11 @@ export class AdminListDto extends BaseDto<AdminListDto>
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  no?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   name?: string;
 
   @ApiPropertyOptional({ enum: ADMIN_USER })

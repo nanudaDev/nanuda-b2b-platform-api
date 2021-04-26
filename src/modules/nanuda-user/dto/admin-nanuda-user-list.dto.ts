@@ -10,6 +10,11 @@ export class AdminNanudaUserListDto extends BaseDto<AdminNanudaUserListDto>
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
+  no?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
   name?: string;
 
   @ApiPropertyOptional()
