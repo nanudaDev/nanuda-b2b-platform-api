@@ -42,7 +42,6 @@ export class FileUploadService {
   async getBuckets() {
     const { Buckets } = await this.s3.listBuckets().promise();
     for (const bucket of Buckets) {
-      console.log(bucket);
     }
     return Buckets;
   }

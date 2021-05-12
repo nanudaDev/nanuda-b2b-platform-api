@@ -241,3 +241,9 @@ export enum STORE_COUNT {
 }
 export const CONST_STORE_COUNT  = Object.values(STORE_COUNT);
 
+export enum STORE_KEEPER_USER {
+ 'ADMIN_STORE_KEEPER' = 'ADMIN_STORE_KEEPER', 
+ 'NORMAL_STORE_KEEPER' = 'NORMAL_STORE_KEEPER', 
+}
+export const CONST_STORE_KEEPER_USER  = Object.values(STORE_KEEPER_USER);
+
