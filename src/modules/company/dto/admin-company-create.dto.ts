@@ -13,12 +13,13 @@ import {
 import { Default } from 'src/common';
 import { type } from 'os';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';
+import * as errors from 'src/locales/kr/errors.json';
 
 export class AdminCompanyCreateDto extends BaseDto<Company>
   implements Partial<Company> {
   @ApiProperty()
   @Expose()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: errors.company.nameKr })
   nameKr: string;
 
   @ApiPropertyOptional()
