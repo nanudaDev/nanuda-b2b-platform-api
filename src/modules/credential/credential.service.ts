@@ -128,7 +128,6 @@ export class CredentialService extends BaseService {
   }
 
   private __decipher_password(password: string) {
-    console.log(password);
     const key = crypto.createDecipher('aes-128-cbc', process.env.JWT_SECRET);
     let decipher = key.update(password, 'hex', 'utf8');
     decipher += key.final('utf8');

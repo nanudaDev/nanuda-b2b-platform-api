@@ -42,7 +42,6 @@ export class NanudaCompanyDistrictService extends BaseService {
     companyDistrictSearchDto: CompanyDistrictListDto,
     nanudaCompanyDistrictSearchDto: NanudaCompanyDistrictSearchDto,
   ): Promise<SearchResults> {
-    console.log(nanudaCompanyDistrictSearchDto);
     const searchResults = new SearchResults();
 
     // "https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000" \
