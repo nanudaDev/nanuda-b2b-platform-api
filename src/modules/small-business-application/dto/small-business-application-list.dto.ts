@@ -11,6 +11,7 @@ import {
 import { Default, ORDER_BY_VALUE } from 'src/common';
 import { BaseDto } from 'src/core';
 import { SmallBusinessApplication } from '../small-business-application.entity';
+import * as errors from 'src/locales/kr/errors.json';
 
 export class SmallBusinessApplicationListDto
   extends BaseDto<SmallBusinessApplicationListDto>
@@ -24,7 +25,7 @@ export class SmallBusinessApplicationListDto
   @ApiProperty()
   @IsNotEmpty()
   @Expose()
-  @IsPhoneNumber('KR', { message: '옳바른 전화번호를 입력해주세요' })
+  @IsPhoneNumber('KR', { message: errors.phone.isValid })
   phone: string;
 
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })

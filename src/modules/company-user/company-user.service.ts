@@ -33,6 +33,7 @@ import {
 } from 'src/core/utils';
 import { Company } from '../company/company.entity';
 import { CompanyUserPhoneDto } from '../auth/dto';
+import * as errors from 'src/locales/kr/errors.json';
 
 @Injectable()
 export class CompanyUserService extends BaseService {
@@ -87,7 +88,7 @@ export class CompanyUserService extends BaseService {
         });
         if (checkCompanyUser) {
           throw new BadRequestException({
-            message: 'User already exists',
+            message: errors.user.alreadyExists,
           });
         }
         // if (
@@ -157,7 +158,7 @@ export class CompanyUserService extends BaseService {
         });
         if (checkCompanyUser) {
           throw new BadRequestException({
-            message: 'User already exists',
+            message: errors.user.alreadyExists,
           });
         }
         companyUser = await entityManager.save(companyUser);

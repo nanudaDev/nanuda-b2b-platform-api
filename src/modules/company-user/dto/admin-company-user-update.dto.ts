@@ -4,6 +4,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsEmail, IsEnum, IsPhoneNumber } from 'class-validator';
 import { Expose } from 'class-transformer';
 import { YN } from 'src/common';
+import * as errors from 'src/locales/kr/errors.json';
 
 export class AdminCompanyUserUpdateDto
   extends BaseDto<AdminCompanyUserUpdateDto>
@@ -20,7 +21,7 @@ export class AdminCompanyUserUpdateDto
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  @IsPhoneNumber('KR', { message: '휴대폰 번호를 정확히 입력해주세요.' })
+  @IsPhoneNumber('KR', { message: errors.phone.isValid })
   phone?: string;
 
   @ApiPropertyOptional()

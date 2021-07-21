@@ -1,12 +1,25 @@
 {
+  "admin": {
+    "notFound": "존재하지 않는 관리자입니다~"
+  },
+  "user": {
+    "notFound": "존재하지 않는 사용자입니다~",
+    "alreadyExists": "이미 존재하는 사용자 입니다~"
+  },
   "name": {
-    "notEmpty": "이름을 입력해주세요"
+    "isNotEmpty": "이름을 입력해주세요~"
   },
   "phone": {
-    "isValid": "휴대폰 번호를 정확히 입력해주세요",
-    "notEmpty": "휴대폰 번호를 입력해주세요"
+    "isValid": "휴대폰 번호를 정확히 입력해주세요~",
+    "isNotEmpty": "휴대폰 번호를 입력해주세요~"
+  },
+  "password": {
+    "isValid": "비밀번호를 정확히 입력해주세요~",
+    "isNotEmpty": "비밀번호를 입력해주세요~",
+    "isEqaulTo": "비밀번호가 일치하지 않습니다~"
   },
   "company": {
-    "nameKr": "업체명을 입력해주세요"
+    "nameKr": "업체명을 입력해주세요~",
+    "ceoKr": "대표명을 입력해주세요~"
   }
 }

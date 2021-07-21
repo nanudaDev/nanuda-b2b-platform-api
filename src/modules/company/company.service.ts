@@ -72,7 +72,10 @@ export class CompanyService extends BaseService {
   ): Promise<Company> {
     const company = await this.entityManager.transaction(
       async entityManager => {
-        if (adminCompanyCreateDto.phone.includes('-')) {
+        if (
+          adminCompanyCreateDto.phone &&
+          adminCompanyCreateDto.phone.includes('-')
+        ) {
           adminCompanyCreateDto.phone = adminCompanyCreateDto.phone.replace(
             /-/g,
             '',

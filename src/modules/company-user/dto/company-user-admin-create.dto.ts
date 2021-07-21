@@ -12,6 +12,7 @@ import {
 } from 'class-validator';
 import { Expose } from 'class-transformer';
 import { IsPasswordEqualTo, Default, YN, ORDER_BY_VALUE } from 'src/common';
+import * as errors from 'src/locales/kr/errors.json';
 
 export class CompanyUserCreateDto extends BaseDto<CompanyUserCreateDto>
   implements Partial<CompanyUser> {
@@ -39,7 +40,7 @@ export class CompanyUserCreateDto extends BaseDto<CompanyUserCreateDto>
   @ApiProperty()
   @IsNotEmpty()
   @Expose()
-  @IsPhoneNumber('KR', { message: '휴대폰 번호를 정확히 입력해주세요.' })
+  @IsPhoneNumber('KR', { message: errors.phone.isValid })
   phone: string;
 
   @ApiProperty()

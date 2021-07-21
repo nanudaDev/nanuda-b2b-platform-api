@@ -4,6 +4,7 @@ import { IsNotEmpty, IsPhoneNumber, IsOptional, IsEnum } from 'class-validator';
 import { YN, Default } from 'src/common';
 import { BaseDto, GENDER } from 'src/core';
 import { Attendees } from '../attendees.entity';
+import * as errors from 'src/locales/kr/errors.json';
 
 export class AdminAttendeesUpdateDto extends BaseDto<AdminAttendeesUpdateDto>
   implements Partial<Attendees> {
@@ -14,7 +15,7 @@ export class AdminAttendeesUpdateDto extends BaseDto<AdminAttendeesUpdateDto>
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsPhoneNumber('KR', { message: '옳바른 전화번호를 입력해주세요.' })
+  @IsPhoneNumber('KR', { message: errors.phone.isValid })
   @Expose()
   phone?: string;
 

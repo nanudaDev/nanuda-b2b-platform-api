@@ -10,19 +10,19 @@ import {
 import { YN } from 'src/common';
 import { BaseDto, GENDER } from 'src/core';
 import { NanudaUser } from '../nanuda-user.entity';
-import * as errors from '../../../locales/kr/errors.json';
+import * as errors from 'src/locales/kr/errors.json';
 
 export class AdminNanudaUserCreateDto extends BaseDto<AdminNanudaUserCreateDto>
   implements Partial<NanudaUser> {
   @ApiProperty()
-  @IsNotEmpty({ message: errors.name.notEmpty })
+  @IsNotEmpty({ message: errors.name.isNotEmpty })
   @Expose()
   name: string;
 
   @ApiProperty()
-  @IsNotEmpty({ message: errors.phone.notEmpty })
+  @IsNotEmpty({ message: errors.phone.isNotEmpty })
   @Expose()
-  @IsPhoneNumber('KR', { message: '옳바른 전화번호를 입력해주세요.' })
+  @IsPhoneNumber('KR', { message: errors.phone.isValid })
   phone: string;
 
   @ApiPropertyOptional({ enum: GENDER })

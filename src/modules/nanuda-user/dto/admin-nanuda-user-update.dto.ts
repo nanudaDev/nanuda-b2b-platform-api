@@ -4,6 +4,7 @@ import { IsEnum, IsOptional, IsPhoneNumber } from 'class-validator';
 import { YN } from 'src/common';
 import { BaseDto, GENDER } from 'src/core';
 import { NanudaUser } from '../nanuda-user.entity';
+import * as errors from 'src/locales/kr/errors.json';
 
 export class AdminNanudaUserUpdateDto extends BaseDto<AdminNanudaUserUpdateDto>
   implements Partial<NanudaUser> {
@@ -14,7 +15,7 @@ export class AdminNanudaUserUpdateDto extends BaseDto<AdminNanudaUserUpdateDto>
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsPhoneNumber('KR', { message: '옳바른 전화번호를 입력해주세요' })
+  @IsPhoneNumber('KR', { message: errors.phone.isValid })
   @Expose()
   phone?: string;
 

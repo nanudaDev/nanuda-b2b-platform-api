@@ -14,6 +14,7 @@ import { Default, YN } from 'src/common';
 import { BaseDto, SMALL_BUSINESS_APPLICATION } from 'src/core';
 import { SmallBusinessApplicantExperience } from '../small-business-applicant-experience.class';
 import { SmallBusinessApplication } from '../small-business-application.entity';
+import * as errors from 'src/locales/kr/errors.json';
 
 export class SmallBusinessApplicationCreateDto
   extends BaseDto<SmallBusinessApplicationCreateDto>
@@ -26,7 +27,7 @@ export class SmallBusinessApplicationCreateDto
   @ApiProperty()
   @IsNotEmpty()
   @Expose()
-  @IsPhoneNumber('KR', { message: '옳바른 전화번호를 입력해주세요' })
+  @IsPhoneNumber('KR', { message: errors.phone.isValid })
   phone: string;
 
   @ApiPropertyOptional({ enum: SMALL_BUSINESS_APPLICATION })

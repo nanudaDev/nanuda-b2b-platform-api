@@ -9,6 +9,7 @@ import {
   IsUrl,
   IsArray,
   ValidateNested,
+  IsPhoneNumber,
 } from 'class-validator';
 import { Default } from 'src/common';
 import { type } from 'os';
@@ -29,7 +30,7 @@ export class AdminCompanyCreateDto extends BaseDto<Company>
 
   @ApiProperty()
   @Expose()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: errors.company.ceoKr })
   ceoKr: string;
 
   @ApiPropertyOptional()
@@ -65,6 +66,7 @@ export class AdminCompanyCreateDto extends BaseDto<Company>
 
   @ApiPropertyOptional()
   @IsOptional()
+  @IsPhoneNumber('KR')
   @Expose()
   phone?: string;
 

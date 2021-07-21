@@ -19,6 +19,7 @@ import {
 import { YN } from '../../common';
 import { CompanyUser } from '../company-user/company-user.entity';
 import { CompanyUserUpdateDto } from '../company-user/dto';
+import * as errors from 'src/locales/kr/errors.json';
 
 @Injectable()
 export class AuthService extends BaseService {
@@ -53,13 +54,13 @@ export class AuthService extends BaseService {
     }
     if (!adminLoginDto.password) {
       throw new BadRequestException({
-        message: '비밀번호를 입력해주세요.',
+        message: errors.password.isNotEmpty,
         error: 400,
       });
     }
     if (admin && admin.password !== adminLoginDto.password) {
       throw new BadRequestException({
-        message: '비밀번호가 일치하지 않습니다.',
+        message: errors.password.isEqaulTo,
         error: 400,
       });
     }

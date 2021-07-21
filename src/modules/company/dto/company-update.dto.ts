@@ -10,6 +10,7 @@ import {
 } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';
+import * as errors from 'src/locales/kr/errors.json';
 
 export class CompanyUpdateDto extends BaseDto<CompanyUpdateDto>
   implements Partial<Company> {
@@ -50,7 +51,7 @@ export class CompanyUpdateDto extends BaseDto<CompanyUpdateDto>
   @ApiPropertyOptional()
   @IsOptional()
   @Expose()
-  @IsPhoneNumber('KR', { message: '휴대폰 번호를 정확히 입력해주세요.' })
+  @IsPhoneNumber('KR', { message: errors.phone.isValid })
   phone?: string;
 
   @ApiPropertyOptional()

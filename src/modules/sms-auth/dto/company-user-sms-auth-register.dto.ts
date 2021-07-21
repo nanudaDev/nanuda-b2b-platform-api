@@ -4,13 +4,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsPhoneNumber, MinLength } from 'class-validator';
 import { Expose } from 'class-transformer';
 import { UserType } from 'src/modules/auth';
-
+import * as errors from 'src/locales/kr/errors.json';
 export class CompanyUserSmsAuthRegisterDto
   extends BaseDto<CompanyUserSmsAuthRegisterDto>
   implements Partial<SmsAuth> {
   @ApiProperty()
-  @IsPhoneNumber('KR', { message: '휴대폰 번호를 정확히 입력해주세요.' })
-  @IsNotEmpty({ message: '휴대폰 번호를 입력해주세요.' })
+  @IsPhoneNumber('KR', { message: errors.phone.isValid })
+  @IsNotEmpty({ message: errors.phone.isNotEmpty })
   @Expose()
   phone: string;
 

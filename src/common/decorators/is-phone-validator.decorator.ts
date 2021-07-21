@@ -4,6 +4,7 @@ import {
   registerDecorator,
   ValidationArguments,
 } from 'class-validator';
+import * as errors from 'src/locales/kr/errors.json';
 
 export const isPhone = (
   property: string,
@@ -16,7 +17,7 @@ export const isPhone = (
       propertyName: propertyName,
       constraints: [property],
       options: {
-        message: '휴대폰 번호를 입력해주세요.',
+        message: errors.phone.isNotEmpty,
         ...validationOptions,
       },
       validator: {

@@ -14,7 +14,7 @@ export class AdminAttendeesCreateDto extends BaseDto<AdminAttendeesCreateDto>
 
   @ApiProperty()
   @IsNotEmpty()
-  // @IsPhoneNumber('KR', { message: '옳바른 전화번호를 입력해주세요.' })
+  // @IsPhoneNumber('KR', { message: errors.phone.isValid })
   @Expose()
   phone: string;
 

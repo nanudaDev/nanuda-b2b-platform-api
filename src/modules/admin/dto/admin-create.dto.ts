@@ -4,7 +4,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsEnum, IsNotEmpty, IsOptional, IsPhoneNumber } from 'class-validator';
 import { IsPasswordEqualTo } from '../../../common';
-import * as errors from '../../../locales/kr/errors.json';
+import * as errors from 'src/locales/kr/errors.json';
 
 export class AdminCreateDto extends BaseDto<AdminCreateDto>
   implements Partial<Admin> {
@@ -13,7 +13,7 @@ export class AdminCreateDto extends BaseDto<AdminCreateDto>
   }
   @ApiProperty()
   @Expose()
-  @IsNotEmpty({ message: errors.name.notEmpty })
+  @IsNotEmpty({ message: errors.name.isNotEmpty })
   name: string;
 
   @ApiProperty()

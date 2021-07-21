@@ -4,6 +4,7 @@ import {
   registerDecorator,
   ValidationArguments,
 } from 'class-validator';
+import * as errors from 'src/locales/kr/errors.json';
 
 export const IsPasswordEqualTo = (
   property: string,
@@ -16,7 +17,7 @@ export const IsPasswordEqualTo = (
       propertyName: propertyName,
       constraints: [property],
       options: {
-        message: '비밀번호가 일치하지 않습니다',
+        message: errors.password.isEqaulTo,
         ...validationOptions,
       },
       validator: {
