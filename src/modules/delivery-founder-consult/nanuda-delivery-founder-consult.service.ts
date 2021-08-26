@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import {
   APPROVAL_STATUS,
   BaseService,
-  COMPANY,
   COMPANY_USER,
   FOUNDER_CONSULT,
   SPACE_TYPE,
@@ -67,19 +66,9 @@ export class NanudaDeliveryFounderConsultService extends BaseService {
       .where('deliveryFounderConsult.no = :no', { no: newConsult.no })
       .getOne();
     // slack notification
-    if (
-      newConsult.deliverySpace.companyDistrict.company.companyType ===
-      COMPANY.CORP_COMPANY
-    ) {
-      // 기업형 공유주방 전용
-      await this.nanudaSlackNotificationService.corpSharedConsultAdded(
-        newConsult,
-      );
-    } else {
-      await this.nanudaSlackNotificationService.deliveryFounderConsultAdded(
-        newConsult,
-      );
-    }
+    await this.nanudaSlackNotificationService.deliveryFounderConsultAdded(
+      newConsult,
+    );
     await this.nanudaSmsNotificationService.sendDeliveryFounderConsultMessage(
       newConsult,
       req,

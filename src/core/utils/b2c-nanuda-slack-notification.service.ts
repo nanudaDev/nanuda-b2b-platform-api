@@ -18,7 +18,6 @@ enum SLACK_TYPE {
   LANDING = 'LANDING',
   PRESENTATION = 'PRESENTATION',
   SECOND_MEETING = 'SECOND_MEETING',
-  CORP_COMPANY = 'CORP_COMPANY',
 }
 @Injectable()
 export class B2CNanudaSlackNotificationService extends BaseService {
@@ -27,7 +26,6 @@ export class B2CNanudaSlackNotificationService extends BaseService {
   presentationSlackUrl = process.env.BUSINESS_PRESENTATION_SLACK_URL;
   landingPageSlackUrl = process.env.LANDING_PAGE_SUCCESS_SLACK_URL;
   secondMeetingSlackUrl = process.env.SECOND_MEETING_APPLICANT_SLACK_URL;
-  corpSharedSlackUrl = process.env.CORP_COMPANY_APPLICANT_SLACK_URL;
 
   async smallBusinessApplicationNotification(
     smallBusinessApplication: SmallBusinessApplication,
@@ -91,39 +89,6 @@ export class B2CNanudaSlackNotificationService extends BaseService {
       ],
     };
     this.__send_slack(message, SLACK_TYPE.WEBHOOK);
-  }
-
-  /**
-   * 기업형 공유주방 전용 슬랙
-   * @param deliveryFounderConsult
-   */
-  async corpSharedConsultAdded(deliveryFounderConsult: DeliveryFounderConsult) {
-    const message = {
-      text: `[${deliveryFounderConsult.deliverySpace.companyDistrict.company.nameKr} - ${deliveryFounderConsult.deliverySpace.companyDistrict.nameKr}] 상담신청 안내`,
-      username: B2C_SLACK_NOTIFICATION_PROPERTY.founderConsultUsername,
-      attachments: [
-        {
-          color: '#009900',
-          actions: [
-            {
-              name: 'slack action button',
-              text: '신청서 상세보기',
-              type: 'button',
-              url: `${process.env.ADMIN_BASEURL}delivery-founder-consult/${deliveryFounderConsult.no}`,
-              style: 'primary',
-            },
-          ],
-          fields: [
-            {
-              title: `${B2C_SLACK_NOTIFICATION_PROPERTY.founderConsultUsername}`,
-              value: `${deliveryFounderConsult.nanudaUser.name}님이 ${deliveryFounderConsult.deliverySpace.companyDistrict.company.nameKr} 업체의 ${deliveryFounderConsult.deliverySpace.typeName}에 신청을 했습니다.`,
-              short: false,
-            },
-          ],
-        },
-      ],
-    };
-    this.__send_slack(message, SLACK_TYPE.CORP_COMPANY);
   }
 
   /**
@@ -294,9 +259,6 @@ export class B2CNanudaSlackNotificationService extends BaseService {
     }
     if (slackType === SLACK_TYPE.SECOND_MEETING) {
       this.slack.setWebhook(this.secondMeetingSlackUrl);
-    }
-    if (slackType === SLACK_TYPE.CORP_COMPANY) {
-      this.slack.setWebhook(this.corpSharedSlackUrl);
     }
     this.slack.webhook(message, function(err, response) {
       if (err) {

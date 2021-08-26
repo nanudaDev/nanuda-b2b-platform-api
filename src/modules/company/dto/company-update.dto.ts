@@ -1,4 +1,4 @@
-import { BaseDto, COMPANY } from 'src/core';
+import { BaseDto } from 'src/core';
 import { Company } from '../company.entity';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
@@ -7,7 +7,6 @@ import {
   IsEmail,
   IsArray,
   ValidateNested,
-  IsEnum,
 } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';
@@ -82,12 +81,6 @@ export class CompanyUpdateDto extends BaseDto<CompanyUpdateDto>
   @IsArray()
   @ValidateNested()
   logo?: FileAttachmentDto[];
-
-  @ApiPropertyOptional({ enum: COMPANY })
-  @IsOptional()
-  @IsEnum(COMPANY)
-  @Expose()
-  companyType?: COMPANY;
 
   companyNo: number;
 }
