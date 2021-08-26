@@ -9,6 +9,7 @@ import { Admin } from '../admin';
 import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/delivery-space-brand-mapper.entity';
 import { SpaceNanudaBrand } from '../space-nanuda-brand/space-nanuda-brand.entity';
 import { SpaceTypeBrandMapper } from '../space-type-brand-mapper/space-type-brand-mapper.entity';
+import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { SpaceTypeBrandMapper } from '../space-type-brand-mapper/space-type-bran
       DeliverySpaceBrandMapper,
       SpaceNanudaBrand,
       SpaceTypeBrandMapper,
+      DeliverySpace,
     ]),
     FileUploadModule,
   ],

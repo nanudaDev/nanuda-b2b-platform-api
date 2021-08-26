@@ -531,8 +531,8 @@ export class DeliverySpaceService extends BaseService {
           );
         }
         if (
-          adminDeliverySpaceUpdateDto.brandIds &&
-          adminDeliverySpaceUpdateDto.brandIds.length > 0
+          adminDeliverySpaceUpdateDto.brandIds
+          // && adminDeliverySpaceUpdateDto.brandIds.length > 0
         ) {
           // delete brand mapper first
           await this.deliveryBrandMapper
