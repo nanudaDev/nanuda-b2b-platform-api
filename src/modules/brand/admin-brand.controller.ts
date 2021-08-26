@@ -82,6 +82,11 @@ export class AdminBrandController extends BaseController {
     return await this.brandService.createByAdmin(admin.no, adminBrandCreateDto);
   }
 
+  @Post('/admin/brand/every-district/:id([0-9]+)')
+  async addBrandToEveryDistrict(@Param('id', ParseIntPipe) brandNo: number) {
+    return await this.brandService.addBrandToEveryDistrict(brandNo);
+  }
+
   /**
    * brand update
    * @param admin
@@ -108,5 +113,17 @@ export class AdminBrandController extends BaseController {
   @Delete('/admin/brand/:id([0-9]+)')
   async deleteBrand(@Param('id', ParseIntPipe) brandNo: number) {
     return await this.brandService.deleteBrand(brandNo);
+  }
+
+  /**
+   *
+   * @param brandNo
+   * @returns
+   */
+  @Delete('/admin/brand/every-district/:id([0-9]+)')
+  async deleteBrandFromEveryDistrict(
+    @Param('id', ParseIntPipe) brandNo: number,
+  ) {
+    return await this.brandService.deleteBrandFromEveryDistrict(brandNo);
   }
 }

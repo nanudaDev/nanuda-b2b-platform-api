@@ -23,11 +23,18 @@ import { DeliverySpaceBrandMapper } from '../delivery-space-brand-mapper/deliver
 import { SpaceNanudaBrand } from '../space-nanuda-brand/space-nanuda-brand.entity';
 import { SpaceTypeBrandMapper } from '../space-type-brand-mapper/space-type-brand-mapper.entity';
 import { BrandKioskMapper } from '../brand-kiosk-mapper/brand-kiosk-mapper.entity';
+import { DeliverySpace } from '../delivery-space/delivery-space.entity';
 
 @Injectable()
 export class BrandService extends BaseService {
   constructor(
     @InjectRepository(Brand) private readonly brandRepo: Repository<Brand>,
+    @InjectRepository(DeliverySpaceBrandMapper)
+    private readonly deliverySpaceBrandMapperRepo: Repository<
+      DeliverySpaceBrandMapper
+    >,
+    @InjectRepository(DeliverySpace)
+    private readonly deliverySpaceRepo: Repository<DeliverySpace>,
     @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly fileUploadService: FileUploadService,
   ) {
@@ -129,7 +136,7 @@ export class BrandService extends BaseService {
         .getRepository(SpaceTypeBrandMapper)
         .findOne({ brandNo: brand.no });
       if (adminBrandCreateDto.spaceTypeNo && !isMapped) {
-        let newSpaceTypeBrandMapper = new SpaceTypeBrandMapper();
+        const newSpaceTypeBrandMapper = new SpaceTypeBrandMapper();
         newSpaceTypeBrandMapper.brandNo = brand.no;
         newSpaceTypeBrandMapper.spaceTypeNo = adminBrandCreateDto.spaceTypeNo;
         await entityManager.save(newSpaceTypeBrandMapper);
@@ -211,7 +218,7 @@ export class BrandService extends BaseService {
    * @param brandNo
    */
   async findOne(brandNo: number): Promise<Brand> {
-    let qb = await this.brandRepo
+    const qb = await this.brandRepo
       .createQueryBuilder('brand')
       .CustomLeftJoinAndSelect([
         'admin',
@@ -387,6 +394,43 @@ export class BrandService extends BaseService {
         .where('brandNo = :brandNo', { brandNo: brandNo })
         .execute();
     });
+  }
+
+  async deleteBrandFromEveryDistrict(brandNo: number) {
+    this.deliverySpaceBrandMapperRepo.delete({ brandNo: brandNo });
+  }
+
+  async addBrandToEveryDistrict(brandNo: number) {
+    const deliverySpaces = await this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .getMany();
+
+    const deliverySpaceBrandMapperArr = deliverySpaces.map(e => {
+      const deliverySpaceBrandMapper = new DeliverySpaceBrandMapper();
+      deliverySpaceBrandMapper.brandNo = brandNo;
+      deliverySpaceBrandMapper.deliverySpaceNo = e.no;
+      return deliverySpaceBrandMapper;
+    });
+
+    await this.entityManager.transaction(async entityManager => {
+      // delete mapper
+      await entityManager
+        .createQueryBuilder()
+        .delete()
+        .from(DeliverySpaceBrandMapper)
+        .where('brandNo = :brandNo', { brandNo: brandNo })
+        .execute();
+
+      // add mapper
+      await entityManager
+        .createQueryBuilder()
+        .insert()
+        .into(DeliverySpaceBrandMapper)
+        .values(deliverySpaceBrandMapperArr)
+        .execute();
+    });
+
+    return deliverySpaces;
   }
 
   /**
