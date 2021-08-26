@@ -478,7 +478,7 @@ export class NanudaDeliverySpaceService extends BaseService {
       .where('deliverySpace.no = :no', { no: deliverySpaceNo })
       .andWhere('deliverySpace.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.delYn = :delYn', { delYn: YN.NO })
-      .andWhere('brands.showYn = :showYn', { showYn: YN.YES })
+      // .andWhere('brands.showYn = :showYn', { showYn: YN.YES })
       .andWhere('deliverySpace.remainingCount > 0')
       .addOrderBy('brands.isRecommendedYn', ORDER_BY_VALUE.DESC)
       .getOne();
