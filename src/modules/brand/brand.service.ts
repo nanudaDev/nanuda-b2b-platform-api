@@ -463,16 +463,18 @@ export class BrandService extends BaseService {
       .createQueryBuilder('deliverySpaceBrandMapper')
       .where('deliverySpaceBrandMapper.brandNo = :brandNo', {
         brandNo: brandNo,
-      })
-      .Paginate(pagination);
+      });
 
     const mapperItems = await qb.getMany();
     const deliverySpaceNoArr = mapperItems.map(e => e.deliverySpaceNo);
     const deliverySpaceQb = this.deliverySpaceRepo
       .createQueryBuilder('deliverySpace')
+      .CustomInnerJoinAndSelect(['companyDistrict'])
+      .innerJoinAndSelect('companyDistrict.company', 'company')
       .where('deliverySpace.no IN(:...deliverySpaceNoArr)', {
         deliverySpaceNoArr: deliverySpaceNoArr,
-      });
+      })
+      .Paginate(pagination);
 
     const [items, totalCount] = await deliverySpaceQb.getManyAndCount();
     return { items, totalCount };
