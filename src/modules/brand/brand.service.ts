@@ -454,4 +454,27 @@ export class BrandService extends BaseService {
       where: { delYn: YN.NO, isRecommendedYn: YN.YES },
     });
   }
+
+  async getRelatedTypes(
+    brandNo: number,
+    pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<DeliverySpace>> {
+    const qb = this.deliverySpaceBrandMapperRepo
+      .createQueryBuilder('deliverySpaceBrandMapper')
+      .where('deliverySpaceBrandMapper.brandNo = :brandNo', {
+        brandNo: brandNo,
+      })
+      .Paginate(pagination);
+
+    const mapperItems = await qb.getMany();
+    const deliverySpaceNoArr = mapperItems.map(e => e.deliverySpaceNo);
+    const deliverySpaceQb = this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .where('deliverySpace.no IN(:...deliverySpaceNoArr)', {
+        deliverySpaceNoArr: deliverySpaceNoArr,
+      });
+
+    const [items, totalCount] = await deliverySpaceQb.getManyAndCount();
+    return { items, totalCount };
+  }
 }
