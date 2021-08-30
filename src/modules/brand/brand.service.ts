@@ -396,7 +396,7 @@ export class BrandService extends BaseService {
     });
   }
 
-  async deleteBrandFromEveryDistrict(brandNo: number) {
+  deleteBrandFromEveryDistrict(brandNo: number) {
     this.deliverySpaceBrandMapperRepo.delete({ brandNo: brandNo });
   }
 
@@ -453,5 +453,39 @@ export class BrandService extends BaseService {
     return await this.brandRepo.find({
       where: { delYn: YN.NO, isRecommendedYn: YN.YES },
     });
+  }
+
+  /**
+   *
+   * @param brandNo
+   * @param pagination
+   * @returns
+   */
+  async getRelatedTypes(
+    brandNo: number,
+    pagination: PaginatedRequest,
+  ): Promise<PaginatedResponse<DeliverySpace>> {
+    const qb = this.deliverySpaceBrandMapperRepo
+      .createQueryBuilder('deliverySpaceBrandMapper')
+      .where('deliverySpaceBrandMapper.brandNo = :brandNo', {
+        brandNo: brandNo,
+      });
+
+    const mapperItems = await qb.getMany();
+    //만약 한군데도 선택한 타입이없다면
+    if (mapperItems.length == 0) return new PaginatedResponse();
+
+    const deliverySpaceNoArr = mapperItems.map(e => e.deliverySpaceNo);
+    const deliverySpaceQb = this.deliverySpaceRepo
+      .createQueryBuilder('deliverySpace')
+      .CustomInnerJoinAndSelect(['companyDistrict'])
+      .innerJoinAndSelect('companyDistrict.company', 'company')
+      .where('deliverySpace.no IN(:...deliverySpaceNoArr)', {
+        deliverySpaceNoArr: deliverySpaceNoArr,
+      })
+      .Paginate(pagination);
+
+    const [items, totalCount] = await deliverySpaceQb.getManyAndCount();
+    return { items, totalCount };
   }
 }
