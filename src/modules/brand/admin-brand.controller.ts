@@ -69,6 +69,14 @@ export class AdminBrandController extends BaseController {
     return await this.brandService.findNanudaBrand();
   }
 
+  @Get('/admin/brand/:id([0-9]+)/types')
+  async findRelatedTypes(
+    @Param('id', ParseIntPipe) brandNo: number,
+    @Query() pagination: PaginatedRequest,
+  ) {
+    return await this.brandService.getRelatedTypes(brandNo, pagination);
+  }
+
   /**
    * create for admin
    * @param admin
