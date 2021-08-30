@@ -12,6 +12,7 @@ import { AttendeesOnline } from 'src/modules/attendees-online/attendees-online.e
 import { isFunction } from 'util';
 import { SecondMeetingApplicant } from 'src/modules/attendees-online/second-meeting-applicant.entity';
 import { SmallBusinessApplication } from 'src/modules/small-business-application/small-business-application.entity';
+import { ENVIRONMENT } from 'src/config';
 
 enum SLACK_TYPE {
   WEBHOOK = 'WEBHOOK',
@@ -296,7 +297,13 @@ export class B2CNanudaSlackNotificationService extends BaseService {
       this.slack.setWebhook(this.secondMeetingSlackUrl);
     }
     if (slackType === SLACK_TYPE.CORP_COMPANY) {
-      this.slack.setWebhook(this.corpSharedSlackUrl);
+      if (process.env.NODE_ENV === ENVIRONMENT.PRODUCTION) {
+        this.slack.setWebhook(this.corpSharedSlackUrl);
+      } else {
+        this.slack.setWebhook(
+          process.env.CORP_COMPANY_APPLICANT_SLACK_TEST_URL,
+        );
+      }
     }
     this.slack.webhook(message, function(err, response) {
       if (err) {
