@@ -62,19 +62,19 @@ export class AdminBannerCreateDto extends BaseDto<AdminBannerCreateDto>
   @Default(LINK_TYPE.INTERNAL)
   linkType?: LINK_TYPE;
 
-  @ApiPropertyOptional({ enum: BANNER_TYPE })
-  @IsOptional()
+  @ApiProperty({ enum: BANNER_TYPE })
+  @IsNotEmpty()
   @Expose()
   @IsEnum(BANNER_TYPE)
-  bannerType?: BANNER_TYPE;
+  bannerType: BANNER_TYPE;
 
-  @ApiPropertyOptional()
-  @IsOptional()
+  @ApiProperty()
+  @IsNotEmpty()
   @Expose()
-  started?: Date;
+  started: Date;
 
-  @ApiPropertyOptional()
-  @IsOptional()
+  @ApiProperty()
+  @IsNotEmpty()
   @Expose()
-  ended?: Date;
+  ended: Date;
 }

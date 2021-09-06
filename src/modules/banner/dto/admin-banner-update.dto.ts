@@ -1,12 +1,13 @@
 import { BANNER_TYPE, BaseDto, LINK_TYPE } from 'src/core';
 import { Banner } from '../banner.entity';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsOptional,
   IsArray,
   ValidateNested,
   IsEnum,
   IsUrl,
+  IsNotEmpty,
 } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';

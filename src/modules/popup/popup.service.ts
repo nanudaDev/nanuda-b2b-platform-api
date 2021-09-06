@@ -5,6 +5,7 @@ import { BaseService } from 'src/core';
 import { Repository } from 'typeorm';
 import { FileUploadService } from '../file-upload/file-upload.service';
 import { AdminPopupCreateDto, AdminPopupListDto } from './dto';
+import { AdminPopupUpdateDto } from './dto/admin-popup-update.dto';
 import { Popup } from './popup.entity';
 
 @Injectable()
@@ -57,7 +58,7 @@ export class PopupService extends BaseService {
    * find one for admin
    * @param popupNo
    */
-  async findOne(popupNo: number): Promise<Popup> {
+  async findOneForAdmin(popupNo: number): Promise<Popup> {
     const popup = await this.popupRepo
       .createQueryBuilder('popup')
       .where('popup.no = :no', { no: popupNo })
@@ -83,6 +84,50 @@ export class PopupService extends BaseService {
       }
     }
     newPopup = await this.popupRepo.save(newPopup);
+    console.log('new popup!');
     return newPopup;
+  }
+
+  /**
+   *
+   * @param popupNo
+   * @param adminPopupUpdateDto
+   * @returns
+   */
+  async updateForAdmin(
+    popupNo: number,
+    adminPopupUpdateDto: AdminPopupUpdateDto,
+  ): Promise<Popup> {
+    let popup = await this.findOneForAdmin(popupNo);
+    popup = popup.set(adminPopupUpdateDto);
+    if (adminPopupUpdateDto.images && adminPopupUpdateDto.images.length === 1) {
+      adminPopupUpdateDto.images = await this.fileUploadService.moveS3File(
+        adminPopupUpdateDto.images,
+      );
+      if (!adminPopupUpdateDto.images) {
+        throw new BadRequestException({
+          message: 'Upload failed!',
+          error: 400,
+        });
+      }
+    }
+    if (adminPopupUpdateDto.ended && !adminPopupUpdateDto.started) {
+      adminPopupUpdateDto.started = new Date();
+    }
+    popup = await this.popupRepo.save(popup);
+    return popup;
+  }
+
+  /**
+   * delete banner
+   * @param popupNo
+   */
+  async deleteForAdmin(popupNo: number) {
+    await this.popupRepo
+      .createQueryBuilder()
+      .delete()
+      .from(Popup)
+      .where('no = :no', { no: popupNo })
+      .execute();
   }
 }

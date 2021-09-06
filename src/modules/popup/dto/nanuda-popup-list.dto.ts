@@ -1,11 +1,11 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsEnum, IsOptional } from 'class-validator';
-import { Default, ORDER_BY_VALUE, YN } from 'src/common';
+import { Default, ORDER_BY_VALUE } from 'src/common';
 import { BaseDto, LINK_TYPE, POPUP } from 'src/core';
 import { Popup } from '../popup.entity';
 
-export class AdminPopupListDto extends BaseDto<AdminPopupListDto>
+export class NanudaPopupListDto extends BaseDto<NanudaPopupListDto>
   implements Partial<Popup> {
   @ApiPropertyOptional()
   @IsOptional()
@@ -38,12 +38,6 @@ export class AdminPopupListDto extends BaseDto<AdminPopupListDto>
   @IsEnum(POPUP)
   @Expose()
   popupType?: POPUP;
-
-  @ApiPropertyOptional({ enum: YN })
-  @IsOptional()
-  @IsEnum(YN)
-  @Expose()
-  showYn?: YN;
 
   @ApiPropertyOptional({ enum: ORDER_BY_VALUE })
   @IsOptional()
