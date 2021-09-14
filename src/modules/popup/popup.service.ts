@@ -28,6 +28,7 @@ export class PopupService extends BaseService {
   ): Promise<PaginatedResponse<Popup>> {
     const qb = this.popupRepo
       .createQueryBuilder('popup')
+      .CustomInnerJoinAndSelect(['codeManagement'])
       .AndWhereLike(
         'popup',
         'title',
