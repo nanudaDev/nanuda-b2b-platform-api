@@ -32,7 +32,7 @@ let app: NestExpressApplication;
 declare const module: any;
 
 async function bootstrap() {
-  await generate.generate;
+  // await generate.generate;
   if (env === ENVIRONMENT.DEVELOPMENT) {
     console.log('Running in development mode. 개발 모드로 진행중');
     app = await NestFactory.create<NestExpressApplication>(AppModule, {
