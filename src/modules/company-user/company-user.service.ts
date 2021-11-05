@@ -289,7 +289,6 @@ export class CompanyUserService extends BaseService {
           companyUserNo,
           checkCompanyUser.companyUserStatus,
         );
-        console.log(companyUserUpdateHistory);
         if (!companyUserUpdateHistory) {
           throw new NotFoundException();
         }
@@ -581,7 +580,6 @@ export class CompanyUserService extends BaseService {
     companyUserNo: number,
     companyNo?: number,
   ): Promise<CompanyUser> {
-    console.log(companyUserNo);
     const companyUser = await this.companyUserRepo
       .createQueryBuilder('companyUser')
       .CustomInnerJoinAndSelect(['company', 'codeManagement'])

@@ -200,7 +200,6 @@ export class FavoriteSpaceMapperService extends BaseService {
    * @param favoriteQuery
    */
   async checkCountForRestaurantKitchen(favoriteQuery) {
-    console.log(favoriteQuery);
     const checkFavorite = await this.favoriteSpaceMapperRepo
       .createQueryBuilder('favoriteSpace')
       .where('favoriteSpace.deliverySpaceNo = :deliverySpaceNo', {
