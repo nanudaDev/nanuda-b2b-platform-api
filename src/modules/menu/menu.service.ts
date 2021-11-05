@@ -97,9 +97,7 @@ export class MenuService extends BaseService {
         error: 400,
       });
     }
-    console.log(adminMenuCreateDto);
-    let newMenu = new Menu(adminMenuCreateDto);
-    console.log(newMenu);
+     let newMenu = new Menu(adminMenuCreateDto);
     if (newMenu.images && newMenu.images.length > 0) {
       newMenu.images = await this.fileUploadService.moveS3File(newMenu.images);
       if (!newMenu.images) {
@@ -141,7 +139,6 @@ export class MenuService extends BaseService {
       .where('menu.no = :no', { no: menuNo })
       .getOne();
 
-    console.log(adminMenuUpdateDto);
     menu = menu.set(adminMenuUpdateDto);
     // images
     // if (adminMenuUpdateDto.images && adminMenuUpdateDto.images.length > 0) {

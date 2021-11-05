@@ -41,7 +41,6 @@ export class BrandKioskMapperService extends BaseService {
       ids.push(id.kioskNo);
     });
 
-    console.log(ids);
     if (ids && ids.length > 0) {
       const qb2 = await this.kitchenEntityManager
         .getRepository(PaymentList)

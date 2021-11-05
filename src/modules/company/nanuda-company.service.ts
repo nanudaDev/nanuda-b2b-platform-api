@@ -61,7 +61,6 @@ export class NanudaCompanyService extends BaseService {
       })
       .andWhere('company.no = :no', { no: companyNo })
       .getOne();
-    console.log(qb);
     return qb;
   }
 

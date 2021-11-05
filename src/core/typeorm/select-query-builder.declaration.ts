@@ -404,7 +404,6 @@ SelectQueryBuilder.prototype.AndWhereOnDayOf = function<Entity>(
   this: SelectQueryBuilder<Entity>,
   date: string | Date,
 ) {
-  console.log(date);
   if (date) {
     this.andWhere(
       `PRESENTATION_DATE BETWEEN '${date} 00:00:00' AND '${date} 23:59:59'`,
@@ -459,7 +458,6 @@ SelectQueryBuilder.prototype.AndWhereLessThan = function<Entity>(
   excludedRequestDto?: any,
 ): SelectQueryBuilder<Entity> {
   if (value !== undefined) {
-    console.log(`${ALIAS_DELIMETER}`);
     this.andWhere(
       `${alias}.${property} <= :${alias}${ALIAS_DELIMETER}${property}`,
       {
@@ -564,7 +562,6 @@ SelectQueryBuilder.prototype.AndWhereLike = function<Entity>(
   excludedRequestDto?: any,
 ): SelectQueryBuilder<Entity> {
   if (value !== undefined) {
-    console.log(`${ALIAS_DELIMETER}`);
     this.andWhere(
       `${alias}.${property} LIKE :${alias}${ALIAS_DELIMETER}${property}`,
       {
@@ -602,7 +599,6 @@ SelectQueryBuilder.prototype.AndWhereMatchInIds = function<Entity>(
 ): SelectQueryBuilder<Entity> {
   if (values && values.length > 0) {
     values.map(value => {
-      console.log(value, alias);
       this.andWhere(
         `${alias}.${property} IN (SELECT NO FROM AMENITY WHERE NO = ${value})`,
         // {
