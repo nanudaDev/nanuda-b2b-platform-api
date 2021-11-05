@@ -118,6 +118,12 @@ export class SmallBusinessApplication extends BaseEntity<
   })
   isCompleteYn: YN;
 
+  @Column({
+    name: 'BUSINESS_PLAN',
+    type: 'text',
+  })
+  businessPlan?: string;
+
   @OneToOne(type => CodeManagement)
   @JoinColumn({ name: 'APPLIED_CATEGORY_NO', referencedColumnName: 'key' })
   applicationType?: CodeManagement;

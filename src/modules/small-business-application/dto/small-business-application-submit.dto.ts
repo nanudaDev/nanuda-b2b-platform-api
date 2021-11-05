@@ -107,4 +107,9 @@ export class SmallBusinessApplicationSubmitDto
   @ArrayMinSize(1)
   @ArrayNotEmpty()
   experience?: SmallBusinessApplicantExperience[];
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  businessPlan?: string;
 }

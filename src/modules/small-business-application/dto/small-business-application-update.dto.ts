@@ -72,4 +72,9 @@ export class SmallBusinessApplicationUpdateDto
   @ValidateNested({ each: true })
   @Expose()
   experience?: SmallBusinessApplicantExperience[];
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  businessPlan?: string;
 }

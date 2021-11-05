@@ -381,7 +381,6 @@ export class NanudaDeliverySpaceService extends BaseService {
               },
             },
           );
-          console.log(grade.data);
           if (
             !grade.data ||
             !grade.data.finalGrade ||
