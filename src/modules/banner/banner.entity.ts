@@ -39,8 +39,10 @@ export class Banner extends BaseEntity<Banner> {
   @Column({
     name: 'BANNER_TYPE',
     type: 'varchar',
+    nullable: false,
+    default: BANNER_TYPE.FOUNDER_BANNER,
   })
-  bannerType?: BANNER_TYPE;
+  bannerType: BANNER_TYPE;
 
   @Column({
     name: 'LINK_TYPE',

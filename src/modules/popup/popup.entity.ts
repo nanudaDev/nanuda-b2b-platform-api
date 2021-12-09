@@ -1,6 +1,13 @@
 import { YN } from 'src/common';
 import { BaseEntity, LINK_TYPE, POPUP } from 'src/core';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { CodeManagement } from '../code-management/code-management.entity';
 import { FileAttachmentDto } from '../file-upload/dto';
 
 @Entity({ name: 'POPUP' })
@@ -83,4 +90,8 @@ export class Popup extends BaseEntity<Popup> {
     default: YN.NO,
   })
   delYn?: YN;
+
+  @OneToOne(type => CodeManagement)
+  @JoinColumn({ name: 'POPUP_TYPE', referencedColumnName: 'key' })
+  codeManagement?: CodeManagement;
 }
