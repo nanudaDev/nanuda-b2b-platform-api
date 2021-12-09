@@ -137,7 +137,7 @@ export class BannerService extends BaseService {
   async findOneForAdmin(bannerNo: number): Promise<Banner> {
     const banner = await this.bannerRepo
       .createQueryBuilder('banner')
-      .CustomInnerJoinAndSelect(['codeManagement'])
+      // .CustomInnerJoinAndSelect(['codeManagement'])
       .CustomLeftJoinAndSelect(['admin'])
       .where('banner.no = :no', { no: bannerNo })
       .getOne();

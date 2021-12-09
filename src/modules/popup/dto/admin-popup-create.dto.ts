@@ -9,7 +9,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Default, YN } from 'src/common';
-import { BaseDto, BaseService, LINK_TYPE } from 'src/core';
+import { BaseDto, BaseService, LINK_TYPE, POPUP } from 'src/core';
 import { FileAttachmentDto } from 'src/modules/file-upload/dto';
 import { Popup } from '../popup.entity';
 
@@ -59,18 +59,24 @@ export class AdminPopupCreateDto extends BaseDto<AdminPopupCreateDto>
   linkType?: LINK_TYPE;
 
   @ApiPropertyOptional()
-  @IsUrl()
   @IsOptional()
   @Expose()
+  @IsUrl()
   link?: string;
 
-  @ApiPropertyOptional()
-  @IsOptional()
+  @ApiProperty()
+  @IsNotEmpty()
   @Expose()
-  started?: Date;
+  started: Date;
 
-  @ApiPropertyOptional()
-  @IsOptional()
+  @ApiProperty()
+  @IsNotEmpty()
   @Expose()
-  ended?: Date;
+  ended: Date;
+
+  @ApiProperty({ enum: POPUP })
+  @IsEnum(POPUP)
+  @Expose()
+  @Default(POPUP.IMAGE)
+  popupType: POPUP;
 }
