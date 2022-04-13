@@ -60,7 +60,7 @@ async function bootstrap() {
   //   preflightContinue: false,
   //   optionsSuccessStatus: 204,
   // });
-  // app.enableCors();
+  app.enableCors();
   // https://docs.nestjs.com/techniques/security
   // app.use(csurf({ cookie: true }));
   app.use(
