@@ -125,7 +125,7 @@ export class PopupService extends BaseService {
    */
   async deleteForAdmin(popupNo: number) {
     await this.popupRepo
-      .createQueryBuilder()
+      .createQueryBuilder('popup')
       .delete()
       .from(Popup)
       .where('no = :no', { no: popupNo })
